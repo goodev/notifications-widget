@@ -36,8 +36,8 @@ public final class R {
 		public static final int cpp_app_name = 0x7f0b0059;
 		public static final int dialog_color_picker = 0x7f0b0060;
 		public static final int hello = 0x7f0b007b;
-		public static final int pref_category = 0x7f0b00c6;
-		public static final int press_color_to_apply = 0x7f0b00c7;
+		public static final int pref_category = 0x7f0b00c8;
+		public static final int press_color_to_apply = 0x7f0b00c9;
 	}
 	public static final class xml {
 		public static final int settings = 0x7f04000a;

@@ -6,7 +6,7 @@
         jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\NiLS.gradle\imageViewPlus\unspecified\classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="81e50fbaf249eb6e55c17a3685249227b5b82c41"/>
+        sha1="5a21820876cf097b48d1e97a694a10c835412cf3"/>
     <item
         dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-2a5cea70c556ffb457370bd2c032ddc4dee5f524.jar"
         jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0-rc1\classes.jar"
@@ -48,7 +48,7 @@
         jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\NiLS.gradle\colorPickerPreference\unspecified\classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="984c0b85ce6ee15f7f0c2e124a0d213629ebd25f"/>
+        sha1="ad4d4f74e78eebfbea33619a1b958027bcd2fa1f"/>
     <item
         dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-7725c6a6ee9b55f7d8e7cd50c5f65f9060374321.jar"
         jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\21.0.0-rc1\classes.jar"

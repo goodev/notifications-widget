@@ -29,6 +29,12 @@
             android:entryValues="@array/notification_icon_values"
             android:defaultValue="notification_icon"/>
 
+        <CheckBoxPreference android:key="ignore_repeating_notifications"
+            android:title="@string/ignore_repeating_notifications"
+            android:summary="@string/ignore_repeating_notifications_summary"
+            android:defaultValue="false"
+            />
+
         <CheckBoxPreference android:key="retransmit"
             android:title="@string/post_to_wear"
             android:summary="@string/post_to_wear_summary"

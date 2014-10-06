@@ -14,7 +14,22 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
     public static final String USE_EXPANDED_TEXT = "useexpandedtext";
     public static final String APP_PRIORITY = "apppriority";
     public static final String RETRANSMIT = "retransmit";
+    public static final String IGNORE_REPEATING_NOTIFICATIONS = "ignore_repeating_notifications";
+
+    public static final String[] APP_SPECIFIC_SETTINGS_KEYS = {
+            SettingsManager.WAKEUP_MODE,
+            SettingsManager.NOTIFICATION_MODE,
+            SettingsManager.NOTIFICATION_ICON,
+            SettingsManager.NOTIFICATION_PRIVACY,
+            IGNORE_APP,
+            USE_EXPANDED_TEXT,
+            APP_PRIORITY,
+            RETRANSMIT,
+            IGNORE_REPEATING_NOTIFICATIONS
+    };
+
     public static final boolean DEFAULT_RETRANSMIT = false;
+    public static final boolean DEFAULT_IGNORE_REPEATING_NOTIFICATIONS = false;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -25,13 +40,12 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
     public void resetAppSettings(View v)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AppSettingsActivity.this);
-        prefs.edit().remove(packageName + "." + SettingsManager.WAKEUP_MODE)
-                    .remove(packageName + "." + SettingsManager.NOTIFICATION_MODE)
-                    .remove(packageName + "." + SettingsManager.NOTIFICATION_ICON)
-                    .remove(packageName + "." + SettingsManager.NOTIFICATION_PRIVACY)
-                    .remove(packageName + "." + RETRANSMIT)
-                    .remove(packageName + "." + IGNORE_APP)
-                    .commit();
+
+        // remove all app specific settings
+        for(String key : APP_SPECIFIC_SETTINGS_KEYS)
+            prefs.edit().remove(packageName + "." + key);
+
+        prefs.edit().commit();
 
         removeAppFromAppSpecificSettings(packageName, AppSettingsActivity.this);
         finish();

@@ -17,5 +17,7 @@ n    <string name="app_specific_settings_title">Ajustes específicos por aplicac
 
     <string name="show_quick_reply_on_preview">Show "Quick Reply" box on preview mode</string>
     <string name="show_quick_reply_on_preview_summary">(BETA) Whenever a quick reply is available, show a text box in the notification preview for faster replying</string>
+    <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
+    <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
 
 </resources>

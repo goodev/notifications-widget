@@ -333,6 +333,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String notificationMode = SettingsManager.getNotificationMode(getApplicationContext(), nd.packageName);
+            boolean ignoreRepeating = SettingsManager.getBoolean(context, nd.packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
             boolean updated = false;
 
             // remove old notification
@@ -365,7 +366,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                             nd.tag = oldnd.tag;
                         }
 
-                        if (oldnd.isDeleted())
+                        if (oldnd.isDeleted() && ignoreRepeating)
                         {
                             Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
                             nd.delete();
@@ -453,6 +454,8 @@ public class NotificationsService extends Service implements NotificationsProvid
     {
         Log.d(TAG,"NotificationsService:removeNotification  " + packageName + ":" + id);
         boolean sync = SettingsManager.shouldClearWhenClearedFromNotificationsBar(getApplicationContext());
+        boolean ignoreRepeating = SettingsManager.getBoolean(context, packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
+
         if (sync)
         {
             boolean cleared = false;
@@ -479,7 +482,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                         // mark as delete if it's part of multiple events notification
                         if (logical && (nd.event || isGrouped)) {
                             // mark notification as cleared
-                            if (!nd.isDeleted())
+                            if (!nd.isDeleted() && ignoreRepeating)
                             {
                                 nd.delete();
                                 cleared = true;
@@ -695,12 +698,15 @@ public class NotificationsService extends Service implements NotificationsProvid
             while (i.hasNext())
             {
                 NotificationData nd = i.next();
+
                 if (!nd.pinned)
                 {
+                    boolean ignoreRepeating = SettingsManager.getBoolean(context, nd.packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
+
                     clearedNotifications.add(nd);
 
                     // if its event - mark it as deleted
-                    if (nd.event || nd.sideLoaded && nd.group != null)
+                    if ((nd.event || nd.sideLoaded && nd.group != null) && ignoreRepeating)
                         nd.delete();
                     else // otherwise remove it immediately
                         i.remove();
@@ -773,6 +779,8 @@ public class NotificationsService extends Service implements NotificationsProvid
 
         for(String packageName : packages)
         {
+            boolean ignoreRepeating = SettingsManager.getBoolean(context, packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
+
             Log.d(TAG,"NotificationsService:clearNotificationsForApps " + packageName);
             Lock w = lock.writeLock();
             w.lock();
@@ -785,7 +793,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                     if (!nd.pinned && nd.packageName.equals(packageName))
                     {
                         // mark notification as deleted
-                        if (nd.event || nd.sideLoaded && nd.group != null)
+                        if ((nd.event || nd.sideLoaded && nd.group != null) && ignoreRepeating)
                             nd.delete();
                         else
                             i.remove();
@@ -845,11 +853,13 @@ public class NotificationsService extends Service implements NotificationsProvid
                 NotificationData nd = iter.next();
                 if (nd.uid == uid)
                 {
+                    boolean ignoreRepeating = SettingsManager.getBoolean(context, nd.packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
+
                     // store id and package name to search for more notifications with the same id
                     removedNd = nd;
 
                     // mark notification as deleted
-                    if (nd.event || nd.sideLoaded && nd.group != null)
+                    if ((nd.event || nd.sideLoaded && nd.group != null) && ignoreRepeating)
                         nd.delete();
                     else
                         iter.remove();

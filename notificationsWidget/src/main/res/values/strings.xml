@@ -497,4 +497,6 @@
     <string name="translations_summary">NiLS is translated by the users community using Crowdin.net</string>
     <string name="crowdin">Join us on Crowdin</string>
     <string name="crowdin_summary">Help translating NiLS by joining us on Crowdin</string>
+    <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
+    <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
 </resources>
