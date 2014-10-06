@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="v438_title" translatable="false">v1.5.2</string>
+    <string name="v438" translatable="false">
+        <![CDATA[
+            <b>&#8226;  Translatio ns</b> - Added German, Spanish, French and Polish translations. Thanks to the community translators.<br>
+            <b>&#8226;  Improved Gmail support</b> - Gmail notifications will now have full content and action buttons for each email. (Requires Android 4.3 and above)<br>
+            <b>&#8226;	New Feature - Quick Reply</b> - Quickly reply a message without unlocking your phone on Hangouts, WhatsApp, ChompSMS and few other apps. (Requires Android 4.3 and above)<br>
+            <b>&#8226;	Bug fixes: </b> Swipe right to open, privacy on separated notifications, duplicated notifications, proximity sensor issues and many more
+        ]]>
+    </string>
+    <string name="v427_title" translatable="false">v1.5.1</string>
+    <string name="v427" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Improved themes support</b> - Supports the new Android L Theme and allow 3rd party themes to set a custom layout for the notification.<br>
+            <b>&#8226;	Supports notifications with images.</b><br>
+            <b>&#8226;	New option - Auto title color</b> - set title color on notifications panel automatically using the app icon prominent color.<br>
+            <b>&#8226;	New Feature - Heads Up (BETA)</b> - display a top banner whenever a new notification arrives.<br>
+            <b>&#8226;	Supports Android Wear </b> - a new app specific option to repeat notifications into Android Wear device.<br>
+            <b>&#8226;	Bug fixes </b>
+        ]]>
+    </string>
+    <string name="v400_title" translatable="false">v1.5</string>
+    <string name="v400" translatable="false">
+        <![CDATA[
+            <b>Huge update! so many improvements:</b><br>
+            <br><b>&#8226;	NiLS FP has been integrated into NiLS </b> Reduced memory usage and improved stability. Your settings and license will be automatically imported from NiLS Floating Panel. if it doesn\'t work, please contact support.
+            <br><b>&#8226;	New and improved appearance</b> - access many options and settings easily using the new card base UI and the left navigation drawer.
+            <br><b>&#8226;	Supports ANY lock screen</b> - NiLS now will be displayed on top of any lock screen, the lock screen will be automatically detected when the screen is turned on.
+            <br><b>&#8226;	New privacy options</b> - you can control what information will be displayed for each app.
+            <br><b>&#8226;	Auto screen turn off</b> - you can set screen off timeout option to turn off the screen few seconds after receiving a notification.
+            <br><b>&#8226;	Use any color</b> - Use any color on NiLS widget text and background colors.
+            <br><b>&#8226;	Bug fixes</b> - WhatsApp duplicates, CNBC notifications and many more bug fixes.
+        ]]>
+    </string>
+    <string name="v279_title" translatable="false">v1.4</string>
+    <string name="v279" translatable="false">
+        <![CDATA[
+            <br><b>&#8226; Rearrange settings page.</b> simplified access to many features.
+            <br><b>&#8226; Notification mode</b> - you choose between grouped and separated. (replaces \"Multiple Events Handling\" option)
+            <br><b>&#8226; Notification icon</b> - choose between original notification icon, app icon and status bar monochrome icon.
+            <br><b>&#8226; Icon packs support</b> - use almost any icon pack from Google Play instead of the standard notification icon.
+            <br><b>&#8226; Choose whether to turn on screen on per app basis.</b>
+            <br><b>&#8226; Improved stability and memory usage.</b>
+            <br><b>&#8226; Forcibly turn off screen when timeout passes</b> Requires \"Screen off (by KATECA)\" app to be installed and enabled.
+            <br><b>&#8226; Better binding with NiLS Floating Panel service</b>. Solves syncing issues.
+            <br>All new options affects NiLS Floating Panel too.
+        ]]>
+    </string>
+    <string name="v275_title" translatable="false">v1.3.2</string>
+    <string name="v275" translatable="false">
+    <![CDATA[
+        <br><b>&#8226; Improved stability when other notifications service are running.</b>
+        <br><b>&#8226; Added an option to use monochrome icons.</b>
+        <br><b>&#8226; Improved memory usage.</b>
+    ]]>
+    </string>
+</resources>

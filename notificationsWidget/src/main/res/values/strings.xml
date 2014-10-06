@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Main nils page -->
+    <string name="notifications_service">NiLS Service</string>
+    <string name="service_is_inactive">Enable NiLS service on Android Security Settings to provide notification access so all upcoming notifications will be captured and displayed on NiLS</string>
+    <string name="service_is_active">NiLS Service is running.\nAll upcoming notifications will be captured and displayed on NiLS</string>
+    <string name="enable_service_tip">Find \"NiLS Service\" in the list and enable it, then press the \"Back\" button to go back to NiLS</string>
+    <string name="notification_panel">Notifications Panel</string>
+    <string name="notification_panel_is_active">Notifications panel is active.\nNotifications list will be displayed when the lock screen appears</string>
+    <string name="notification_panel_is_inactive">Notifications panel is not active</string>
+    <string name="auto_hide_service">Auto Hide Service</string>
+    <string name="auto_hide_is_inactive">When enabled, Auto Hide Service will automatically hide Notifications Panel when you pull down Android Notifications Bar</string>
+    <string name="auto_hide_is_active">NiLS Auto Hide Service is enabled. Notification Panel will be automatically hidden when you pull down Android Notifications Bar</string>
+    <string name="enable_auto_hide_service_tip">Find \"NiLS Service\" in the list and enable it, then press the \"Back\" button to go back to NiLS</string>
+    <string name="nilsfp_autohide_service_label">NiLS Auto Hide Service</string>
+    <string name="nilsfp_autohide_service_description">Enable this service to auto hide NiLS Notifications Panel when lock screen is not visible. (e.g. when the notifications bar is pulled down from the status bar)</string>
+
+    <!-- General Strings -->
+    <string name="title">NiLS</string>
+    <string name="settingstitle">NiLS Settings</string>
+    <string name="accessibility_service_description">Enable to allow NiLS receive all incoming notifications. The disclaimer displayed when enabling the accessibility service is a standard Android message. This app DOES NOT collect any of your data. Please note that this app doesn\'t have internet access permission so it actually cannot send the data anywhere.</string>
+
+    <!-- Settings Page -->
+    <string name="generalsettings">General Settings</string>
+    <string name="advancedsettings">Advanced Settings</string>
+    <string name="behavior">Auto Wake up</string>
+    <string name="appearance">Appearance</string>
+    <string name="advanced">Advanced</string>
+    <string name="notifications">Notifications</string>
+    <string name="turnscreenon">Turn on screen</string>
+
+    <string-array name="wakeup_mode_entries">
+        <item>Never</item>
+        <item>Only if the device is not covered</item>
+        <item>Next time the device is uncovered</item>
+        <item>Always</item>
+    </string-array>
+
+    <string name="battery_usage_warning">Battery Usage Warning</string>
+    <string name="battery_usage_warning_summary">Using this option requires a constant usage of the proximity sensor.\nThis may drain your battery.\nIf you experiencing an high battery usage please choose other wakeup modes.</string>
+    <string name="turnscreenoff">Turn off screen</string>
+    <string name="turn_off_default">Device default</string>
+    <string name="turn_off_10">After 10 seconds</string>
+    <string name="turn_off_15">After 15 seconds</string>
+    <string name="turn_off_30">After 30 seconds</string>
+    <string name="turn_off_45">After 45 seconds</string>
+    <string name="turn_off_60">After 60 seconds</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="clearonunlock">Clear when unlocked</string>
+    <string name="clearonunlock_summary">Clear all notifications when device is unlocked</string>
+    <string name="collectonunlock">Collect when unlocked</string>
+    <string name="collectonunlock_summary">Keep collecting notifications when device is unlocked</string>
+    <string name="order_notifications_by">Sort notifications by</string>
+    <string name="clear_all_from_same_app">Clear all from the same app</string>
+    <string name="clear_all_from_same_app_summary">When a notification is opened, clear all of the remaining notifications from the same app</string>
+    <string name="icon_pack">Icon Pack</string>
+
+    <string-array name="notification_modes_entries">
+        <item>Grouped</item>
+        <item>Separated</item>
+    </string-array>
+
+    <string name="notification_mode">Notification mode</string>
+
+    <!-- Privacy Options -->
+    <string name="privacy">Privacy</string>
+    <string name="privacy_none">None</string>
+    <string name="privacy_show_title">Show title only</string>
+    <string name="privacy_show_ticker">Show status bar text only</string>
+    <string name="privacy_show_appname">Show app name only</string>
+
+    <!-- auto clear values -->
+    <string name="auto_clear_notifications">Auto clear notifications</string>
+    <string name="when_cleared">When cleared from notifications bar</string>
+    <string name="when_app_is_opened">When notification app is opened</string>
+    <string name="when_device_is_unlocked">When device unlocked</string>
+    <string name="sync_back">Sync back notifications</string>
+    <string name="sync_back_summary">When notification is cleared on NiLS dismiss it also on Android Notifications Bar\n(Android 4.3 and above only)</string>
+
+    <string-array name="settings_orderby_entries">
+        <item>Newest first</item>
+        <item>Oldest first</item>
+        <item>Notification Priority</item>
+    </string-array>
+
+    <string name="lock_screen">Lock Screen</string>
+    <string name="auto_detect_lock_screen">Auto detect lock screen app</string>
+    <string name="current_lock_screen_app">Current lock screen app:%s\nEnable auto detection if you are using a different lock screen app</string>
+    <string name="stock_lock_screen">Android (Stock)</string>
+    <string name="new_lock_screen_detected">%s lock screen app detected</string>
+    <string name="new_lock_screen_detected_text">Would you like to display notifications on top of it instead of your current lock screen (%s)?</string>
+    <string name="never_suggest_title">Keep detecting lock screen app?</string>
+    <string name="never_suggest_lockscreen_apps">Would you like NiLS to automatically detect your current lock screen app next time?\nYou can always change this option on NiLS Global Settings > Advanced</string>
+    <string name="experimental">Experimental </string>
+    <string name="max_lines">Maximum text lines</string>
+    <string name="show_full_notification">Show full notification content</string>
+    <string name="show_full_notification_summary">Show full notification content as it appears on notifications bar</string>
+    <string name="sync_notifications">Sync with notifications bar</string>
+    <string name="clear_app_notifications">Clear when app is opened</string>
+    <string name="clear_app_notifications_summary">Automatically clear app notifications when it launched. (Not available on 4.3 or later)</string>
+    <string name="force_clear_on_open">Clear notifications when opened</string>
+    <string name="force_clear_on_open_summary">Forcibly clear notification when it opened even if the app hasn\'t clear it by itself</string>
+
+    <string-array name="max_lines_entries">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>Unlimited</item>
+    </string-array>
+
+    <string name="service_inactive_text">Service is inactive. Tap on the alert icon to go to Android Settings, then enable \"NiLS Service\" from the list.</string>
+
+    <!-- Wizard Strings -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
+    <string name="title_activity_main">NiLS</string>
+    <string name="tutorial_help_1">NiLS need to get access to your notifications.\nPlease follow instructions below to enable NiLS service on Android settings.</string>
+    <string name="tutorial_instructions">Instructions:</string>
+    <string name="tutorial_step_1">Click the button below to open Android settings</string>
+    <string name="tutorial_step_2">Find \"NiLS Service\" in the list and enable it</string>
+    <string name="tutorial_step_3">Click \"OK\" in the warning dialog</string>
+    <string name="tutorial_step_4">Click \"Back\" button to return to NiLS settings</string>
+
+    <!-- About Dialog -->
+    <string name="about_title">NiLS</string>
+    <string name="about_subtitle">NiLS is developed by Roymam</string>
+    <string name="about_content">The project is hosted on:\nhttp://code.google.com/p/notifications-widget/\nFeel free to open issues for any bug report or feature request</string>
+    <string name="about_contactus_title">Feedback</string>
+    <string name="about_close">Close</string>
+
+    <!-- Contact Us Menu -->
+    <string name="contact_summary">Contact us to ask a question, request a feature or report a bug.</string>
+    <string name="contact_email">Send us an email</string>
+    <string name="contact_community">Join our community on Google+</string>
+    <string name="version">Version</string>
+
+    <!-- WidgetLocker -->
+    <string name="widget_locker_not_installed">WidgetLocker is not installed</string>
+    <string name="widget_locker_not_installed_summary">Your Android version is lower than 4.2, therefore you cannot add widgets to your standard lockscreen.\n\nHowever, there is a paid app called \"WidgetLocker\" that enables adding widgets to a lockscreen.\n\nNiLS is known to work relatively well with WidgetLocker, but some features may not be working.\n\nPlease note that you can still use NiLS as a standard widget for you home screen without purchasing WidgetLocker</string>
+    <string name="widget_locker_purchase">Purchase WidgetLocker</string>
+    <string name="no_widget_locker_add_widget">Add NiLS as a widget for your home screen (if you want to add it to your lockscreen you will need to purchase WidgetLocker app from Google Play Store)</string>
+
+    <!-- Error Messages -->
+    <string name="failed_to_monitor_clear_button">Failed to Monitor \"Clear Notifications\" button</string>
+
+    <!-- Action Bar -->
+    <string name="settings">Settings</string>
+    <string name="pin">Pin</string>
+    <string name="unpin">Unpin</string>
+
+    <!-- App specific settings -->
+    <string name="app_specific_settings_title">App Specific Settings</string>
+    <string name="ignore_notifications">Ignore this app</string>
+    <string name="clear_app_settings">Reset</string>
+    <string name="clear_app_summary">Clear app specific settings for this app</string>
+
+    <!-- Persistent Notifications -->
+    <string name="persistent_notifications">Persistent Notifications</string>
+    <string name="show_persistent_notifications">Show persistent notification</string>
+    <string name="show_persistent_notifications_summary">Show persistent notification from this app</string>
+    <string name="notification_height">Persistent notification size</string>
+    <string name="persistent_notifications_error">There was a problem to load the persistent notifications\n please remove some persistent notifications and try again</string>
+
+    <string-array name="settings_notification_height_entries">
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Maximum</item>
+    </string-array>
+
+    <string name="catch_all_notifications">Catch all notifications</string>
+    <string name="catch_all_notifications_summary">Catch all notifications from this app and handle them as persistent notifications</string>
+    <string name="hide_when_notifications">Hide when notifications appear</string>
+    <string name="hide_when_notifications_summary">Hide this persistent notification when normal notifications appear</string>
+    <string name="auto_hide_persistent_notification">Hide when inactive</string>
+    <string name="auto_hide_persistent_notification_summary">Hide when the persistent notification wasn\'t updated for selected period</string>
+
+    <string-array name="settings_auto_hide_persistent_notifications_entries">
+        <item>Never Hide</item>
+        <item>After 5 Minutes</item>
+        <item>After 15 Minutes</item>
+        <item>After 30 Minutes</item>
+        <item>After 1 Hour</item>
+        <item>After 4 Hours</item>
+        <item>After 24 Hours</item>
+    </string-array>
+
+    <string name="how_to_use">How To Use?</string>
+    <string name="persistent_notifications_help">How To Use Persistent Notifications?</string>
+    <string name="persistent_notifications_help_details">Persistent notifications are notifications that appear on the status bar and cannot be dismissed (such as music playback or weather information)\n\nThis list contains the apps that recently created persistent notifications, check the boxes to add those notifications to NiLS widget</string>
+    <string name="persistent_notifications_no_apps_title">No persistent notifications</string>
+    <string name="persistent_notifications_no_apps">There are currently no running apps that create persistent notifications. run the app you want and once you\'ll see its persistent notifications on Android notifications bar, go back to this settings page and you\'ll be able to add it to NiLS widget</string>
+
+    <!-- strings for accessibility -->
+    <string name="clear_all_notifications">Clear All Notifications</string>
+    <string name="action_bar">Action Bar</string>
+    <string name="notification_icon">Notification Icon</string>
+    <string-array name="icon_pack_entries">
+        <item>None</item>
+    </string-array>
+
+    <string name="app_icon">App Icon</string>
+    <string-array name="notification_icon_entries">
+        <item>Notification Large Icon</item>
+        <item>Notification Monochrome Icon</item>
+        <item>App Icon (Coloured)</item>
+    </string-array>
+
+    <!-- Appearance new activity -->
+    <string name="title_section2">Notification</string>
+    <string name="title_section1">Clock</string>
+    <string name="title_activity_appearance">Widget Settings</string>
+    <string name="collapsed">Collapsed</string>
+    <string name="expanded">Expanded</string>
+
+    <string-array name="widget_mode_entries">
+        <item>Lock Screen Widget (Collapsed)</item>
+        <item>Lock Screen Widget (Expanded)</item>
+        <item>Home Screen Widget</item>
+    </string-array>
+
+    <string name="widget_mode_collapsed_desc">Widget Settings</string>
+    <string name="widget_mode_expanded_desc">Widget Settings</string>
+    <string name="widget_mode_home_desc">Widget Settings</string>
+
+    <!-- Appearance settings strings -->
+    <string name="title_demo_text">Notification Title</string>
+    <string name="title_appname_demo_text">Application Name</string>
+    <string name="text_demo_text">This is the notification text, it might get long and be truncated.</string>
+    <string name="content_demo_text">Notification Content</string>
+    <string name="content_expanded_demo_text">Notification Content Line 1\nNotification Content Line 2\nNotification Content Line 3\nNotification Content Line 4\nNotification Content Line 5\nNotification Content Line 6\nNotification Content Line 7\nNotification Content Line 8\n</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="bg_color">BG Color</string>
+    <string name="opacity">Opacity</string>
+    <string name="clock_color">Clock Color</string>
+    <string name="date_color">Date Color</string>
+    <string name="alarm_color">Alarm Color</string>
+    <string name="clickable">Clickable</string>
+    <string name="bold_hours">Bold Hours</string>
+    <string name="bold_minutes">Bold Minutes</string>
+    <string name="auto_switch_clock_size">Auto switch clock size</string>
+    <string name="show_clear_all_button">Show "Clear All" Button</string>
+    <string name="hide_clock">Hide Clock</string>
+    <string name="hide_notifications">Hide Notifications</string>
+    <string name="show_persistent">Show Persistent Notifications</string>
+    <string name="compact">Compact</string>
+    <string name="normal">Normal</string>
+    <string name="title_color">Title Color</string>
+    <string name="text_color">Text Color</string>
+    <string name="content_color">Content Color</string>
+    <string name="icon_menu">Icon Menu</string>
+    <string name="max_lines_">Max Lines:</string>
+    <string name="show_actionbar">Always Show App Action Buttons</string>
+    <string name="notification_action_1">Notification Action 1</string>
+    <string name="notification_action_2">Notification Action 2</string>
+    <string name="clear_notification">Clear Notification</string>
+    <string name="open_accessibility_settings">Open Accessibility Settings</string>
+    <string name="service">Global Settings</string>
+    <string name="widget">Widget Settings</string>
+    <string name="widget_is_not_present">Widget is not present.\nclick to learn how to add it.</string>
+    <string name="widget_is_present">Widget is present.\nclick to change settings.</string>
+    <string name="persistent_notifications_summary">Add/remove persistent notifications from NiLS widget</string>
+    <string name="app_specific_settings_summary">Change notifications settings for individual apps</string>
+    <string name="widget_help_no_ls_title">NiLS Widget Requires Android 4.2 and above</string>
+    <string name="widget_help_no_ls_subtitle">Lock screen widgets are supported on Android 4.2 and above</string>
+    <string name="widget_help_no_ls_body">You can\'t add NiLS widget to your lock screen unless you are using 3rd party lock screen app such as WidgetLocker.</string>
+    <string name="widget_help_title">How to add NiLS to the Lock Screen?</string>
+    <string name="widget_help_summary">Specific insrutctions might be different on variant devices.</string>
+    <string name="widget_help_text">Please refer to your device manual to learn how to add widgets to the lock screen</string>
+    <string name="widget_help_step_1_title">1. Enable lock screen widgets</string>
+    <string name="widget_help_step_1_body">Some devices require you to enable lock screen widgets.\nGo to device Security or Lock Screen settings and enable Lock Screen widgets.\nPlease note that Samsung S4 doesn\'t allow lock screen widgets when lock screen is secured with pin code or pattern lock, Samsung S5 doesn\'t support lock screen widgets at all</string>
+    <string name="widget_help_step_2_title">2. Lock your screen</string>
+    <string name="widget_help_step_2_body">Lock your screen manually using the device power button</string>
+    <string name="widget_help_step_3_title">3. Swipe to the right</string>
+    <string name="widget_help_step_3_body">Swipe the screen to the right, a \'+\' button will appear, click on it.</string>
+    <string name="widget_help_step_4_title">4. Add NiLS widget</string>
+    <string name="widget_help_step_4_body">Choose NiLS widget from the list. this will add it as your lock screen widget.</string>
+    <string name="widget_help_step_5_title">5. Make NiLS widget as primary</string>
+    <string name="widget_help_step_5_body">Expand NiLS widget by swiping it down, then drag it to the right to make it primary widget.\nPlease note that HTC one doesn\'t allow widgets to be on the primary lock screen page</string>
+    <string name="loading_title">Show All Apps</string>
+    <string name="loading_summary">Click to show all of the installed apps</string>
+    <string name="screenon_timeout">Keep screen on</string>
+    <string name="screenon_timeout_summary">Set number of seconds to keep the screen on. (the device may keep it longer)</string>
+    <string name="hide_clock_when_visible">Hide clock when visible</string>
+    <string name="hide_clock_when_visible_summary">Hide clock when the persistent notification is visible for this app</string>
+
+    <!-- NiLSPlus Integration -->
+    <string name="floating_panel">Notifications Panel</string>
+    <string name="open_android_settings">Open Android Settings</string>
+    <string name="tutorial_step_1_title">Enable NiLS Service</string>
+    <string name="whatsnew">What\'s new?</string>
+    <string name="accessibility_service_not_used_description"><![CDATA[This service is no longer used on Android 4.3 and above. Go to Android Settings > Security > Notifications Access and enable NiLS Service there instead.\]]></string>
+    <string name="drawer_open">drawer open</string>
+    <string name="drawer_close">drawer close</string>
+    <string name="sync">Sync</string>
+    <!--<string name="integration">Integration</string>-->
+    <string name="swipe_to_open">Swipe right to open</string>
+    <string name="swipe_to_open_summary">When enabled, swiping notification to the right will open the notification</string>
+    <string name="dont_hide">Always visible</string>
+    <string name="dont_hide_summary">Keep notifications list visible, even if you unlock the device.</string>
+
+    <!-- Appearance Settings -->
+    <string name="colors_and_transparency">Colors &amp; Transparency</string>
+    <string name="background_opacitiy">Background opacity</string>
+    <string name="auto_title_color">Auto Title Color</string>
+    <string name="auto_title_color_summary">Set title color automatically according to the app icon prominent color</string>
+    <string name="layout_and_alignment">Layout &amp; Alignment</string>
+    <string name="appearance_summary">Change appearance settings</string>
+
+    <string-array name="yalignment_entries">
+        <item>Top</item>
+        <item>Center</item>
+        <item>Bottom</item>
+    </string-array>
+    <string-array name="height_entries">
+        <item>1 Line</item>
+        <item>2 Lines</item>
+        <item>3 Lines</item>
+        <item>4 Lines</item>
+        <item>5 Lines</item>
+        <item>6 Lines</item>
+        <item>7 Lines</item>
+        <item>8 Lines</item>
+        <item>9 Lines</item>
+        <item>Unlimited</item>
+    </string-array>
+    <string-array name="font_size_entries">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <!-- About -->
+    <string name="about">About</string>
+
+    <!-- Interaction Settings -->
+    <string name="interaction">Interaction</string>
+    <string name="gestures">Gestures</string>
+    <string name="click_to_open">Click to open</string>
+    <string name="click_to_open_summary">When enabled, clicking on a notification will open it. when disabled, clicking on a notification will show a preview</string>
+    <string name="show_quick_reply_on_preview">Show "Quick Reply" box on preview mode</string>
+    <string name="show_quick_reply_on_preview_summary">(BETA) Whenever a quick reply is available, show a text box in the notification preview for faster replying</string>
+    <string name="unlock_on_open">Unlock on open</string>
+    <string name="unlock_on_open_summary">Unlocks device when notification is opened. (works only on stock lock screen without security enabled)</string>
+    <string name="continuous_reading_mode">Continuous reading mode</string>
+    <string name="continuous_reading_mode_summary">Show a preview of the next notification when the notification is dismissed in preview mode</string>
+    <string name="more_options">More Options</string>
+
+    <!-- Backup / Restore Settings -->
+    <string name="default_theme">Default</string>
+    <string name="halo_mode">Use Halo if supported</string>
+    <string name="halo_mode_summary">Open notification in Halo window if supported by the rom (doesn\'t work with native lock screen)</string>
+    <string name="preview_title">Notification Title</string>
+    <string name="preview_text">Notification Description Line 1\nNotification Description Line 2\nThe next lines will be empty</string>
+    <string name="hide_on_click">Hide on outside tap</string>
+    <string name="hide_on_click_summary">Hide notifications list when tapping outside of the notifications list</string>
+    <string name="notification_panel_settings">Floating Panel Settings</string>
+    <string name="icon_size">Icon Size</string>
+    <string name="title_font_size">Primary Font Size</string>
+    <string name="title_font_size_summary">Notification title font size</string>
+    <string name="text_font_size">Secondary Font Size</string>
+    <string name="text_font_size_summary">Notification text font size</string>
+    <string name="primary_text_color">Primary Text Color</string>
+    <string name="primary_text_color_summary">Notification title color</string>
+    <string name="secondary_text_color">Secondary Text Color</string>
+    <string name="secondary_text_color_summary">Notification text color</string>
+    <string name="background_color">Background Color</string>
+    <string name="background_color_summary"><![CDATA[Notification background color & transparency]]></string>
+    <string name="icon_background_color">Icon Background Color</string>
+    <string name="icon_background_color_summary"><![CDATA[Notification icon background color & transparency]]></string>
+    <string name="vertical_alignment">Vertical Alignment</string>
+    <string name="enable_resize_mode">Enable Resize Mode</string>
+    <string name="enable_resize_mode_summary">When enabled, touch and hold notifications list on the lock screen to change size and position</string>
+    <string name="theme">Theme</string>
+    <string name="sizes">Sizes</string>
+    <string name="notification_size">Notification Size</string>
+    <string name="notification_size_summary">Number of displayed text lines</string>
+    <string name="single_line_summary"><![CDATA[Show title & text in the same line]]></string>
+    <string name="single_line">Single line</string>
+    <string name="upgrade_failed_message">Upgrade has failed. you won\'t be charged. Error message:</string>
+    <string name="preview_time">12:34</string>
+    <string name="show_time">Show time</string>
+    <string name="show_time_summary">Show the time of the notification</string>
+    <string name="fit_height">Fit height to content</string>
+    <string name="fit_height_summary">Fit notification height to the text content</string>
+    <string name="opensource_software_used">Open Source Software</string>
+    <string name="unlock_all_features">Unlock all features</string>
+    <string name="unlock_all_features_dialog">
+<![CDATA[Purchase NiLS Premium to unlock all features including:
+\n- 3rd Party Themes
+\n- Background Color and Transparency
+\n- Font & Icon sizes
+\n- Multiple lines
+\n- Swipe right to open
+\nand many more...
+\n
+\nClick Purchase to get it now!]]>
+    </string>
+    <string name="purchase">Purchase</string>
+    <string name="later">Maybe Later</string>
+    <string name="swipe_down_to_dismiss_all">Swipe down to dismiss all</string>
+    <string name="swipe_down_to_dismiss_all_summary">Swipe the notifications list down to dismiss all of the notifications at once</string>
+    <string name="dont_show_again">Don\'t Show Again</string>
+
+    <!-- Themes -->
+    <string-array name="themes_entries">
+        <item>Default Theme</item>
+        <item>Get More Themes...</item>
+    </string-array>
+
+    <!-- Backup & Restore -->
+    <string name="backup_location_title">Backup file location:</string>
+    <string name="last_backup_title">Last backup:</string>
+    <string name="backup_comments_title">Please note:</string>
+    <string name="backup_comments_summary">The backup file will be deleted when you uninstall NiLS\n</string>
+    <string name="backup_restore">Backup / Restore</string>
+    <string name="backup_restore_summary">Backup or restore preferences</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
+    <string name="backup_summary">Backup settings to sd card</string>
+    <string name="restore_summary">Restore settings from sd card</string>
+    <string name="backup_success">NiLS settings were backed up succesfully to </string>
+    <string name="backup_failed">Failed to backup settings</string>
+    <string name="restore_success">Settings were restored successfully</string>
+    <string name="restore_failed">Failed to restore settings (is there a backup file?)</string>
+    <string name="backup_information">Backup Information</string>
+    <string name="not_available">N/A</string>
+
+    <!-- About -->
+    <string name="contact_us">Contact Us</string>
+    <string name="rate_the_app">Rate the app</string>
+    <string name="rate_the_app_summary">If you like the app, good rating and +1s are always welcome.</string>
+    <string name="rate_us_on_google_play">Rate us on Google Play</string>
+    <string name="rate_us_on_amazon">Rate us on Amazon App Store</string>
+    <string name="opensource_software_summary">NiLS uses the open source software below.\nMany thanks to those great developers.</string>
+    <string name="gpl_license_v2">Licensed under the GNU General Public License, v2</string>
+    <string name="apache_license_v2">Licensed under the Apache License, v2.0</string>
+    <string name="swipe_to_dismiss_list_view">DashClock - Swipe To Dismiss List View</string>
+    <string name="seekbar_preference">RoboBunny - SeekBar Preference</string>
+    <string name="colorpicker_preference">Margaritov - ColorPicker Preference</string>
+    <string name="debugging">Debug</string>
+    <string name="view_recent_log">View recent log</string>
+
+    <!-- Welcome Tutorial -->
+    <string name="show_welcome_tutorial">Show Welcome Tutorial</string>
+    <string name="tutorial_skip">Skip</string>
+    <string name="tutorial_next">Next</string>
+    <string name="tutorial_1_title_1">Welcome</string>
+    <string name="tutorial_1_text_1">NiLS brings you the best way to get and interact with notifications on your lock screen</string>
+    <string name="tutorial_1_lets_get_started">Let\'s Get Started!</string>
+    <string name="tutorial_2_title_1">Start NiLS Service</string>
+    <string name="tutorial_2_text_1">NiLS needs an access to your notifications</string>
+    <string name="tutorial_2_text_2">Go to Android settings and enable NiLS service to grant this access</string>
+    <string name="tutorial_2_text_3"><![CDATA[Hit the "Back" button on your device after enabling the service]]></string>
+    <string name="tutorial_2_open_android_settings">Open Android Settings</string>
+    <string name="tutorial_3_title_1">NiLS is Active</string>
+    <string name="tutorial_3_text_1">NiLS is now active. all upcoming notifications will appear on your lock screen</string>
+    <string name="tutorial_3_text_2">Swipe a notification to the left or to the right to dismiss it</string>
+    <string name="tutorial_3_text_3">Swipe the notifications list down to dismiss all of the notifications</string>
+    <string name="tutorial_4_title_1">Opening a Notification</string>
+    <string name="tutorial_4_text_1">Touch and hold the notification icon to see the available actions</string>
+    <string name="tutorial_4_text_2">Drag the dots circle to the rightmost action icon to open the notification</string>
+    <string name="tutorial_5_title_1">Moving and Resizing</string>
+    <string name="tutorial_5_text_1">Touch and hold the notifications list to move it, release to start resizing it</string>
+    <string name="tutorial_6_title_1">That\'s All</string>
+    <string name="tutorial_6_text_1"><![CDATA[Tap "Finish" to complete the tutorial, then tap on NiLS icon to get access to many options and customizations\n\nEnjoy the app!]]></string>
+    <string name="tutorial_6_finish">Finish</string>
+    <string name="enable_notifications_panel_text_1">NiLS v1.5 introduces a new and exciting way to get and interact with your notifications.</string>
+    <string name="enable_notifications_panel_text_2">Enable Notifications Panel to see notifications on top of your lock screen without using a widget and enjoy swiping gestures, rich appearance customizations, themes support and many more options.</string>
+    <string name="enable_notifications_panel_now">Enable Now</string>
+    <string name="enable_notifications_panel_later">Try it Later</string>
+
+    <!-- Other stuff -->
+    <string name="nils_service_is_not_running">NiLS Service is not running</string>
+    <string name="open_nils_to_enable_it">Open NiLS app to enable it</string>
+    <string name="notification_popup">Heads up (BETA)</string>
+    <string name="notification_popup_is_active">Heads up is active. a top banner will be displayed when a new notification arrives.</string>
+    <string name="notification_popup_is_inactive">Heads up is inactive. enable it to get a top banner whenever a new notification arrives.</string>
+    <string name="post_to_wear">Post to Android Wear</string>
+    <string name="post_to_wear_summary">Post notifications to Android Wear</string>
+    <string name="send_test_notification">Send a test notification</string>
+    <string name="send_test_notification_summary">Test if NiLS is configured and running correctly by sending a test notification.</string>
+    <string name="unlock_workaround">Device unlock workaround</string>
+    <string name="unlock_workaround_summary">Toggle this option if your device refuses to unlock when opening notifications</string>
+    <string name="title_activity_quick_reply">Quick Reply</string>
+    <string name="action_settings">Settings</string>
+    <string name="translations">Translations</string>
+    <string name="translations_summary">NiLS is translated by the users community using Crowdin.net</string>
+    <string name="crowdin">Join us on Crowdin</string>
+    <string name="crowdin_summary">Help translating NiLS by joining us on Crowdin</string>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <dimen name="widget_margin_top">8dp</dimen>
+    <dimen name="widget_margin_bottom">8dp</dimen>
+    <dimen name="widget_margin_left">8dp</dimen>
+    <dimen name="widget_margin_right">8dp</dimen>
+    <dimen name="min_expanded_height">200dp</dimen>
+    <dimen name="max_icon_size">96dp</dimen>
+
+    <!-- Card layout -->
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="preview_height">64dp</dimen>
+
+    <!-- NiLS FP -->
+    <dimen name="notification_min_height">24dp</dimen>
+    <dimen name="notification_default_row_height">48dp</dimen>
+    <dimen name="notification_default_icon_size">48dp</dimen>
+    <dimen name="notification_default_list_height">204dp</dimen>
+    <dimen name="notification_default_title_size">18sp</dimen>
+    <dimen name="notification_default_text_size">14sp</dimen>
+    <dimen name="notification_default_list_spacing">4dp</dimen>
+    <dimen name="notification_icon_size_large">64dp</dimen>
+    <dimen name="notification_icon_size_small">32dp</dimen>
+    <dimen name="big_picture_min_size">128dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+</resources>

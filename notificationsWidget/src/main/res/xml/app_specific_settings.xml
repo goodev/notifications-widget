@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:key="behavior" android:title="@string/behavior">
+        <ListPreference
+            android:title="@string/turnscreenon"
+            android:key="wakeup_mode"
+            android:defaultValue="when_not_covered"
+            android:entryValues="@array/wakeup_mode_values"
+            android:entries="@array/wakeup_mode_entries"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:key="notifications" android:title="@string/notifications">
+        <ListPreference android:key="notification_mode"
+                            android:title="@string/notification_mode"
+                            android:entries="@array/notification_modes_entries"
+                            android:entryValues="@array/notification_modes_values"
+                            android:defaultValue="separated"/>
+
+        <ListPreference android:key="notification_privacy"
+            android:title="@string/privacy"
+            android:entries="@array/privacy_entries"
+            android:entryValues="@array/privacy_values"
+            android:defaultValue="none"/>
+
+        <ListPreference android:key="notification_icon"
+            android:title="Notification icon"
+            android:entries="@array/notification_icon_entries"
+            android:entryValues="@array/notification_icon_values"
+            android:defaultValue="notification_icon"/>
+
+        <CheckBoxPreference android:key="retransmit"
+            android:title="@string/post_to_wear"
+            android:summary="@string/post_to_wear_summary"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+</PreferenceScreen>

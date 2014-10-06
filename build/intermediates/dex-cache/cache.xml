@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-4199d3d7611c796c7866f3a57cfae58ca71acc7c.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\NiLS.gradle\imageViewPlus\unspecified\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="81e50fbaf249eb6e55c17a3685249227b5b82c41"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-2a5cea70c556ffb457370bd2c032ddc4dee5f524.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0-rc1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7ae84435ebc95f67a3f5e511025e96caa8688da2"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-13b0dbaa3ead2dd50e45c9a0dd5e3953cfa57c94.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.0-rc1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="50ffbc8fda41e9cba4bca2f5267bdd9842325ab2"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-0a5e2c50e52e7d6d51855ac5747290d304573bd5.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\cardview-v7\21.0.0-rc1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="25c58e61f70a3d78e5c5abcfc9db0555fc869b7d"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-3803d665ff2a5ff54857c8eafd84dfef4620beed.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.viewpagerindicator\library\2.4.1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="88e8e18d365173ad04a543d76c157e0b644f0b3f"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\internal_impl-21.0.0-rc1-30594d8a209d36fc1cbbdf29d7c02bf9d4dfb52f.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0-rc1\libs\internal_impl-21.0.0-rc1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="d1a625e8a94bf7c73e0f9d30ad1b483ff6ea64e9"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\internal_impl-21.0.0-rc1-25319a3bae785b8466a112139751c53a8141db15.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.0-rc1\libs\internal_impl-21.0.0-rc1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="b274fcef3e31367c6b53c3ad56ff788783eb0f28"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-31a376113a7fa5e4a941f995294d6960a1e0e4f5.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\NiLS.gradle\colorPickerPreference\unspecified\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="984c0b85ce6ee15f7f0c2e124a0d213629ebd25f"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-7725c6a6ee9b55f7d8e7cd50c5f65f9060374321.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\21.0.0-rc1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="14d500eeb7128db6c0f9b55f166c42eacf00f3b6"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\classes-4592dd39041225da2c515e146e9dabb0cd35d429.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\exploded-aar\com.android.support\palette-v7\21.0.0-rc1\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="1e9669056e62fa7f81101be3a61e3c6c4fc6e7d7"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\in-app-purchasing-1.0.3-95db5caf97d6df5987e6908cecb576c6fb6fa20a.jar"
+        jar="D:\Development\NiLS.gradle\notificationsWidget\libs\in-app-purchasing-1.0.3.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="ca9e88dceea3fca64efebb73f55c1400cd2a63e5"/>
+    <item
+        dex="D:\Development\NiLS.gradle\notificationsWidget\build\intermediates\pre-dexed\google\debug\support-annotations-21.0.0-rc1-d3f96830dac8777cca7916245688d12cc8111295.jar"
+        jar="C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.0-rc1\support-annotations-21.0.0-rc1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="57c343f05b73b923bf2502b05851dbfe12193dcb"/>
+
+</pre-dex-items>

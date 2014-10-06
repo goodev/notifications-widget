@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:key="behavior" android:title="@string/behavior">
+        <ListPreference
+            android:title="@string/turnscreenon"
+            android:key="wakeup_mode"
+            android:entryValues="@array/wakeup_mode_values"
+            android:entries="@array/wakeup_mode_entries"
+            />
+        <ListPreference
+            android:title="@string/turnscreenoff"
+            android:key="turnscreenoff"
+            android:defaultValue="default"
+            android:entryValues="@array/turn_off_values"
+            android:entries="@array/turn_off_entries"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:key="notifications" android:title="@string/notifications">
+
+        <ListPreference android:key="notification_mode"
+                        android:title="@string/notification_mode"
+                        android:entries="@array/notification_modes_entries"
+                        android:entryValues="@array/notification_modes_values"
+                        android:defaultValue="separated"/>
+
+        <ListPreference android:key="notification_privacy"
+            android:title="@string/privacy"
+            android:entries="@array/privacy_entries"
+            android:entryValues="@array/privacy_values"
+            android:defaultValue="none"/>
+
+        <ListPreference android:key="notification_icon"
+            android:title="@string/notification_icon"
+            android:entries="@array/notification_icon_entries"
+            android:entryValues="@array/notification_icon_values"
+            android:defaultValue="notification_icon"/>
+
+        <ListPreference android:key="icon_pack"
+            android:title="@string/icon_pack"
+            android:entries="@array/icon_pack_entries"
+            android:entryValues="@array/icon_pack_values"
+            android:defaultValue="none"/>
+
+        <ListPreference android:dialogTitle="@string/order_notifications_by"
+            android:entries="@array/settings_orderby_entries"
+            android:entryValues="@array/settings_orderby_values"
+            android:title="@string/order_notifications_by"
+            android:key="order_notifications_by"
+            android:defaultValue="time"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/lock_screen">
+        <CheckBoxPreference
+            android:key="auto_detect_lock_screen_app"
+            android:title="@string/auto_detect_lock_screen"
+            android:summary="@string/current_lock_screen_app"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:key="sync" android:title="@string/sync">
+        <MultiSelectListPreference android:key="auto_clear"
+            android:title="@string/auto_clear_notifications"
+            android:entries="@array/auto_clear_entries"
+            android:entryValues="@array/auto_clear_values"
+            android:defaultValue="@array/auto_clear_default_values"/>
+
+        <CheckBoxPreference
+            android:title="@string/sync_back"
+            android:key="sync_back"
+            android:defaultValue="true"
+            android:summary="@string/sync_back_summary"/>
+
+        <CheckBoxPreference
+            android:title="@string/collectonunlock"
+            android:key="collectonunlock"
+            android:enabled="true"
+            android:defaultValue="true"
+            android:summary="@string/collectonunlock_summary"/>
+    </PreferenceCategory>
+</PreferenceScreen>

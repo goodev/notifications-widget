@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.QuickReply" parent="android:Theme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Button">Button</style>
+
+    <style name="Button.Wizard" parent="@android:style/Widget.DeviceDefault.Light.Button">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/item_selector_blue</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+    </style>
+
+    <style name="TextAppearance.WizardTitle" parent="android:TextAppearance.DeviceDefault.Large">
+        <item name="android:textColor">@drawable/card_title_color</item>
+        <item name="android:textSize">36dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="TextAppearance.WizardSubTitle" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="android:textColor">@drawable/card_text_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="TextAppearance.CardTitle" parent="android:TextAppearance.DeviceDefault.Large">
+        <item name="android:textColor">@drawable/card_title_color</item>
+    </style>
+
+    <style name="TextAppearance.CardSubTitle" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@drawable/card_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Text" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@drawable/card_text_color</item>
+    </style>
+
+</resources>

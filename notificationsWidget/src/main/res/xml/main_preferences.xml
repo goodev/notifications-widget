@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="nils_service"
+        android:title="@string/notifications_service"
+        android:summaryOn="@string/service_is_active"
+        android:summaryOff="@string/service_is_inactive"
+        android:defaultValue="false"
+        android:layout="@layout/card_switch_layout"
+        />
+
+    <CheckBoxPreference
+        android:key="fp_enabled"
+        android:title="@string/notification_panel"
+        android:summaryOn="@string/notification_panel_is_active"
+        android:summaryOff="@string/notification_panel_is_inactive"
+        android:defaultValue="false"
+        android:layout="@layout/card_switch_layout"
+        />
+
+    <CheckBoxPreference
+        android:key="popup_enabled"
+        android:title="@string/notification_popup"
+        android:summaryOn="@string/notification_popup_is_active"
+        android:summaryOff="@string/notification_popup_is_inactive"
+        android:defaultValue="false"
+        android:layout="@layout/card_switch_layout"
+        />
+
+    <CheckBoxPreference
+        android:key="auto_hide_service"
+        android:title="@string/auto_hide_service"
+        android:summaryOff="@string/auto_hide_is_inactive"
+        android:summaryOn="@string/auto_hide_is_active"
+        android:defaultValue="false"
+        android:layout="@layout/card_switch_layout"
+        />
+</PreferenceScreen>
