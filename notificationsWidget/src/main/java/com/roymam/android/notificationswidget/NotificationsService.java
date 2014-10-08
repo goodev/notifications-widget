@@ -351,13 +351,15 @@ public class NotificationsService extends Service implements NotificationsProvid
                 {
                     NotificationData oldnd = iter.next();
 
-                    // remove only if one of the following scenarios:
-                    // 1. notification mode is "grouped" and the notification has the same package (and same id on 4.3+)
-                    // 2. notification mode is "separated" and the notification is similar to the old one
-                    if (oldnd.packageName.equals(nd.packageName) &&
-                        (((oldnd.id == nd.id && (oldnd.tag == null && nd.tag == null || oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
-                         || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && (/*!nd.event || */notificationMode.equals(SettingsManager.MODE_GROUPED))) ||
-                          oldnd.isSimilar(nd, true)) {
+                    // remove old notifications in the following scenarios:
+                    if (oldnd.packageName.equals(nd.packageName) && // overall - must be the same package name
+                            // option 1 - notification has the same id and the same tag
+                            (((oldnd.id == nd.id && (oldnd.tag == null && nd.tag == null || oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
+                            // option 2 - the device is lower than 4.3 (no ids) and the notification mode is set to grouped
+                         || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && (notificationMode.equals(SettingsManager.MODE_GROUPED))) ||
+                            // option 3 - the notification is a detailed notification of the existing one
+                            oldnd.isSimilar(nd, true)
+                            )  {
                         nd.uid = oldnd.uid;
 
                         // if the notification is sideloaded, use the original id and tag
@@ -401,6 +403,19 @@ public class NotificationsService extends Service implements NotificationsProvid
                                 oldnd.id = nd.id;
                                 oldnd.tag = nd.tag;
                             }
+                        }
+                        else
+                        {
+                            // now check if the old one was created by the notifications service and the new one sideloaded,
+                            // if the new one sideloaded - delete the old one
+                            if (nd.sideLoaded && !oldnd.sideLoaded)
+                            {
+                                iter.remove();
+                                oldnd.cleanup();
+                            }
+                            // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
+                            else if (!nd.sideLoaded && oldnd.sideLoaded)
+                                ignoreNotification = true;
                         }
 
                         // protect the old one from being cleared on next purge command
