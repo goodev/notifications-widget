@@ -100,9 +100,7 @@ public class NotificationsListener extends NotificationListenerService
     @Override
     public void onNotificationPosted(StatusBarNotification sbn)
     {
-        Log.d(TAG,"onNotificationPosted package:"+sbn.getPackageName()+" id:" + sbn.getId());
-        String str = NotificationCompat.getExtras(sbn.getNotification()).getString("android.title");
-        Log.d(TAG, "title:"+str);
+        Log.d(TAG,"onNotificationPosted package:"+sbn.getPackageName()+" id:" + sbn.getId() + " tag:" + sbn.getTag());
 
         if (!mBound)
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
@@ -115,7 +113,7 @@ public class NotificationsListener extends NotificationListenerService
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn)
     {
-        Log.d(TAG,"onNotificationRemoved package:"+sbn.getPackageName()+" id:" + sbn.getId());
+        Log.d(TAG,"onNotificationRemoved package:"+sbn.getPackageName()+" id:" + sbn.getId()+ " tag:" + sbn.getTag());
 
         if (!mBound)
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");

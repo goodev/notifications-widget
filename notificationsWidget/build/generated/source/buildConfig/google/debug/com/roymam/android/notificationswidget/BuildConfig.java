@@ -8,6 +8,6 @@ public final class BuildConfig {
   public static final String PACKAGE_NAME = "com.roymam.android.notificationswidget.debug";
   public static final String BUILD_TYPE = "debug";
   public static final String FLAVOR = "google";
-  public static final int VERSION_CODE = 445;
-  public static final String VERSION_NAME = "1.5.2.445.debug";
+  public static final int VERSION_CODE = 446;
+  public static final String VERSION_NAME = "1.5.2.446.debug";
 }
