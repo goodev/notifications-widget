@@ -329,7 +329,7 @@ public class NotificationsService extends Service implements NotificationsProvid
         if (viewManager != null && refresh) viewManager.saveNotificationsState();
         if (nd != null)
         {
-            Log.d(TAG,"NotificationsService:addNotification " + nd.packageName + ":" + nd.id);
+            Log.d(TAG,"NotificationsService:addNotification " + nd.packageName + ":" + nd.id + " tag:"+nd.tag);
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String notificationMode = SettingsManager.getNotificationMode(getApplicationContext(), nd.packageName);
@@ -351,45 +351,43 @@ public class NotificationsService extends Service implements NotificationsProvid
                 {
                     NotificationData oldnd = iter.next();
 
-                    // remove old notifications in the following scenarios:
-                    if (oldnd.packageName.equals(nd.packageName) && // overall - must be the same package name
-                            // option 1 - notification has the same id and the same tag
-                            (((oldnd.id == nd.id && (oldnd.tag == null && nd.tag == null || oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
-                            // option 2 - the device is lower than 4.3 (no ids) and the notification mode is set to grouped
-                         || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && (notificationMode.equals(SettingsManager.MODE_GROUPED))) ||
-                            // option 3 - the notification is a detailed notification of the existing one
-                            oldnd.isSimilar(nd, true)
-                            )  {
-                        nd.uid = oldnd.uid;
-
-                        // if the notification is sideloaded, use the original id and tag
-                        if (nd.sideLoaded) {
-                            nd.id = oldnd.id;
-                            nd.tag = oldnd.tag;
-                        }
-
-                        if (oldnd.isDeleted() && ignoreRepeating)
-                        {
-                            Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
-                            nd.delete();
-                        }
-
-                        // protect it from being cleared on next purge command
-                        nd.protect = true;
-
-                        iter.remove();
-                        oldnd.cleanup();
-                        updated = true;
-                        changed = !oldnd.isEqual(nd);
-
-                        // if it is exact the same notification - keep old received time
-                        if (!changed) nd.received = oldnd.received;
-
-                        break;
-                    } else // check if the old notification is a duplicate of the current but contains more data than the current - if so - ignore the new one
+                    // must be the same package name to proceed with other checks
+                    if (oldnd.packageName.equals(nd.packageName))
                     {
-                        if (nd.isSimilar(oldnd, false))
-                        {
+                          // check if it is an extension for a current notification
+                          if (// option 1 - notification has the same id and the same tag
+                             (((oldnd.id == nd.id &&
+                               nd.sideLoaded == oldnd.sideLoaded &&
+                               (oldnd.tag == null && nd.tag == null ||
+                                oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
+                              // option 2 - the device is lower than 4.3 (no ids) and the notification mode is set to grouped
+                              || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && (notificationMode.equals(SettingsManager.MODE_GROUPED)))
+                              // option 3 - the notification is a detailed notification of the existing one
+                              ||   oldnd.isSimilar(nd, true))  {
+                            Log.d(TAG, "(update or extension)");
+                            nd.uid = oldnd.uid;
+
+                            if (oldnd.isDeleted() && ignoreRepeating)
+                            {
+                                Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
+                                nd.delete();
+                            }
+
+                            // protect it from being cleared on next purge command
+                            nd.protect = true;
+
+                            iter.remove();
+                            oldnd.cleanup();
+                            updated = true;
+                            changed = !oldnd.isEqual(nd);
+
+                            // if it is exact the same notification - keep old received time
+                            if (!changed) nd.received = oldnd.received;
+
+                            break;
+                        } else if (nd.isSimilar(oldnd, false)) {
+                            // check if the old notification is a duplicate of the current but contains more data than the current - if so - ignore the new one
+                            Log.d(TAG, "(ignoring - there is already more detailed notification)");
                             ignoreNotification = true;
                             updated = false;
 
@@ -403,23 +401,22 @@ public class NotificationsService extends Service implements NotificationsProvid
                                 oldnd.id = nd.id;
                                 oldnd.tag = nd.tag;
                             }
-                        }
-                        else
-                        {
+                        } else if (nd.sideLoaded && !oldnd.sideLoaded) {
                             // now check if the old one was created by the notifications service and the new one sideloaded,
                             // if the new one sideloaded - delete the old one
-                            if (nd.sideLoaded && !oldnd.sideLoaded)
-                            {
-                                iter.remove();
-                                oldnd.cleanup();
-                            }
-                            // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
-                            else if (!nd.sideLoaded && oldnd.sideLoaded)
-                                ignoreNotification = true;
+                            Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
+                            iter.remove();
+                            oldnd.cleanup();
+                        } else if (!nd.sideLoaded && oldnd.sideLoaded) {
+                             // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
+                             Log.d(TAG, "(there is already sideloaded notification for this app, ignoring this)");
+                             ignoreNotification = true;
                         }
 
-                        // protect the old one from being cleared on next purge command
-                        oldnd.protect = true;
+                        if (ignoreNotification) {
+                            // protect the old one from being cleared on next purge command
+                            oldnd.protect = true;
+                        }
                     }
                 }
 
@@ -455,7 +452,7 @@ public class NotificationsService extends Service implements NotificationsProvid
     {
         if (pn != null)
         {
-            Log.d(TAG,"NotificationsService:addPersistentNotification " + pn.packageName);
+            //Log.d(TAG,"NotificationsService:addPersistentNotification " + pn.packageName);
 
             persistentNotifications.put(pn.packageName, pn);
             if (listener != null) listener.onPersistentNotificationAdded(pn);
@@ -467,7 +464,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     private void removeNotification(String packageName, int id, String tag, boolean logical)
     {
-        Log.d(TAG,"NotificationsService:removeNotification  " + packageName + ":" + id);
+        Log.d(TAG,"NotificationsService:removeNotification  " + packageName + ":" + id + " tag:" + tag);
         boolean sync = SettingsManager.shouldClearWhenClearedFromNotificationsBar(getApplicationContext());
         boolean ignoreRepeating = SettingsManager.getBoolean(context, packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
 
@@ -1203,7 +1200,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                     AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
                     if (checkLockScreenPendingIntent != null)
                     {
-                        Log.d(TAG, "screen is off, stop monitoring for foreground app");
+                        Log.d(TAG, "[screen] screen is off, stop monitoring for foreground app");
                         am.cancel(checkLockScreenPendingIntent);
                         checkLockScreenPendingIntent = null;
                     }
@@ -1211,7 +1208,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                 else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
                 {
                     boolean accessibilityServiceIsActive = NiLSAccessibilityService.isServiceRunning(context);
-                    Log.d(TAG, "ACTION_SCREEN_ON - auto detecting lock screen app");
+                    Log.d(TAG, "[screen] ACTION_SCREEN_ON - auto detecting lock screen app");
 
                     // if the accessibility service is not running start monitoring the active app
                     if (!accessibilityServiceIsActive) {
@@ -1222,7 +1219,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                         if (shouldHideNotifications(false)) {
                             hide(false);
                             // send a broadcast the device is unlocked and hide notifications list immediately
-                            Log.d(TAG, "accessibility service is not active and shouldHideNotifications returned true - sending unlocked event");
+                            Log.d(TAG, "[screen] accessibility service is not active and shouldHideNotifications returned true - sending unlocked event");
                             sendBroadcast(new Intent(DEVICE_UNLOCKED));
                         } else {
                             viewManager.refreshLayout(false);
