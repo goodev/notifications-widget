@@ -68,7 +68,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
 
     @Override
     public void notify(String packageName, int id, String tag, Notification notification) {
-        Log.d(TAG, "notify: packageName:"+packageName+ " id:"+id + " tag" + tag);
+        Log.d(TAG, "notify: packageName:"+packageName+ " id:"+id + " tag:" + tag);
         if (!mBound)
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
         else {
@@ -83,7 +83,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
         if (!mBound)
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
         else {
-            mService.onNotificationRemoved(null, packageName, id, null);
+            mService.onNotificationRemoved(null, packageName, id, tag);
         }
     }
 
