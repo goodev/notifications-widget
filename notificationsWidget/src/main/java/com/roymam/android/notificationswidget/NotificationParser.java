@@ -664,6 +664,17 @@ public class NotificationParser
                 text = notificationStrings.get(2131558657);
             }
 
+            // Flickr text
+            if (notificationStrings.containsKey(2131362541))
+            {
+                title = notificationStrings.get(2131362541);
+            }
+
+            if (notificationStrings.containsKey(2131362543))
+            {
+                text = notificationStrings.get(2131362543);
+            }
+
             // get title string if available
             if (notificationStrings.containsKey(notification_title_id))
             {
