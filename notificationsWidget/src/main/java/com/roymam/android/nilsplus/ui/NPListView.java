@@ -112,7 +112,7 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         mMaxSize = size;
 
         // re-set divider
-        if (mTheme.divider != null)
+        if (mTheme != null && mTheme.divider != null)
         {
             InsetDrawable divider = new InsetDrawable(mTheme.divider, leftMargin, 0, rightMargin, 0);
             listView.setDivider(divider);
