@@ -269,6 +269,7 @@ public class SettingsManager
     public static final String PRIVACY_SHOW_TICKER_ONLY = "show_ticker";
     public static final String PRIVACY_SHOW_APPNAME_ONLY = "show_appname";
     public static final String PRIVACY_SHOW_ALL = "none";
+    public static final String PRIVACY_NO_INTERACTION = "no_interaction";
     public static final String DEFAULT_NOTIFICATION_PRIVACY = PRIVACY_SHOW_ALL;
     public static final String IMMEDIATE_PROXIMITY = "immediate_proximity";
     public static final boolean DEFAULT_POPUP_ENABLED = false;

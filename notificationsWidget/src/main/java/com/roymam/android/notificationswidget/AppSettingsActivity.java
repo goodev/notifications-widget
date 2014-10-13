@@ -42,10 +42,11 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AppSettingsActivity.this);
 
         // remove all app specific settings
+        SharedPreferences.Editor prefsEdit = prefs.edit();
         for(String key : APP_SPECIFIC_SETTINGS_KEYS)
-            prefs.edit().remove(packageName + "." + key);
+            prefsEdit.remove(packageName + "." + key);
 
-        prefs.edit().commit();
+        prefsEdit.commit();
 
         removeAppFromAppSpecificSettings(packageName, AppSettingsActivity.this);
         finish();

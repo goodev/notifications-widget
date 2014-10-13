@@ -87,13 +87,10 @@ public class NotificationParser
     }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, boolean sideLoaded)
-    {
-        if (n != null)
-        {
+    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, boolean sideLoaded) {
+        if (n != null) {
             // handle only dismissable notifications
-            if (!isPersistent(n, packageName) && !shouldIgnore(n, packageName))
-            {
+            if (!isPersistent(n, packageName) && !shouldIgnore(n, packageName)) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 NotificationCompat.WearableExtender wo = LegacyNotificationUtil.getWearableOptions(n);
 
@@ -106,36 +103,30 @@ public class NotificationParser
                 Resources res;
                 PackageInfo info;
                 ApplicationInfo ai;
-                try
-                {
+                try {
                     res = context.getPackageManager().getResourcesForApplication(packageName);
-                    info = context.getPackageManager().getPackageInfo(packageName,0);
-                    ai = context.getPackageManager().getApplicationInfo(packageName,0);
-                }
-                catch(PackageManager.NameNotFoundException e)
-                {
+                    info = context.getPackageManager().getPackageInfo(packageName, 0);
+                    ai = context.getPackageManager().getApplicationInfo(packageName, 0);
+                } catch (PackageManager.NameNotFoundException e) {
                     info = null;
                     res = null;
                     ai = null;
                 }
 
                 String notificationIcon = sharedPref.getString(packageName + "." + SettingsManager.NOTIFICATION_ICON,
-                                        sharedPref.getString(SettingsManager.NOTIFICATION_ICON, SettingsManager.DEFAULT_NOTIFICATION_ICON));
+                        sharedPref.getString(SettingsManager.NOTIFICATION_ICON, SettingsManager.DEFAULT_NOTIFICATION_ICON));
 
-                if (res != null && info != null)
-                {
+                if (res != null && info != null) {
                     Bitmap packageIcon = BitmapCache.getInstance(context).getBitmap(packageName, info.applicationInfo.icon);
                     String iconPack = sharedPref.getString(SettingsManager.ICON_PACK, SettingsManager.DEFAULT_ICON_PACK);
-                    if (!iconPack.equals(SettingsManager.DEFAULT_ICON_PACK))
-                    {
+                    if (!iconPack.equals(SettingsManager.DEFAULT_ICON_PACK)) {
                         // load app icon from icon pack
                         IconPackManager.IconPack ip = IconPackManager.getInstance(context).getAvailableIconPacks(false).get(iconPack);
                         if (ip != null)
                             packageIcon = ip.getIconForPackage(packageName, packageIcon);
                     }
 
-                    if (packageIcon != null)
-                    {
+                    if (packageIcon != null) {
                         Palette p = Palette.generate(packageIcon);
                         if (p.getVibrantColor() != null)
                             nd.appColor = p.getVibrantColor().getRgb();
@@ -143,40 +134,32 @@ public class NotificationParser
                             nd.appColor = 0;
                     }
                     nd.appicon = BitmapCache.getInstance(context).getBitmap(packageName, n.icon);
-                    if (notificationIcon.equals(SettingsManager.NOTIFICATION_MONO_ICON))
-                    {
+                    if (notificationIcon.equals(SettingsManager.NOTIFICATION_MONO_ICON)) {
                         nd.icon = nd.appicon;
-                    }
-                    else
-                    {
+                    } else {
                         nd.icon = packageIcon;
                     }
 
-                    if (nd.appicon == null)
-                    {
+                    if (nd.appicon == null) {
                         nd.appicon = nd.icon;
                     }
                 }
-                if (n.largeIcon != null && notificationIcon.equals(SettingsManager.NOTIFICATION_ICON))
-                {
+                if (n.largeIcon != null && notificationIcon.equals(SettingsManager.NOTIFICATION_ICON)) {
                     nd.icon = n.largeIcon;
                 }
                 nd.largeIcon = n.largeIcon;
 
                 // if the icon is too large - resize it to smaller size
-                if (nd.icon != null && (nd.icon.getWidth() > maxIconSize || nd.icon.getHeight() > maxIconSize))
-                {
+                if (nd.icon != null && (nd.icon.getWidth() > maxIconSize || nd.icon.getHeight() > maxIconSize)) {
                     nd.icon = Bitmap.createScaledBitmap(nd.icon, (int) maxIconSize, (int) maxIconSize, true);
                 }
 
-                if (nd.appicon != null && (nd.appicon.getWidth() > maxIconSize || nd.appicon.getHeight() > maxIconSize))
-                {
+                if (nd.appicon != null && (nd.appicon.getWidth() > maxIconSize || nd.appicon.getHeight() > maxIconSize)) {
                     nd.appicon = Bitmap.createScaledBitmap(nd.appicon, (int) maxIconSize, (int) maxIconSize, true);
                 }
 
                 // get wearable background icon if available
-                if (wo != null && wo.getBackground() != null && nd.largeIcon == null && notificationIcon.equals(SettingsManager.NOTIFICATION_ICON))
-                {
+                if (wo != null && wo.getBackground() != null && nd.largeIcon == null && notificationIcon.equals(SettingsManager.NOTIFICATION_ICON)) {
                     nd.icon = wo.getBackground();
                     nd.largeIcon = nd.icon;
                 }
@@ -191,41 +174,40 @@ public class NotificationParser
                 nd.count = 1;
                 nd.packageName = packageName;
 
-                // if possible - try to extract actions from expanded notification
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    nd.actions = getActionsFromNotification(context, n, packageName);
-                }
-
                 // extract expanded text
                 nd.text = null;
                 nd.title = null;
                 String privacy = SettingsManager.getPrivacy(context, packageName);
-                if (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))
-                {
-                    getExpandedText(n,nd);
+
+                // if possible - try to extract actions from expanded notification
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
+                        privacy.equals(SettingsManager.PRIVACY_SHOW_ALL)) {
+                    nd.actions = getActionsFromNotification(context, n, packageName);
+                }
+
+                if (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) ||
+                        privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) ||
+                        privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY)) {
+                    getExpandedText(n, nd);
                     // replace text with content if no text
                     if (nd.text == null || nd.text.equals("") &&
-                            nd.content != null && !nd.content.equals(""))
-                    {
+                            nd.content != null && !nd.content.equals("")) {
                         nd.text = nd.content;
                         nd.content = null;
                     }
                     // keep only text if it's duplicated
-                    if (nd.text != null && nd.content != null && nd.text.toString().equals(nd.content.toString()))
-                    {
+                    if (nd.text != null && nd.content != null && nd.text.toString().equals(nd.content.toString())) {
                         nd.content = null;
                     }
 
-                    if (nd.title == null && nd.text == null)
-                    {
+                    if (nd.title == null && nd.text == null) {
                         Log.d(TAG, "missing text from:" + packageName);
                         printStringsFromNotification();
                     }
 
                     // try to get additional text from wear pages
-                    if (wo.getPages() != null && wo.getPages().size() > 0)
-                    {
+                    if (wo.getPages() != null && wo.getPages().size() > 0 &&
+                            (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION))) {
                         // extract the second page details
                         Notification page = wo.getPages().get(0);
                         nd.additionalText = NotificationCompat.getExtras(page).getCharSequence("android.text");
@@ -236,121 +218,105 @@ public class NotificationParser
                         nd.text = "";
                 }
 
-                    // use default notification text & title - if no info found on expanded notification
-                    if (nd.text == null)
-                    {
-                        if (privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY))
-                            nd.text = "";
-                        else
-                            nd.text = n.tickerText;
-                    }
+                // use default notification text & title - if no info found on expanded notification
+                if (nd.text == null) {
+                    if (privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY))
+                        nd.text = "";
+                    else
+                        nd.text = n.tickerText;
+                }
 
-                    if (nd.title == null)
-                    {
-                        if (info != null)
-                            nd.title = context.getPackageManager().getApplicationLabel(ai);
-                        else
-                            nd.title = packageName;
+                if (nd.title == null) {
+                    if (info != null)
+                        nd.title = context.getPackageManager().getApplicationLabel(ai);
+                    else
+                        nd.title = packageName;
 
-                        if (nd.text == null)
-                        {
-                            // if both text and title are null - that's non informative notification - ignore it
-                            Log.d(TAG, "ignoring notification with empty title & text from :" + packageName);
-                            printStringsFromNotification();
-                            return new ArrayList<NotificationData>();
-                        }
-                    }
-                    else if (nd.text == null)
-                    {
+                    if (nd.text == null) {
                         // if both text and title are null - that's non informative notification - ignore it
-                        Log.d(TAG, "a notification with no text from:" + packageName);
+                        Log.d(TAG, "ignoring notification with empty title & text from :" + packageName);
                         printStringsFromNotification();
-                    }
-
-                    if (nd.text != null) removeTimePrefix(nd);
-
-                    nd.id = notificationId;
-                    nd.tag = tag;
-
-                    // check if this notifications belong to a group of notifications
-                    nd.group = NotificationCompat.getGroup(n);
-                    nd.groupOrder = NotificationCompat.getSortKey(n);
-
-                    if (nd.group != null)
-                    {
-                        Log.d(TAG, "notification has a group:" + nd.group + " with group order:" + nd.groupOrder);
-                    }
-                    else
-                    if (nd.group == null)
-                    {
-                        Log.d(TAG, "notification doesn't have a group, trying to get from extras.");
-                        Bundle localBundle = NotificationCompat.getExtras(n);
-                        if (localBundle != null) {
-                            if (localBundle.getString("android.support.wearable.groupKey") != null) {
-                                nd.group = localBundle.getString("android.support.wearable.groupKey");
-                                int groupOrder = localBundle.getInt("android.support.wearable.groupOrder");
-                                nd.groupOrder = String.format("%010d", groupOrder + 2147483648L);
-                                Log.d(TAG, "notification has a group:" + nd.group + " with group order:" + nd.groupOrder);
-                            }
-                            if (localBundle.getString("com.google.android.wearable.stream.CREATOR_NODE_ID") != null)
-                            {
-                                Log.d(TAG, "notification has a creator node id:" + localBundle.getString("com.google.android.wearable.stream.CREATOR_NODE_ID"));
-                            }
-                        }
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    {
-                        nd.priority = getPriority(n);
-                    }
-                    else
-                    {
-                        nd.priority = 0;
-                    }
-                    int apppriority = Integer.parseInt(sharedPref.getString(nd.packageName+"."+AppSettingsActivity.APP_PRIORITY, "-9"));
-                    if (apppriority != -9) nd.priority = apppriority;
-
-                    nd.sideLoaded = sideLoaded;
-
-                    // check if this is a multiple events notification
-                    String notificationMode = SettingsManager.getNotificationMode(context, packageName);
-
-                    List<NotificationData> notifications = new ArrayList<NotificationData>();
-                    notifications.add(nd);
-
-                    // ignore group individual events if notification mode is set to show grouped only
-                    if (notificationMode.equals(SettingsManager.MODE_GROUPED))
-                    {
-                        // if the notification is a part of a group - don't show it on grouped mode
-                        if (nd.sideLoaded) {
-                            Log.d(TAG, "ignoring sideloaded notification packageName:"+packageName+ "id:"+nd.id+ " notification mode is grouped and this a single group item");
-                            return new ArrayList<NotificationData>();
-                        }
-                    }
-                    // ignore summary group if setting is set to separated
-                    else if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
-                            nd.group != null && nd.groupOrder == null && !nd.sideLoaded && NotificationCompat.isGroupSummary(n) &&
-                            n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId)
-                    {
-                        // storing the notification so it can be used to dismiss from Android notifications bar
-                        NotificationsService.getSharedInstance().groupedNotifications.put(packageName, nd);
-
-                        // ignoring it so it won't appear on NiLS
-                        Log.d(TAG, "ignoring original notification packageName:"+packageName+ "id:"+nd.id+ " notification mode is separated and this a group summary");
                         return new ArrayList<NotificationData>();
                     }
-                    // if no group info found and it still has a bigcontentview try to extract individual events from the summary
-                    else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
-                             n.bigContentView != null &&
-                            (n.bigContentView.getLayoutId() == mInboxLayoutId || packageName.equals("com.whatsapp")) &&
-                            (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY)))
-                    {
-                        List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(n.bigContentView, nd);
-                        // make sure we've at least one notification
-                        if (separatedNotifications.size() > 0) notifications = separatedNotifications;
-                    }
-                    return notifications;
+                } else if (nd.text == null) {
+                    // if both text and title are null - that's non informative notification - ignore it
+                    Log.d(TAG, "a notification with no text from:" + packageName);
+                    printStringsFromNotification();
                 }
+
+                if (nd.text != null) removeTimePrefix(nd);
+
+                nd.id = notificationId;
+                nd.tag = tag;
+
+                // check if this notifications belong to a group of notifications
+                nd.group = NotificationCompat.getGroup(n);
+                nd.groupOrder = NotificationCompat.getSortKey(n);
+
+                if (nd.group != null) {
+                    Log.d(TAG, "notification has a group:" + nd.group + " with group order:" + nd.groupOrder);
+                } else if (nd.group == null) {
+                    Log.d(TAG, "notification doesn't have a group, trying to get from extras.");
+                    Bundle localBundle = NotificationCompat.getExtras(n);
+                    if (localBundle != null) {
+                        if (localBundle.getString("android.support.wearable.groupKey") != null) {
+                            nd.group = localBundle.getString("android.support.wearable.groupKey");
+                            int groupOrder = localBundle.getInt("android.support.wearable.groupOrder");
+                            nd.groupOrder = String.format("%010d", groupOrder + 2147483648L);
+                            Log.d(TAG, "notification has a group:" + nd.group + " with group order:" + nd.groupOrder);
+                        }
+                        if (localBundle.getString("com.google.android.wearable.stream.CREATOR_NODE_ID") != null) {
+                            Log.d(TAG, "notification has a creator node id:" + localBundle.getString("com.google.android.wearable.stream.CREATOR_NODE_ID"));
+                        }
+                    }
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    nd.priority = getPriority(n);
+                } else {
+                    nd.priority = 0;
+                }
+                int apppriority = Integer.parseInt(sharedPref.getString(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY, "-9"));
+                if (apppriority != -9) nd.priority = apppriority;
+
+                nd.sideLoaded = sideLoaded;
+
+                // check if this is a multiple events notification
+                String notificationMode = SettingsManager.getNotificationMode(context, packageName);
+
+                List<NotificationData> notifications = new ArrayList<NotificationData>();
+                notifications.add(nd);
+
+                // ignore group individual events if notification mode is set to show grouped only
+                if (notificationMode.equals(SettingsManager.MODE_GROUPED)) {
+                    // if the notification is a part of a group - don't show it on grouped mode
+                    if (nd.sideLoaded) {
+                        Log.d(TAG, "ignoring sideloaded notification packageName:" + packageName + "id:" + nd.id + " notification mode is grouped and this a single group item");
+                        return new ArrayList<NotificationData>();
+                    }
+                }
+                // ignore summary group if setting is set to separated
+                else if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
+                        nd.group != null && nd.groupOrder == null && !nd.sideLoaded && NotificationCompat.isGroupSummary(n) &&
+                        n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) {
+                    // storing the notification so it can be used to dismiss from Android notifications bar
+                    NotificationsService.getSharedInstance().groupedNotifications.put(packageName, nd);
+
+                    // ignoring it so it won't appear on NiLS
+                    Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is separated and this a group summary");
+                    return new ArrayList<NotificationData>();
+                }
+                // if no group info found and it still has a bigcontentview try to extract individual events from the summary
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
+                        n.bigContentView != null &&
+                        (n.bigContentView.getLayoutId() == mInboxLayoutId || packageName.equals("com.whatsapp")) &&
+                        (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
+                    List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(n.bigContentView, nd);
+                    // make sure we've at least one notification
+                    if (separatedNotifications.size() > 0) notifications = separatedNotifications;
+                }
+                return notifications;
+            }
         }
         return new ArrayList<NotificationData>();
     }
@@ -530,6 +496,7 @@ public class NotificationParser
     // extract actions from notification
     private NotificationData.Action[] getActionsFromNotification(Context context, Notification n, String packageName)
     {
+        Log.d(TAG, String.format("getActionsFromNotification(packageName:%s)", packageName));
         ArrayList<NotificationData.Action> returnActions = new ArrayList<NotificationData.Action>();
         try
         {
@@ -553,6 +520,7 @@ public class NotificationParser
                     // find drawable
                     // extract app icons
                     a.drawable = BitmapCache.getInstance(context).getBitmap(packageName, a.icon);
+                    Log.d(TAG, String.format("title:%s (no remote inputs)", a.title));
                     returnActions.add(a);
                 }
             }
@@ -572,6 +540,7 @@ public class NotificationParser
             a2.title = a.title;
             a2.drawable = BitmapCache.getInstance(context).getBitmap(packageName, a.icon);
             a2.remoteInputs = a.getRemoteInputs();
+            Log.d(TAG, String.format("title:%s remoteInputs:%s", a.title, a2.remoteInputs));
             returnActions.add(a2);
         }
 

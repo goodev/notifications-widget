@@ -67,6 +67,7 @@
     <!-- Privacy Options -->
     <string name="privacy">Privacy</string>
     <string name="privacy_none">None</string>
+    <string name="privacy_no_interaction">Do not allow interaction</string>
     <string name="privacy_show_title">Show title only</string>
     <string name="privacy_show_ticker">Show status bar text only</string>
     <string name="privacy_show_appname">Show app name only</string>

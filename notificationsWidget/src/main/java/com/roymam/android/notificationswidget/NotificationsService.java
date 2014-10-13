@@ -388,11 +388,26 @@ public class NotificationsService extends Service implements NotificationsProvid
                               // if the new one sideloaded - delete the old one
                               Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
                               Log.d(TAG, "actions in original:" + oldnd.actions.length + " actions in sideloaded:" + nd.actions.length);
+                              // TODO: find a cleaner solution for this issue (8sms quick reply)
+                              if (oldnd.actions != null &&
+                                      (
+                                              nd.actions != null && oldnd.actions.length > nd.actions.length ||
+                                              nd.actions == null
+                                      ))
+                                  nd.actions = oldnd.actions;
                               iter.remove();
                               oldnd.cleanup();
                           } else if (!nd.sideLoaded && oldnd.sideLoaded) {
                               // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
                               Log.d(TAG, "(there is already sideloaded notification for this app, ignoring this)");
+                              Log.d(TAG, "actions in sideloaded:" + oldnd.actions.length + " actions in this:" + nd.actions.length);
+                              // TODO: find a cleaner solution for this issue (8sms quick reply)
+                              if (nd.actions != null &&
+                                      (
+                                              oldnd.actions != null && nd.actions.length > oldnd.actions.length ||
+                                                      oldnd.actions == null
+                                      ))
+                                  oldnd.actions = nd.actions;
                               ignoreNotification = true;
                           } else if (oldnd.isSimilar(nd, true)) {
                               // the notification is a detailed notification of the existing one
@@ -494,6 +509,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                     (groupedNotifications.get(packageName).tag == null && tag == null ||
                      groupedNotifications.get(packageName).tag != null && tag != null && groupedNotifications.get(packageName).tag.equals(tag));
 
+            //Log.d(TAG, "isGrouped:"+isGrouped+" groupHasKey:"+groupedNotifications.containsKey(packageName));
             ArrayList<NotificationData> clearedNotifications = new ArrayList<NotificationData>();
 
             // find the notification and remove it
@@ -509,28 +525,21 @@ public class NotificationsService extends Service implements NotificationsProvid
                             (isGrouped ||
                                 (nd.id == id && (nd.tag == null && tag == null ||
                                                  nd.tag != null && tag != null && nd.tag.equals(tag)))) && !nd.pinned) {
-                        // mark as delete if it's part of multiple events notification
-                        if (logical && (nd.event || isGrouped)) {
-                            // mark notification as cleared
-                            if (!nd.isDeleted() && ignoreRepeating)
-                            {
+                        // make sure it hasn't been deleted previously by the user
+                        if (!nd.isDeleted()) {
+                            if (logical && ignoreRepeating)
+                                // mark notification as cleared
                                 nd.delete();
-                                cleared = true;
+                            else // immediately remove notification
+                                iter.remove();
 
-                                // notify that the notification was cleared
-                                clearedNotifications.add(nd);
-                            }
-                        } else if (!nd.isDeleted()) // make sure it hasn't been deleted previously by the user
-                        {
-                            // immediately remove notification
-                            iter.remove();
                             cleared = true;
 
                             // notify that the notification was cleared
                             clearedNotifications.add(nd);
                         }
 
-                        // do not stop loop - keep looping to clear all of the notifications with the same id
+                        // do not stop loop - keep looping to clear all of the notifications with the same id or belongs to the same group
                     }
                 }
             }

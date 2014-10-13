@@ -58,6 +58,7 @@
   <string name="notification_mode">Tryb powiadomienia</string>
   <string name="privacy">Prywatność</string>
   <string name="privacy_none">Brak</string>
+  <string name="privacy_no_interaction">Do not allow interaction</string>
   <string name="privacy_show_title">Pokaż tylko tytuł</string>
   <string name="privacy_show_ticker">Pokaż tylko tekst na pasku stanu</string>
   <string name="privacy_show_appname">Pokaż tylko nazwę aplikacji</string>

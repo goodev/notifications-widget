@@ -125,6 +125,7 @@
 
     <string-array name="privacy_entries" translatable="false">
         <item>@string/privacy_none</item>
+        <item>@string/privacy_no_interaction</item>
         <item>@string/privacy_show_title</item>
         <item>@string/privacy_show_ticker</item>
         <item>@string/privacy_show_appname</item>
@@ -144,6 +145,7 @@
 
     <string-array name="privacy_values" translatable="false">
         <item>none</item>
+        <item>no_interaction</item>
         <item>show_title</item>
         <item>show_ticker</item>
         <item>show_appname</item>
