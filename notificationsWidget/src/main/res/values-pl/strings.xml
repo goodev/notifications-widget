@@ -51,10 +51,9 @@
   <string name="clear_all_from_same_app">Wyczyść wszystko z tej samej aplikacji</string>
   <string name="clear_all_from_same_app_summary">Gdy powiadomienie jest otwarte, usuwa wszystkie pozostałe powiadomienia z tej samej aplikacji</string>
   <string name="icon_pack">Paczka ikon</string>
-  <string-array name="notification_modes_entries">
-    <item>Zgrupowane</item>
-    <item>Rozdzielone</item>
-  </string-array>
+  <string name="grouped">Zgrupowane</string>
+  <string name="separated">Rozdzielone</string>
+  <string name="conversation">Tryb rozmowy</string>
   <string name="notification_mode">Tryb powiadomienia</string>
   <string name="privacy">Prywatność</string>
   <string name="privacy_none">Brak</string>

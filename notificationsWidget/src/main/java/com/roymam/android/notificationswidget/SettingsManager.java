@@ -107,6 +107,7 @@ public class SettingsManager
     public static final String NOTIFICATION_MODE = "notification_mode";
     public static final String MODE_GROUPED = "grouped";
     public static final String MODE_SEPARATED = "separated";
+    public static final String MODE_CONVERSATION = "conversation";
     public static final String DEFAULT_NOTIFICATION_MODE = MODE_SEPARATED;
 
     // notification icon

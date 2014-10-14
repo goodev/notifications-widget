@@ -207,7 +207,8 @@ public class NotificationParser
 
                     // try to get additional text from wear pages
                     if (wo.getPages() != null && wo.getPages().size() > 0 &&
-                            (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION))) {
+                            (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION)) &&
+                            SettingsManager.getNotificationMode(context, packageName).equals(SettingsManager.MODE_CONVERSATION)) {
                         // extract the second page details
                         Notification page = wo.getPages().get(0);
                         nd.additionalText = NotificationCompat.getExtras(page).getCharSequence("android.text");
@@ -279,7 +280,7 @@ public class NotificationParser
                 int apppriority = Integer.parseInt(sharedPref.getString(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY, "-9"));
                 if (apppriority != -9) nd.priority = apppriority;
 
-                nd.sideLoaded = sideLoaded;
+                nd.sideLoaded =  sideLoaded;
 
                 // check if this is a multiple events notification
                 String notificationMode = SettingsManager.getNotificationMode(context, packageName);

@@ -360,9 +360,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                                (oldnd.tag == null && nd.tag == null ||
                                 oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
                               // option 2 - the device is lower than 4.3 (no ids) and the notification mode is set to grouped
-                              || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) &&
-                              (notificationMode.equals(SettingsManager.MODE_GROUPED) ||
-                               nd.sideLoaded && oldnd.sideLoaded)) {
+                              || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && notificationMode.equals(SettingsManager.MODE_GROUPED)) {
                               Log.d(TAG, "(notification was updated)");
                               nd.uid = oldnd.uid;
 
@@ -385,9 +383,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                               break;
                           } else if (nd.sideLoaded && !oldnd.sideLoaded) {
                               // the old one was created by the notifications service and the new one sideloaded,
-                              // if the new one sideloaded - delete the old one
-                              Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
-                              Log.d(TAG, "actions in original:" + oldnd.actions.length + " actions in sideloaded:" + nd.actions.length);
+                              // copy the actions from the original notification if it has more actions
                               // TODO: find a cleaner solution for this issue (8sms quick reply)
                               if (oldnd.actions != null &&
                                       (
@@ -395,20 +391,28 @@ public class NotificationsService extends Service implements NotificationsProvid
                                               nd.actions == null
                                       ))
                                   nd.actions = oldnd.actions;
-                              iter.remove();
-                              oldnd.cleanup();
+
+                              // if conversation mode is active - delete the non-sideloaded notification
+                              if (notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
+                                  Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
+                                  iter.remove();
+                                  oldnd.cleanup();
+                              }
                           } else if (!nd.sideLoaded && oldnd.sideLoaded) {
                               // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
-                              Log.d(TAG, "(there is already sideloaded notification for this app, ignoring this)");
-                              Log.d(TAG, "actions in sideloaded:" + oldnd.actions.length + " actions in this:" + nd.actions.length);
+                              // copy the actions from the original notification if it has more actions
                               // TODO: find a cleaner solution for this issue (8sms quick reply)
                               if (nd.actions != null &&
                                       (
                                               oldnd.actions != null && nd.actions.length > oldnd.actions.length ||
-                                                      oldnd.actions == null
+                                              oldnd.actions == null
                                       ))
                                   oldnd.actions = nd.actions;
-                              ignoreNotification = true;
+
+                              // if conversation mode is active - ignore this non-sideloaded notification
+                              if (notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
+                                  ignoreNotification = true;
+                              }
                           } else if (oldnd.isSimilar(nd, true)) {
                               // the notification is a detailed notification of the existing one
                               Log.d(TAG, "(the notification is extending an exisiting one)");

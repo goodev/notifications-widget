@@ -57,10 +57,9 @@
     <string name="clear_all_from_same_app_summary">When a notification is opened, clear all of the remaining notifications from the same app</string>
     <string name="icon_pack">Icon Pack</string>
 
-    <string-array name="notification_modes_entries">
-        <item>Grouped</item>
-        <item>Separated</item>
-    </string-array>
+    <string name="grouped">Grouped</string>
+    <string name="separated">Separated</string>
+    <string name="conversation">Conversation (if available)</string>
 
     <string name="notification_mode">Notification mode</string>
 
