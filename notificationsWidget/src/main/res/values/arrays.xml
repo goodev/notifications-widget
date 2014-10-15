@@ -3,12 +3,10 @@
     <string-array name="notification_modes_entries" translatable="false">
         <item>@string/grouped</item>
         <item>@string/separated</item>
-        <item>@string/conversation</item>
     </string-array>
     <string-array name="notification_modes_values" translatable="false">
         <item>grouped</item>
         <item>separated</item>
-        <item>conversation</item>
     </string-array>
     <string-array name="notification_icon_values" translatable="false">
         <item>notification_icon</item>

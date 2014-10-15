@@ -1,4 +1,14 @@
 <resources>
+    <string-array name="notification_modes_entries" translatable="false">
+        <item>@string/grouped</item>
+        <item>@string/separated</item>
+        <item>@string/conversation</item>
+    </string-array>
+    <string-array name="notification_modes_values" translatable="false">
+        <item>grouped</item>
+        <item>separated</item>
+        <item>conversation</item>
+    </string-array>
     <string-array name="auto_clear_entries">
         <item>@string/when_cleared</item>
         <item>@string/when_device_is_unlocked</item>

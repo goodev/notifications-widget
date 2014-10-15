@@ -4,10 +4,10 @@
     <string name="v438" translatable="false">
         <![CDATA[
             <b>&#8226;	New Feature - Quick Reply</b> - Quickly reply a message without unlocking your phone on Hangouts, WhatsApp, ChompSMS and few other apps. (Requires Android 4.3+)<br>
-            <b>&#8226;	New Feature - Conversation Mode</b> - Show notifications grouped by conversation for WhatsApp, Hangouts and few more apps. (Requires Android 4.3+)<br>
+            <b>&#8226;	New Notification Mode - Conversation Mode</b> - Show notifications grouped by conversation for WhatsApp, Hangouts and few more apps. (Requires Android 4.3+)<br>
             <b>&#8226;  Improved Gmail support</b> - Gmail notifications will now have full content and action buttons for each email. (Requires Android 4.3 and above)<br>
             <b>&#8226;	New Privacy Mode - No Interaction</b> - Disable any available app actions (such as archive, reply) and quick reply for specific apps<br>
-            <b>&#8226;  Translations</b> - Added German, Spanish, French and Polish translations. Thanks to the community translators.<br>
+            <b>&#8226;  Translations</b> - Added German, Spanish, French, Italian and Polish translations. Thanks to the community translators.<br>
             <b>&#8226;	Bug fixes: </b> Swipe right to open, privacy on separated notifications, duplicated notifications, proximity sensor issues and many more<br>
         ]]>
     </string>
