@@ -127,6 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@android:color/transparent"
                     style="@android:style/TextAppearance.Holo.Widget.EditText" />
                 <ImageButton
                     android:id="@+id/quick_reply_button"
