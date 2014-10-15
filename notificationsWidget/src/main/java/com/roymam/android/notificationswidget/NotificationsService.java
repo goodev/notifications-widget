@@ -360,7 +360,9 @@ public class NotificationsService extends Service implements NotificationsProvid
                                (oldnd.tag == null && nd.tag == null ||
                                 oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
                               // option 2 - the device is lower than 4.3 (no ids) and the notification mode is set to grouped
-                              || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) && notificationMode.equals(SettingsManager.MODE_GROUPED)) {
+                              || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) &&
+                              (notificationMode.equals(SettingsManager.MODE_GROUPED) ||
+                               nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION))) {
                               Log.d(TAG, "(notification was updated)");
                               nd.uid = oldnd.uid;
 
