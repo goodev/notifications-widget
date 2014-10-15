@@ -136,7 +136,10 @@
   <string name="show_persistent_notifications_summary">Mostrar notificación persistente de esta aplicación</string>
   <string name="notification_height">Tamaño de notificación persistente</string>
   <string name="persistent_notifications_error">Hubo un problema para cargar el notifications\n persistente, por favor quite algunas notificaciones persistentes e intentelo nuevamente</string>
-  <string-array name="settings_notification_height_entries">
+    <string name="integration">Integration</string>
+    <string name="extract_expanded_text">Use expanded notification</string>
+
+    <string-array name="settings_notification_height_entries">
     <item>Pequeño</item>
     <item>Normal</item>
     <item>Máximo</item>

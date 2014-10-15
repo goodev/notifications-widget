@@ -135,8 +135,11 @@
   <string name="show_persistent_notifications">Dauerhafte Benachrichtigung anzeigen</string>
   <string name="show_persistent_notifications_summary">Dauerhafte Benachrichtigung anzeigen von dieser App</string>
   <string name="notification_height">Dauerhafte Benachrichtigungsgröße</string>
-  <string name="persistent_notifications_error">Es gab ein Problem beim Laden der dauerhaften Benachrichtigungen\n bitte entferne ein paar dauerhafte Benachrichtigungen und versuche es erneut</string>
-  <string-array name="settings_notification_height_entries">
+  <string name="persistent_notifications_error">Es gab ein Problem beim Laden der dauerhaften Benachrichtigungen\n bitte entferne ein paar dauerhafte Benachrichtigungen und versuche es erneut</string>    <string name="integration">Integration</string>
+  <string name="extract_expanded_text">Use expanded notification</string>
+
+
+    <string-array name="settings_notification_height_entries">
     <item>Klein</item>
     <item>Normal</item>
     <item>Maximal</item>
@@ -346,7 +349,7 @@
 \n- Streiche rechts zum öffnen
 \n und vieles mehr...
 \n
-\n Klick Kaufen, um es jetzt zu erhalten!]] ></string>
+\n Klick Kaufen, um es jetzt zu erhalten!]]></string>
   <string name="purchase">Kaufen</string>
   <string name="later">Vielleicht später</string>
   <string name="swipe_down_to_dismiss_all">Swipe nach unten, um alle entfernen</string>

@@ -135,7 +135,10 @@
   <string name="show_persistent_notifications_summary">Afficher la notification persistante pour cette application</string>
   <string name="notification_height">Taille de notification persistante</string>
   <string name="persistent_notifications_error">Il y avait un problème pour charger les notifications persistantes\n s\'il vous plaît supprimer certaines notifications persistantes et essayez à nouveau</string>
-  <string-array name="settings_notification_height_entries">
+    <string name="integration">Integration</string>
+    <string name="extract_expanded_text">Use expanded notification</string>
+
+    <string-array name="settings_notification_height_entries">
     <item>Petit</item>
     <item>Normal</item>
     <item>Maximum</item>
@@ -250,7 +253,7 @@
   <string name="open_android_settings">Ouvrez les paramètres Android</string>
   <string name="tutorial_step_1_title">Activez le Service de NiLS</string>
   <string name="whatsnew">Quoi de neuf ?</string>
-  <string name="accessibility_service_not_used_description"><![CDATA[<![CDATA [Ce service n'est plus utilisé sur Android 4.3 et au-dessus. Accédez aux Paramètres Android > Sécurité > Notifications accès et activer le service NILS à la place.\]]]]><![CDATA[>]]></string>
+  <string name="accessibility_service_not_used_description"><![CDATA[Ce service n\'est plus utilisé sur Android 4.3 et au-dessus. Accédez aux Paramètres Android > Sécurité > Notifications accès et activer le service NILS à la place.\]]]]></string>
   <string name="drawer_open">Ouvrir le menu</string>
   <string name="drawer_close">Fermer  le menu</string>
   <string name="sync">Synchronisation</string>
@@ -316,9 +319,9 @@
   <string name="secondary_text_color">Couleur du texte secondaire</string>
   <string name="secondary_text_color_summary">Couleur de texte de notification</string>
   <string name="background_color">Couleur de l\'arrière-plan</string>
-  <string name="background_color_summary"><![CDATA[couleur d'arrière-plan de la Notification & transparence]]></string>
+  <string name="background_color_summary"><![CDATA[couleur d\'arrière-plan de la Notification & transparence]]></string>
   <string name="icon_background_color">Couleur d\'arrière-plan de l\'icône</string>
-  <string name="icon_background_color_summary"><![CDATA[couleur d'arrière-plan de l'icône de Notification & transparence]]></string>
+  <string name="icon_background_color_summary"><![CDATA[couleur d\'arrière-plan de l\'icône de Notification & transparence]]></string>
   <string name="vertical_alignment">Alignement vertical</string>
   <string name="enable_resize_mode">Activer le Mode redimensionner</string>
   <string name="enable_resize_mode_summary">Lorsque activé, touchez et maintenez la liste des notifications sur l\'écran de verrouillage pour modifier la taille et la position</string>
@@ -339,11 +342,11 @@
   <string name="unlock_all_features_dialog">
 <![CDATA[Acheter NiLS Premium pour déverrouiller toutes les fonctionnalités dont:
 \n- 3ème partie thèmes
-\n- Couleur d'arrière-plan et Transparence
+\n- Couleur d\'arrière-plan et Transparence
 \n- Polices & Tailles des Icônes
 \n- Multiples lignes
 \n- Glisser à droite pour ouvrir
-\net bien d'autres...
+\net bien d\'autres...
 \n
 \nCliquez pour acheter maintenant!]]>
     </string>
@@ -394,7 +397,7 @@
   <string name="tutorial_2_title_1">Démarrer le Service de NiLS</string>
   <string name="tutorial_2_text_1">NiLS a besoin d\'un accès à vos notifications</string>
   <string name="tutorial_2_text_2">Accédez aux paramètres Android et activez le service de NiLS d\'accorder cet accès</string>
-  <string name="tutorial_2_text_3"><![CDATA[Appuyer sur le bouton "Retour" de votre appareil après l'activation du service]]></string>
+  <string name="tutorial_2_text_3"><![CDATA[Appuyer sur le bouton "Retour" de votre appareil après l\'activation du service]]></string>
   <string name="tutorial_2_open_android_settings">Ouvrez les paramètres Android</string>
   <string name="tutorial_3_title_1">NiLS est Actif</string>
   <string name="tutorial_3_text_1">NiLS est maintenant actif, toutes les notifications à venir apparaîtront sur votre écran de verrouillage</string>
@@ -406,7 +409,7 @@
   <string name="tutorial_5_title_1">Déplacement et Redimensionnement</string>
   <string name="tutorial_5_text_1">Touchez et maintenez la liste des notifications pour la déplacer, relâchez pour démarrer son redimensionnant</string>
   <string name="tutorial_6_title_1">C\'est tout</string>
-  <string name="tutorial_6_text_1"><![CDATA[Appuyer sur "Terminer" pour fermer le didacticiel, puis tapez sur l'icône de NiLS pour avoir accès aux nombreuses options et customisations\n\nSavourez l'application !]]></string>
+  <string name="tutorial_6_text_1"><![CDATA[Appuyer sur "Terminer" pour fermer le didacticiel, puis tapez sur l\'icône de NiLS pour avoir accès aux nombreuses options et customisations\n\nSavourez l\'application !]]></string>
   <string name="tutorial_6_finish">Terminer</string>
   <string name="enable_notifications_panel_text_1">NiLS v1.5 présente une façon nouvelle et excitante d\'obtenir et d\'interagir avec vos notifications.</string>
   <string name="enable_notifications_panel_text_2">Activez le panneau Notifications pour voir les notifications sur le dessus de votre écran de verrouillage sans utiliser un widget et profiter des gestes glissés sur l\'écran, riche en apparence et personnalisations, utilisation de thèmes et beaucoup d\'autres options.</string>

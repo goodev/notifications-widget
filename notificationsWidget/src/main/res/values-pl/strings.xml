@@ -135,7 +135,9 @@
   <string name="show_persistent_notifications_summary">Pokazuje trwałe powiadomienie tej aplikacji</string>
   <string name="notification_height">Rozmiar trwałego powiadomienia</string>
   <string name="persistent_notifications_error">Pojawił się problem z wczytaniem trwałego powiadomienia\n proszę usunąć niektóre trwałe powiadomienia i spróbować ponownie</string>
-  <string-array name="settings_notification_height_entries">
+    <string name="integration">Integration</string>
+    <string name="extract_expanded_text">Use expanded notification</string>
+    <string-array name="settings_notification_height_entries">
     <item>Mała</item>
     <item>Normalna</item>
     <item>Maksymalna</item>

@@ -163,11 +163,13 @@
     <string name="clear_app_summary">Clear app specific settings for this app</string>
 
     <!-- Persistent Notifications -->
+    <string name="integration">Integration</string>
     <string name="persistent_notifications">Persistent Notifications</string>
     <string name="show_persistent_notifications">Show persistent notification</string>
     <string name="show_persistent_notifications_summary">Show persistent notification from this app</string>
     <string name="notification_height">Persistent notification size</string>
     <string name="persistent_notifications_error">There was a problem to load the persistent notifications\n please remove some persistent notifications and try again</string>
+    <string name="extract_expanded_text">Use expanded notification</string>
 
     <string-array name="settings_notification_height_entries">
         <item>Small</item>
