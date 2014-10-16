@@ -51,11 +51,11 @@
   <string name="icon_pack">Pack d\'icônes</string>
   <string name="grouped">Groupés</string>
   <string name="separated">Séparés</string>
-  <string name="conversation">Conversation (if available)</string>
+  <string name="conversation">Conversation (si disponible)</string>
   <string name="notification_mode">Mode de Notification</string>
   <string name="privacy">Vie Privée</string>
   <string name="privacy_none">Aucun</string>
-  <string name="privacy_no_interaction">Do not allow interaction</string>
+  <string name="privacy_no_interaction">Ne pas permettre l\'interaction</string>
   <string name="privacy_show_title">Afficher seulement le titre</string>
   <string name="privacy_show_ticker">Afficher seulement le texte de la barre de statut</string>
   <string name="privacy_show_appname">Afficher seulement le nom de l\'application</string>
@@ -130,15 +130,14 @@
   <string name="ignore_notifications">Ignorer cette application</string>
   <string name="clear_app_settings">Réinitialiser</string>
   <string name="clear_app_summary">Effacer les paramètres spécifiques de cette application</string>
+  <string name="integration">Intégration</string>
   <string name="persistent_notifications">Notification permanente</string>
   <string name="show_persistent_notifications">Voir la notification persistante</string>
   <string name="show_persistent_notifications_summary">Afficher la notification persistante pour cette application</string>
   <string name="notification_height">Taille de notification persistante</string>
   <string name="persistent_notifications_error">Il y avait un problème pour charger les notifications persistantes\n s\'il vous plaît supprimer certaines notifications persistantes et essayez à nouveau</string>
-    <string name="integration">Integration</string>
-    <string name="extract_expanded_text">Use expanded notification</string>
-
-    <string-array name="settings_notification_height_entries">
+  <string name="extract_expanded_text">Utilisez la notification étendue</string>
+  <string-array name="settings_notification_height_entries">
     <item>Petit</item>
     <item>Normal</item>
     <item>Maximum</item>
@@ -253,7 +252,7 @@
   <string name="open_android_settings">Ouvrez les paramètres Android</string>
   <string name="tutorial_step_1_title">Activez le Service de NiLS</string>
   <string name="whatsnew">Quoi de neuf ?</string>
-  <string name="accessibility_service_not_used_description"><![CDATA[Ce service n\'est plus utilisé sur Android 4.3 et au-dessus. Accédez aux Paramètres Android > Sécurité > Notifications accès et activer le service NILS à la place.\]]]]></string>
+  <string name="accessibility_service_not_used_description"><![CDATA[<![CDATA [Ce service n\'est plus utilisé sur Android 4.3 et au-dessus. Accédez aux Paramètres Android > Sécurité > Notifications accès et activer le service NILS à la place.\]]]]><![CDATA[>]]></string>
   <string name="drawer_open">Ouvrir le menu</string>
   <string name="drawer_close">Fermer  le menu</string>
   <string name="sync">Synchronisation</string>
@@ -432,6 +431,6 @@
   <string name="translations_summary">NiLS est traduit par la communauté d\'utilisateurs à l\'aide de Crowdin.net</string>
   <string name="crowdin">Rejoignez-nous sur Crowdin</string>
   <string name="crowdin_summary">Aidez à la traduction de NiLS en nous rejoignant sur Crowdin</string>
-  <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
-  <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
+  <string name="ignore_repeating_notifications">Ignorer les notifications en double</string>
+  <string name="ignore_repeating_notifications_summary">Ignorer les notifications avec le même texte comme celles précédemment rejetées</string>
 </resources>

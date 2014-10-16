@@ -51,11 +51,11 @@
   <string name="icon_pack">Symbolpaket</string>
   <string name="grouped">Gruppiert</string>
   <string name="separated">Einzeln</string>
-  <string name="conversation">Conversation (if available)</string>
+  <string name="conversation">Unterhaltung (wenn verfügbar)</string>
   <string name="notification_mode">Benachrichtigungsmodus</string>
   <string name="privacy">Datenschutz</string>
   <string name="privacy_none">Keie</string>
-  <string name="privacy_no_interaction">Do not allow interaction</string>
+  <string name="privacy_no_interaction">Interaktion nicht erlauben</string>
   <string name="privacy_show_title">Zeige nur den Titel</string>
   <string name="privacy_show_ticker">Zeige nur den Statusleistentext</string>
   <string name="privacy_show_appname">Zeige nur den App Namen</string>
@@ -131,15 +131,14 @@
   <string name="ignore_notifications">Ignoriere diese Anwendung</string>
   <string name="clear_app_settings">Zurücksetzen</string>
   <string name="clear_app_summary">Entferne bestimmte Einstellungen für diese app</string>
+  <string name="integration">Interaktion</string>
   <string name="persistent_notifications">Dauerhafte Benachrichtigungen</string>
   <string name="show_persistent_notifications">Dauerhafte Benachrichtigung anzeigen</string>
   <string name="show_persistent_notifications_summary">Dauerhafte Benachrichtigung anzeigen von dieser App</string>
   <string name="notification_height">Dauerhafte Benachrichtigungsgröße</string>
-  <string name="persistent_notifications_error">Es gab ein Problem beim Laden der dauerhaften Benachrichtigungen\n bitte entferne ein paar dauerhafte Benachrichtigungen und versuche es erneut</string>    <string name="integration">Integration</string>
-  <string name="extract_expanded_text">Use expanded notification</string>
-
-
-    <string-array name="settings_notification_height_entries">
+  <string name="persistent_notifications_error">Es gab ein Problem beim Laden der dauerhaften Benachrichtigungen\n bitte entferne ein paar dauerhafte Benachrichtigungen und versuche es erneut</string>
+  <string name="extract_expanded_text">Erweiterte Benachrichtigung verwenden</string>
+  <string-array name="settings_notification_height_entries">
     <item>Klein</item>
     <item>Normal</item>
     <item>Maximal</item>
@@ -296,8 +295,8 @@
   <string name="gestures">Gesten</string>
   <string name="click_to_open">Klicke zum Öffnen</string>
   <string name="click_to_open_summary">Wenn eingeschaltet, wird Benachrichtigung beim anklicken geöffnet. Ausgeschaltet nur Vorschau anzeigen.</string>
-  <string name="show_quick_reply_on_preview">Show \"Quick Reply\" box on preview mode</string>
-  <string name="show_quick_reply_on_preview_summary">(BETA) Whenever a quick reply is available, show a text box in the notification preview for faster replying</string>
+  <string name="show_quick_reply_on_preview">Zeige \"Quick Reply\" im Vorschau Modus</string>
+  <string name="show_quick_reply_on_preview_summary">(BETA) Wenn ein \"Quick Reply\" verfügbar ist, wird ein Textfeld zur schnellen Beantwortung in der Mitteilungs Vorschau angezeigt</string>
   <string name="unlock_on_open">Entsperren beim Öffnen</string>
   <string name="unlock_on_open_summary">Gerät entsperrt, wenn Benachrichtigung geöffnet wird. (funktioniert nur auf Stock Sperrbildschirm ohne das Sicherheit aktiviert ist)</string>
   <string name="continuous_reading_mode">Kontinuierlicher Lesemodus</string>
@@ -432,6 +431,6 @@
   <string name="translations_summary">Nils wird von der Anwendern der Community mithilfe von Crowdin.net übersetzt</string>
   <string name="crowdin">Folge uns auf Crowdin</string>
   <string name="crowdin_summary">Hilf beim Übersetzen von NiLS indem du uns bei Crowdin folgst</string>
-  <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
-  <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
+  <string name="ignore_repeating_notifications">wiederholende Benachrichtigungen ignorieren</string>
+  <string name="ignore_repeating_notifications_summary">ähnliche Benachrichtigungen wie die vorherigen ignorieren</string>
 </resources>
