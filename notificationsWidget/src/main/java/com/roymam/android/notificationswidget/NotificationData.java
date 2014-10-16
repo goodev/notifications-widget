@@ -46,6 +46,7 @@ public class NotificationData implements Parcelable
     public String groupOrder = null;
     public boolean sideLoaded = false;
     public CharSequence additionalText = null;
+    public boolean newOne = true;
 
     public NotificationData()
     {
@@ -112,7 +113,7 @@ public class NotificationData implements Parcelable
             action = PendingIntent.CREATOR.createFromParcel(in);
         count = in.readInt();
 
-        boolean[] ba = new boolean[6];
+        boolean[] ba = new boolean[7];
         in.readBooleanArray(ba);
         pinned = ba[0];
         selected = ba[1];
@@ -120,6 +121,7 @@ public class NotificationData implements Parcelable
         protect = ba[3];
         event = ba[4];
         sideLoaded = ba[5];
+        newOne = ba[6];
 
         if (in.readInt() != 0)
             actions = in.createTypedArray(Action.CREATOR);
@@ -203,13 +205,14 @@ public class NotificationData implements Parcelable
         }
         dest.writeInt(count);
 
-        boolean[] ba = new boolean[6];
+        boolean[] ba = new boolean[7];
         ba[0] = pinned;
         ba[1] = selected;
         ba[2] = deleted;
         ba[3] = protect;
         ba[4] = event;
         ba[5] = sideLoaded;
+        ba[6] = newOne;
         dest.writeBooleanArray(ba);
 
         if (actions != null)

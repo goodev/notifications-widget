@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -31,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPreDrawListener {
+    private final String TAG = this.getClass().getSimpleName();
     private Callbacks callbacks;
     private View mPullDownView;
     private View mPullDownText;
@@ -162,7 +165,7 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         // save position of notifications before making a change in the data
         int firstVisiblePosition = listView.getFirstVisiblePosition();
-        Log.d("NiLS", "saveNotificationsState()");
+        Log.d(TAG, "saveNotificationsState()");
         for (int i = 0; i < listView.getChildCount(); ++i) {
             View child = listView.getChildAt(i);
             int position = firstVisiblePosition + i;
@@ -205,7 +208,15 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                 if (startTop != top) {
                     int delta = startTop - top;
                     child.setTranslationY(delta);
-                    child.animate().setDuration(mAnimationTime).translationY(0).setListener(null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        child.setHasTransientState(true);
+                    child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                child.setHasTransientState(false);
+                        }
+                    });
                     if (firstAnimation) {
                         child.animate().setListener(new AnimatorListenerAdapter() {
                             @Override
@@ -223,8 +234,32 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                 int childHeight = child.getHeight() + listView.getDividerHeight();
                 startTop = top + (i > 0 ? childHeight : -childHeight);
                 int delta = startTop - top;
-                child.setTranslationY(delta);
-                child.animate().setDuration(mAnimationTime).translationY(0).setListener(null);
+                NotificationData nd = (NotificationData) child.getTag(R.integer.notification_data_tag);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    child.setHasTransientState(true);
+
+                if (nd.newOne) {
+                    child.setPivotY(0);
+                    child.setRotationX(90);
+                    child.animate().setDuration(mAnimationTime * 2).rotationX(0).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                child.setHasTransientState(false);
+                        }
+                    });
+                    nd.newOne = false;
+                }
+                else {
+                    child.setTranslationY(delta);
+                    child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                child.setHasTransientState(false);
+                        }
+                    });
+                }
                 if (firstAnimation) {
                     child.animate().setListener(new AnimatorListenerAdapter() {
                         @Override
@@ -283,7 +318,14 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
 
+        //listView.setRecyclerListener(new AbsListView.RecyclerListener() {
+        //    @Override
+        //    public void onMovedToScrapHeap(View view) {
+        //
+        //    }
+        //});
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);
+
 
         mPullDownView = mView.findViewById(R.id.pull_to_dismiss);
         mPullDownText = mView.findViewById(R.id.pull_to_dismiss_view);
@@ -520,7 +562,7 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
     public void notifyDataChanged()
     {
-        Log.d("NiLS", "notifyDataSetChanged");
+        Log.d(TAG, "notifyDataSetChanged");
 
         // notify adapter that the list was changed
         adapter.notifyDataSetChanged();

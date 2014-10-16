@@ -1,5 +1,6 @@
 <resources>
     <integer name="uid">0</integer>
+    <integer name="notification_data_tag">1</integer>
 
     <string name="about_contactus_email" translatable="false">mailto:support@roymam.com</string>
     <string name="time_demo_text" translatable="false">9:21</string>

@@ -365,6 +365,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                                nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION))) {
                               Log.d(TAG, "(notification was updated)");
                               nd.uid = oldnd.uid;
+                              nd.newOne = oldnd.newOne;
 
                               if (oldnd.isDeleted() && ignoreRepeating) {
                                   Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
@@ -422,6 +423,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                               // copy uid and delete status from the old notification
                               nd.uid = oldnd.uid;
                               nd.setDeleted(oldnd.isDeleted());
+                              nd.newOne = oldnd.newOne;
                               nd.protect = true;
 
                               // delete the old notification

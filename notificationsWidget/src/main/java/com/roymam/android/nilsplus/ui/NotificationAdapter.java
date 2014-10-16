@@ -142,6 +142,8 @@ public class NotificationAdapter extends BaseAdapter
         }
 
         notificationView.setTag(R.integer.uid, new Long(item.getUid()));
+        notificationView.setTag(R.integer.notification_data_tag, item);
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         int primaryTextColor = prefs.getInt(SettingsManager.PRIMARY_TEXT_COLOR, SettingsManager.DEFAULT_PRIMARY_TEXT_COLOR);
