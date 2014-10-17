@@ -51,11 +51,11 @@
   <string name="icon_pack">Pack de iconos</string>
   <string name="grouped">Agrupados</string>
   <string name="separated">Separados</string>
-  <string name="conversation">Conversation (if available)</string>
+  <string name="conversation">Conversación (Si está disponible)</string>
   <string name="notification_mode">Modo de notificación</string>
   <string name="privacy">Privacidad</string>
   <string name="privacy_none">Ninguno</string>
-  <string name="privacy_no_interaction">Do not allow interaction</string>
+  <string name="privacy_no_interaction">No permite la interacción</string>
   <string name="privacy_show_title">Mostrar sólo título</string>
   <string name="privacy_show_ticker">Mostrar texto de la barra de estado sólo</string>
   <string name="privacy_show_appname">Mostrar solo el nombre de la aplicación</string>
@@ -131,15 +131,14 @@
   <string name="ignore_notifications">Ignorar esta aplicación</string>
   <string name="clear_app_settings">RESET</string>
   <string name="clear_app_summary">Borrar configuraciones específicas para esta aplicación</string>
+  <string name="integration">Integración</string>
   <string name="persistent_notifications">Notificaciones persistentes</string>
   <string name="show_persistent_notifications">Mostrar notificación persistente</string>
   <string name="show_persistent_notifications_summary">Mostrar notificación persistente de esta aplicación</string>
   <string name="notification_height">Tamaño de notificación persistente</string>
   <string name="persistent_notifications_error">Hubo un problema para cargar el notifications\n persistente, por favor quite algunas notificaciones persistentes e intentelo nuevamente</string>
-    <string name="integration">Integration</string>
-    <string name="extract_expanded_text">Use expanded notification</string>
-
-    <string-array name="settings_notification_height_entries">
+  <string name="extract_expanded_text">Usar notificación expandida</string>
+  <string-array name="settings_notification_height_entries">
     <item>Pequeño</item>
     <item>Normal</item>
     <item>Máximo</item>
@@ -433,6 +432,6 @@
   <string name="translations_summary">Nils es traducido por los usuarios a través de Crowdin.net</string>
   <string name="crowdin">Únete a nosotros en Crowdin</string>
   <string name="crowdin_summary">Ayuda a traducir NiLS uniéndote a nosotros en Crowdin</string>
-  <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
-  <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
+  <string name="ignore_repeating_notifications">Ignorar la repetición de notificaciones</string>
+  <string name="ignore_repeating_notifications_summary">Ignorar las notificaciones con el mismo texto que las descartadas previamente</string>
 </resources>
