@@ -38,14 +38,28 @@ public class NotificationsListener extends NotificationListenerService
                     Log.e(TAG, "security exception - cannot cancel notification.");
                 }
             }
+            else if (intent.getAction().equals(NotificationsService.RELOAD_ACTIVE_NOTIFICATIONS))
+                reloadActiveNotifications();
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
+    public void reloadActiveNotifications() {
+        try {
+            StatusBarNotification[] notifications = getActiveNotifications();
+            Log.d(TAG, "reloadActiveNotifications: active notifications:" + notifications.length);
+            for (StatusBarNotification sbn : notifications)
+                onNotificationPosted(sbn);
+        }
+        catch (Exception exp)
+        {
+            Log.w(TAG, "cannot reload active notifications");
+        }
+    }
+
     @Override
-    public void onCreate()
-    {
-        Log.d(TAG,"NotificationsListener:onCreate");
+    public void onCreate() {
+        Log.d(TAG, "NotificationsListener:onCreate");
 
         // start NotificationsService
         //Intent intent = new Intent(getApplicationContext(), NotificationsService.class);
@@ -72,6 +86,7 @@ public class NotificationsListener extends NotificationListenerService
             NotificationsService.LocalBinder binder = (NotificationsService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            reloadActiveNotifications();
         }
 
         @Override

@@ -82,6 +82,7 @@ public class NotificationsService extends Service implements NotificationsProvid
     public static final String INCOMING_CALL = "com.roymam.android.nils.INCOMING_CALL";
     public static final String DEVICE_UNLOCKED = "com.roymam.android.nils.UNLOCKED";
     public static final String REFRESH_LIST = "com.roymam.android.nils.REFRESH_LIST";
+    public static final String RELOAD_ACTIVE_NOTIFICATIONS = "com.roymam.android.nils.RELOAD_ACTIVE_NOTIFICATIONS";
 
     private NPReceiver npreceiver = null;
     private NPViewManager viewManager = null;

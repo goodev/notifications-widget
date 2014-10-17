@@ -297,14 +297,14 @@ public class NotificationParser
                     }
                 }
                 // ignore summary group if setting is set to separated
-                else if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
+                else if (notificationMode.equals(SettingsManager.MODE_CONVERSATION) &&
                         nd.group != null && nd.groupOrder == null && !nd.sideLoaded && NotificationCompat.isGroupSummary(n) &&
                         n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) {
                     // storing the notification so it can be used to dismiss from Android notifications bar
                     NotificationsService.getSharedInstance().groupedNotifications.put(packageName, nd);
 
                     // ignoring it so it won't appear on NiLS
-                    Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is separated and this a group summary");
+                    Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is conversation and this a group summary");
                     return new ArrayList<NotificationData>();
                 }
                 // if no group info found and it still has a bigcontentview try to extract individual events from the summary
