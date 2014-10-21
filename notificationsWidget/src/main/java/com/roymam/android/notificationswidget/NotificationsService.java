@@ -320,11 +320,6 @@ public class NotificationsService extends Service implements NotificationsProvid
     }
 
     //** Notifications Add/Remove Handling **/
-    private void addNotification(NotificationData nd)
-    {
-        addNotification(nd, true);
-    }
-
     private void addNotification(NotificationData nd, boolean refresh)
     {
         if (viewManager != null && refresh) viewManager.saveNotificationsState();
@@ -337,7 +332,6 @@ public class NotificationsService extends Service implements NotificationsProvid
             boolean ignoreRepeating = SettingsManager.getBoolean(context, nd.packageName, AppSettingsActivity.IGNORE_REPEATING_NOTIFICATIONS, AppSettingsActivity.DEFAULT_IGNORE_REPEATING_NOTIFICATIONS);
             boolean updated = false;
 
-            // remove old notification
             final Lock w = lock.writeLock();
             w.lock();
 
@@ -348,15 +342,39 @@ public class NotificationsService extends Service implements NotificationsProvid
             {
                 Iterator<NotificationData> iter = mNotifications.iterator();
 
-                while (iter.hasNext())
+                boolean handled = false;
+
+                while (iter.hasNext() && !handled)
                 {
                     NotificationData oldnd = iter.next();
 
                     // must be the same package name to proceed with other checks
                     if (oldnd.packageName.equals(nd.packageName))
                     {
+                        // TODO: find a cleaner solution for this issue (8sms quick reply)
+                        // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
+                        // copy the actions from the original notification if it has more actions
+                        if (!nd.sideLoaded && oldnd.sideLoaded) {
+                            if (nd.actions != null &&
+                                    (
+                                            oldnd.actions != null && nd.actions.length > oldnd.actions.length ||
+                                                    oldnd.actions == null
+                                    ))
+                                oldnd.actions = nd.actions;
+                        }
+                        else if (nd.sideLoaded && !oldnd.sideLoaded) {
+                            // the old one was created by the notifications service and the new one sideloaded,
+                            // copy the actions from the original notification if it has more actions
+                            if (oldnd.actions != null &&
+                                    (
+                                            nd.actions != null && oldnd.actions.length > nd.actions.length ||
+                                                    nd.actions == null
+                                    ))
+                                nd.actions = oldnd.actions;
+                        }
+
                         // check if it is an extension for a current notification
-                          if // option 1 - notification has the same id and the same tag
+                        if // option 1 - notification has the same id and the same tag
                              (((oldnd.id == nd.id &&
                                (oldnd.tag == null && nd.tag == null ||
                                 oldnd.tag != null && nd.tag != null && oldnd.tag.equals(nd.tag)))
@@ -364,96 +382,80 @@ public class NotificationsService extends Service implements NotificationsProvid
                               || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) &&
                               (notificationMode.equals(SettingsManager.MODE_GROUPED) ||
                                nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION))) {
-                              Log.d(TAG, "(notification was updated)");
-                              nd.uid = oldnd.uid;
-                              nd.newOne = oldnd.newOne;
+                            Log.d(TAG, "(notification was updated)");
+                            nd.uid = oldnd.uid;
+                            nd.newOne = oldnd.newOne;
 
-                              if (oldnd.isDeleted() && ignoreRepeating) {
-                                  Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
-                                  nd.delete();
-                              }
+                            if (oldnd.isDeleted() && ignoreRepeating) {
+                                Log.d(TAG, "notification " + nd.packageName + ":" + nd.id + "#" + nd.uid + " was already dismissed previously, marking this new one as deleted");
+                                nd.delete();
+                            }
 
-                              // protect it from being cleared on next purge command
-                              nd.protect = true;
+                            // protect it from being cleared on next purge command
+                            nd.protect = true;
 
-                              iter.remove();
-                              oldnd.cleanup();
-                              updated = true;
-                              changed = !oldnd.isEqual(nd);
+                            iter.remove();
+                            oldnd.cleanup();
+                            updated = true;
+                            changed = !oldnd.isEqual(nd);
 
-                              // if it is exact the same notification - keep old received time
-                              if (!changed) nd.received = oldnd.received;
+                            Log.d(TAG, "new text:"+nd.text);
+                            // if it is exact the same notification - keep old received time
+                            if (!changed) nd.received = oldnd.received;
 
-                              break;
-                          } else if (nd.sideLoaded && !oldnd.sideLoaded) {
-                              // the old one was created by the notifications service and the new one sideloaded,
-                              // copy the actions from the original notification if it has more actions
-                              // TODO: find a cleaner solution for this issue (8sms quick reply)
-                              if (oldnd.actions != null &&
-                                      (
-                                              nd.actions != null && oldnd.actions.length > nd.actions.length ||
-                                              nd.actions == null
-                                      ))
-                                  nd.actions = oldnd.actions;
+                            // break the loop - there is no need to keep comparing to other notifications - we found the one to update
+                            handled = true;
+                        } else if (nd.sideLoaded && !oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
+                            // if conversation mode is active - delete the non-sideloaded notification
+                            Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
+                            iter.remove();
+                            oldnd.cleanup();
+                            // ( do not break the loop - so other non-sideloaded notifications will be removed as well )
+                        } else if (!nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
+                            ignoreNotification = true;
+                            handled = true; // break the loop - this notification should be ignored
+                        } else if (oldnd.isSimilar(nd, true)) {
+                            // the notification is a detailed notification of the existing one
+                            Log.d(TAG, "(the notification is extending an exisiting one)");
 
-                              // if conversation mode is active - delete the non-sideloaded notification
-                              if (notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
-                                  Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
-                                  iter.remove();
-                                  oldnd.cleanup();
-                              }
-                          } else if (!nd.sideLoaded && oldnd.sideLoaded) {
-                              // if the new one is not sideloaded but there is an old sideloaded one - ignore the new one
-                              // copy the actions from the original notification if it has more actions
-                              // TODO: find a cleaner solution for this issue (8sms quick reply)
-                              if (nd.actions != null &&
-                                      (
-                                              oldnd.actions != null && nd.actions.length > oldnd.actions.length ||
-                                              oldnd.actions == null
-                                      ))
-                                  oldnd.actions = nd.actions;
+                            // copy uid and delete status from the old notification
+                            nd.uid = oldnd.uid;
+                            nd.setDeleted(oldnd.isDeleted());
+                            nd.newOne = oldnd.newOne;
+                            nd.protect = true;
 
-                              // if conversation mode is active - ignore this non-sideloaded notification
-                              if (notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
-                                  ignoreNotification = true;
-                              }
-                          } else if (oldnd.isSimilar(nd, true)) {
-                              // the notification is a detailed notification of the existing one
-                              Log.d(TAG, "(the notification is extending an exisiting one)");
+                            // delete the old notification
+                            iter.remove();
+                            oldnd.cleanup();
 
-                              // copy uid and delete status from the old notification
-                              nd.uid = oldnd.uid;
-                              nd.setDeleted(oldnd.isDeleted());
-                              nd.newOne = oldnd.newOne;
-                              nd.protect = true;
+                            // mark this action as an update
+                            updated = true;
+                            changed = !oldnd.isEqual(nd);
 
-                              // delete the old notification
-                              iter.remove();
-                              oldnd.cleanup();
+                            // if it is exact the same notification - keep old received time
+                            if (!changed) nd.received = oldnd.received;
 
-                              // mark this action as an update
-                              updated = true;
-                              changed = !oldnd.isEqual(nd);
+                            // break the loop - this notification is an extension to an existing one.
+                            handled = true;
+                        } else if (nd.isSimilar(oldnd, false)) {
+                            // the old notification is a duplicate of the current but contains more data than the current - if so - ignore this new one
+                            Log.d(TAG, "(ignoring - there is already more detailed notification)");
+                            ignoreNotification = true;
+                            updated = false;
 
-                              // if it is exact the same notification - keep old received time
-                              if (!changed) nd.received = oldnd.received;
-                          } else if (nd.isSimilar(oldnd, false)) {
-                              // the old notification is a duplicate of the current but contains more data than the current - if so - ignore the new one
-                              Log.d(TAG, "(ignoring - there is already more detailed notification)");
-                              ignoreNotification = true;
-                              updated = false;
-
-                              // if the sideloaded notification doesn't have an icon - use this notification icon
-                              if (oldnd.sideLoaded) {
-                                  if (oldnd.largeIcon == null) {
-                                      oldnd.largeIcon = nd.largeIcon;
-                                      oldnd.icon = nd.icon;
-                                  }
-                                  // copy id and tag if from the original notification
-                                  oldnd.id = nd.id;
-                                  oldnd.tag = nd.tag;
-                              }
-                          }
+                            // if the sideloaded notification doesn't have an icon - use this notification icon
+                            if (oldnd.sideLoaded) {
+                                if (oldnd.largeIcon == null) {
+                                    oldnd.largeIcon = nd.largeIcon;
+                                    oldnd.icon = nd.icon;
+                                }
+                                // copy id and tag if from the original notification
+                                oldnd.id = nd.id;
+                                oldnd.tag = nd.tag;
+                            }
+                            // break the loop - this notification should be ignored, there is no need to keep looking for other ones
+                            handled = true;
+                        }
 
                         if (ignoreNotification) {
                             // protect the old one from being cleared on next purge command

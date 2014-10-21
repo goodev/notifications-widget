@@ -125,7 +125,7 @@ public class PreviewNotificationView extends RelativeLayout {
     }
 
     public void showQuickReplyBox() {
-        if (mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+        if (ni.getQuickReplyAction() != null && mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.setVisibility(View.VISIBLE);
             mQuickReplyBox.setScaleY(0);
             mQuickReplyBox.animate().scaleY(1).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {

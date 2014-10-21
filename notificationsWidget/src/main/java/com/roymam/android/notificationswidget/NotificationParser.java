@@ -128,10 +128,8 @@ public class NotificationParser
 
                     if (packageIcon != null) {
                         Palette p = Palette.generate(packageIcon);
-                        if (p.getVibrantColor() != null)
-                            nd.appColor = p.getVibrantColor().getRgb();
-                        else
-                            nd.appColor = 0;
+                        if (p != null)
+                            nd.appColor = p.getVibrantColor(0);
                     }
                     nd.appicon = BitmapCache.getInstance(context).getBitmap(packageName, n.icon);
                     if (notificationIcon.equals(SettingsManager.NOTIFICATION_MONO_ICON)) {
@@ -280,7 +278,7 @@ public class NotificationParser
                 int apppriority = Integer.parseInt(sharedPref.getString(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY, "-9"));
                 if (apppriority != -9) nd.priority = apppriority;
 
-                nd.sideLoaded =  sideLoaded;
+                nd.sideLoaded = sideLoaded;
 
                 // check if this is a multiple events notification
                 String notificationMode = SettingsManager.getNotificationMode(context, packageName);
@@ -288,34 +286,39 @@ public class NotificationParser
                 List<NotificationData> notifications = new ArrayList<NotificationData>();
                 notifications.add(nd);
 
-                // ignore group individual events if notification mode is set to show grouped only
-                if (notificationMode.equals(SettingsManager.MODE_GROUPED)) {
-                    // if the notification is a part of a group - don't show it on grouped mode
-                    if (nd.sideLoaded) {
+                // jellybean grouped notifications handling
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+
+                    // ignore group individual events if notification mode is set to show grouped only
+                    if (notificationMode.equals(SettingsManager.MODE_GROUPED) && nd.sideLoaded) {
                         Log.d(TAG, "ignoring sideloaded notification packageName:" + packageName + "id:" + nd.id + " notification mode is grouped and this a single group item");
                         return new ArrayList<NotificationData>();
                     }
-                }
-                // ignore summary group if setting is set to separated
-                else if (notificationMode.equals(SettingsManager.MODE_CONVERSATION) &&
-                        nd.group != null && nd.groupOrder == null && !nd.sideLoaded && NotificationCompat.isGroupSummary(n) &&
-                        n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) {
-                    // storing the notification so it can be used to dismiss from Android notifications bar
-                    NotificationsService.getSharedInstance().groupedNotifications.put(packageName, nd);
 
-                    // ignoring it so it won't appear on NiLS
-                    Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is conversation and this a group summary");
-                    return new ArrayList<NotificationData>();
-                }
-                // if no group info found and it still has a bigcontentview try to extract individual events from the summary
-                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
+                    // ignore summary group if setting is set to separated
+                    if (notificationMode.equals(SettingsManager.MODE_CONVERSATION) &&
+                            nd.group != null && nd.groupOrder == null && !nd.sideLoaded && NotificationCompat.isGroupSummary(n) &&
+                            n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) {
+                        // storing the notification so it can be used to dismiss from Android notifications bar
+                        NotificationsService.getSharedInstance().groupedNotifications.put(packageName, nd);
+
+                        // ignoring it so it won't appear on NiLS
+                        Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is conversation and this a group summary");
+                        return new ArrayList<NotificationData>();
+                    }
+
+                    // if no group info found and it still has a bigcontentview try to extract individual events from the summary
+                    if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
                         n.bigContentView != null &&
-                        (n.bigContentView.getLayoutId() == mInboxLayoutId || packageName.equals("com.whatsapp")) &&
-                        (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
-                    List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(n.bigContentView, nd);
-                    // make sure we've at least one notification
-                    if (separatedNotifications.size() > 0) notifications = separatedNotifications;
+                       (n.bigContentView.getLayoutId() == mInboxLayoutId || packageName.equals("com.whatsapp")) &&
+                       (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
+                        List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(n.bigContentView, nd);
+                        // make sure we've at least one notification
+                        if (separatedNotifications.size() > 0) notifications = separatedNotifications;
+                    }
                 }
+
+
                 return notifications;
             }
         }

@@ -83,6 +83,8 @@ public class NotificationData implements Parcelable
         }
         else
         {
+            Log.d(TAG, "notification is not similar to "+ packageName + ":" + id + "T" + tag);
+            Log.d(TAG, String.format("titlesdup: %s textdup: %s contentsdup: %s sideloaded: %s other sideloaded: %s", titlesdup, textdup, contentsdup, sideLoaded, nd.sideLoaded));
             return false;
         }
     }
