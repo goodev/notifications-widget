@@ -22,6 +22,9 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -86,6 +89,8 @@ public class PreviewNotificationView extends RelativeLayout {
     private boolean mHorizontalDrag;
     private boolean mIgnoreTouch;
     private boolean mIsSoftKeyVisible = false;
+    private int mStartHeight = 0;
+    private int mRowTop = 0;
 
     public void updateSizeAndPosition(Point pos, Point size)
     {
@@ -114,10 +119,10 @@ public class PreviewNotificationView extends RelativeLayout {
         //LayoutParams bgParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         String yAlignment = prefs.getString(SettingsManager.VERTICAL_ALIGNMENT, SettingsManager.DEFAULT_VERTICAL_ALIGNMENT);
 
-        if (yAlignment.equals("center"))
-            params.addRule(CENTER_VERTICAL);
-        else if (yAlignment.equals("bottom"))
-            params.addRule(ALIGN_PARENT_BOTTOM);
+        //if (yAlignment.equals("center"))
+        //    params.addRule(CENTER_VERTICAL);
+        //else if (yAlignment.equals("bottom"))
+        //    params.addRule(ALIGN_PARENT_BOTTOM);
 
         mPreviewNotificationView.setLayoutParams(params);
 
@@ -356,22 +361,8 @@ public class PreviewNotificationView extends RelativeLayout {
 
     public void hideImmediate()
     {
-        mPreviewNotificationView.setAlpha(0);
-        mPreviewNotificationView.setScaleY(0);
         mPreviewNotificationView.setVisibility(View.GONE);
         setVisibility(View.GONE);
-    }
-
-    public void hide(int yOffset)
-    {
-        mPreviewNotificationView.animate().translationY(yOffset).alpha(0).scaleY(0).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation)
-                {
-                    mPreviewNotificationView.setVisibility(View.GONE);
-                    setVisibility(View.GONE);
-                }
-            });
     }
 
     public void setSizeAndPosition(Point size, Point pos)
@@ -382,22 +373,105 @@ public class PreviewNotificationView extends RelativeLayout {
         mPreviewNotificationView.setLayoutParams(params);
     }
 
+
+    public void expand(final View v) {
+        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+        mStartHeight = v.getLayoutParams().height;
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LayoutParams.WRAP_CONTENT
+                        : mStartHeight +  (int)((targetHeight - mStartHeight) * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration(mAnimationDuration);
+        v.startAnimation(a);
+    }
+
+    public void collapse(final View v) {
+        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        final int maxHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LayoutParams.WRAP_CONTENT
+                        : mStartHeight +  (int)((maxHeight - mStartHeight) * (1-interpolatedTime));
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration(mAnimationDuration);
+        v.startAnimation(a);
+    }
+
+    public int calcOffset()
+    {
+        mPreviewNotificationView.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        final int targetHeight = mPreviewNotificationView.getMeasuredHeight();
+        String yAlignment = prefs.getString(SettingsManager.VERTICAL_ALIGNMENT, SettingsManager.DEFAULT_VERTICAL_ALIGNMENT);
+        int offset = mLastSizeY - targetHeight;
+        if (offset  < 0) offset = 0;
+
+        if (yAlignment.equals("center"))
+        {
+            offset /=2;
+        }
+        else if (yAlignment.equals("bottom"))
+        {
+            // do nothing - deltay stays the same size
+        }
+        else
+        {
+            offset  = 0;
+        }
+        return offset;
+    }
+
     public void show(Rect startRect)
     {
         setVisibility(View.VISIBLE);
-
-        Log.d(TAG, "mLastPosY:" + mLastPosY + " mLastSizeY:" + mLastSizeY);
-        //mPreviewNotificationView.setTranslationY(startRect.top - mLastPosY - mLastSizeY/2);
-        int minheight = startRect.bottom - startRect.top;
-        int maxheight = mLastSizeY;
-        mPreviewNotificationView.setTranslationY(mPreviewNotificationView.getHeight()/2);
-        mPreviewNotificationView.setTranslationX(0);
-        mPreviewNotificationView.setScaleY(minheight/maxheight);
-
-        mPreviewNotificationView.setAlpha(1);
+        mPreviewNotificationView.setAlpha(0);
         mPreviewNotificationView.setVisibility(View.VISIBLE);
-        mPreviewNotificationView.animate().scaleY(1.0f).alpha(1).translationY(0).setDuration(mAnimationDuration).setListener(null);
+        mPreviewNotificationView.getLayoutParams().height = startRect.height();
+        mPreviewNotificationView.requestLayout();
+        mRowTop = startRect.top;
+        mPreviewNotificationView.setTranslationY(mRowTop);
+
+        mPreviewNotificationView.animate().alpha(1).translationY(calcOffset()).setDuration(mAnimationDuration).setListener(null);
+        expand(mPreviewNotificationView);
     }
+
+    public void hide()
+    {
+        collapse(mPreviewNotificationView);
+        mPreviewNotificationView.animate().alpha(0).translationY(mRowTop).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mPreviewNotificationView.setVisibility(View.GONE);
+                setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     public void setContent(NotificationData ni, Callbacks callbacks)
     {

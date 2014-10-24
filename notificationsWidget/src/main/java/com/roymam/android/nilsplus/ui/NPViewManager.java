@@ -586,13 +586,12 @@ public class NPViewManager
 
                 Point size = getWidgetSize();
                 Point pos = getWidgetPosition(size);
-
-                rect.top = (int) (rowView.getY() + pos.y);
+                Point itemsPos = getWidgetPosition(new Point(size.x, mNPListView.getItemsHeight()));
+                int delta = (itemsPos.y - pos.y);
+                rect.top = (int) (rowView.getY() + delta);
                 rect.bottom = rect.top + rowView.getHeight();
                 rect.left = (int) (rowView.getX() + pos.x);
                 rect.right = rect.left + rect.left;
-
-                Log.d(TAG, "animate to preview, start rect:" + rect);
 
                 // animate pop in of the preview view
                 mPreviewView.show(rect);
@@ -796,7 +795,7 @@ public class NPViewManager
         mListView.animate().alpha(1).setDuration(mAnimationDuration).setListener(null);
 
         // animate hiding preview view
-        mPreviewView.hide(yOffset);
+        mPreviewView.hide();
 
         // show touch area
         mTouchAreaView.setVisibility(View.VISIBLE);

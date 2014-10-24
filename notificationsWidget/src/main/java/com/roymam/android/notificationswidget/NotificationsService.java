@@ -1664,7 +1664,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     public void hide(boolean force)
     {
-        if (viewManager.isVisible())
+        if (viewManager.isVisible() || force)
             viewManager.hide(force);
     }
 
