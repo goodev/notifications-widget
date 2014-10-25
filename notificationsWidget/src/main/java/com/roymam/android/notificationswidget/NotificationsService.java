@@ -1088,8 +1088,6 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     private void purgeDeletedNotifications(String packageName, int id)
     {
-        Log.d(TAG,"purging deleted mNotifications "+ packageName + ":" + id);
-
         Lock w = lock.writeLock();
         w.lock();
         try
@@ -1103,7 +1101,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                         !nd.protect &&
                         (nd.id == id || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2))
                 {
-                    Log.d(TAG, "permanently removing uid:" + nd.uid);
+                    Log.d(TAG, "purgeDeleteNotifications: permanently removing uid:" + nd.uid + " packageName:" + packageName + " id:" + id);
                     iter.remove();
                 }
             }
