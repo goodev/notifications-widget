@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,7 +21,6 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
@@ -83,7 +81,7 @@ public class PreviewNotificationView extends RelativeLayout {
     private int mLastPosX = 0;
     private int mLastSizeX = 0;
     private int mLastSizeY = 0;
-    private int mIconSize;
+    private int mPreviewIconSize;
     private int mStatusBarHeight;
     private boolean mVerticalDrag;
     private boolean mHorizontalDrag;
@@ -91,12 +89,14 @@ public class PreviewNotificationView extends RelativeLayout {
     private boolean mIsSoftKeyVisible = false;
     private int mStartHeight = 0;
     private int mRowTop = 0;
+    private int mIconSize;
 
     public void updateSizeAndPosition(Point pos, Point size)
     {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrimaryTextColor = prefs.getInt(SettingsManager.PRIMARY_TEXT_COLOR, SettingsManager.DEFAULT_PRIMARY_TEXT_COLOR);
-        mIconSize = prefs.getInt(SettingsManager.PREVIEW_ICON_SIZE, SettingsManager.DEFAULT_PREVIEW_ICON_SIZE);
+        mPreviewIconSize = prefs.getInt(SettingsManager.PREVIEW_ICON_SIZE, SettingsManager.DEFAULT_PREVIEW_ICON_SIZE);
+        mIconSize = prefs.getInt(SettingsManager.ICON_SIZE, SettingsManager.DEFAULT_ICON_SIZE);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(size.x, size.y);
         params.leftMargin = pos.x;
@@ -115,18 +115,7 @@ public class PreviewNotificationView extends RelativeLayout {
             mStatusBarHeight = getResources().getDimensionPixelSize(resourceId);
         }
 
-        // set vertical alignment of the preview box
-        //LayoutParams bgParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        String yAlignment = prefs.getString(SettingsManager.VERTICAL_ALIGNMENT, SettingsManager.DEFAULT_VERTICAL_ALIGNMENT);
-
-        //if (yAlignment.equals("center"))
-        //    params.addRule(CENTER_VERTICAL);
-        //else if (yAlignment.equals("bottom"))
-        //    params.addRule(ALIGN_PARENT_BOTTOM);
-
         mPreviewNotificationView.setLayoutParams(params);
-
-        //mPreviewBackground.setLayoutParams(bgParams);
     }
 
     public void showQuickReplyBox() {
@@ -274,7 +263,7 @@ public class PreviewNotificationView extends RelativeLayout {
                     int w = mPreviewBackground.getWidth();
                     int h = mPreviewBackground.getHeight();
                     mDotsView.updateSizeAndPosition(new Point(loc[0],loc[1]), new Point(w,h));
-                    Rect r = new Rect(0,0, BitmapUtils.dpToPx(mIconSize), BitmapUtils.dpToPx(mIconSize));
+                    Rect r = new Rect(0,0, BitmapUtils.dpToPx(mPreviewIconSize), BitmapUtils.dpToPx(mPreviewIconSize));
                     mDotsView.setIcons(r, ni.getAppIcon(),
                             ni.getActions().length > 0?ni.getActions()[0].drawable:null,
                             ni.getActions().length > 1?ni.getActions()[1].drawable:null);
@@ -451,6 +440,7 @@ public class PreviewNotificationView extends RelativeLayout {
         setVisibility(View.VISIBLE);
         mPreviewNotificationView.setAlpha(0);
         mPreviewNotificationView.setVisibility(View.VISIBLE);
+        mPreviewNotificationView.setTranslationX(0);
         mPreviewNotificationView.getLayoutParams().height = startRect.height();
         mPreviewNotificationView.requestLayout();
         mRowTop = startRect.top;
@@ -458,6 +448,14 @@ public class PreviewNotificationView extends RelativeLayout {
 
         mPreviewNotificationView.animate().alpha(1).translationY(calcOffset()).setDuration(mAnimationDuration).setListener(null);
         expand(mPreviewNotificationView);
+
+        // animate icon size change
+        float ratio = mIconSize / mPreviewIconSize;
+        mPreviewIconBG.setScaleX(ratio);
+        mPreviewIconBG.setScaleY(ratio);
+        mPreviewIconBG.setTranslationX(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2));
+        mPreviewIconBG.setTranslationY(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2));
+        mPreviewIconBG.animate().setDuration(mAnimationDuration).scaleY(1).scaleX(1).translationX(0).translationY(0).setListener(null);
     }
 
     public void hide()
@@ -470,6 +468,14 @@ public class PreviewNotificationView extends RelativeLayout {
                 setVisibility(View.GONE);
             }
         });
+
+        // animate icon size change
+        float ratio = mIconSize / mPreviewIconSize;
+        mPreviewIconBG.animate().setDuration(mAnimationDuration).scaleX(ratio)
+                                .scaleY(ratio)
+                                .translationX(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2))
+                                .translationY(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2))
+                                .setListener(null);
     }
 
 
