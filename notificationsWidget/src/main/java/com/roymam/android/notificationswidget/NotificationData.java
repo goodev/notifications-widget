@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class NotificationData implements Parcelable
 {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = NotificationData.class.getSimpleName();
 
     public static int nextUID = 0;
     public int uid;
@@ -70,6 +70,13 @@ public class NotificationData implements Parcelable
         if (otherContent == null) otherContent = "";
         if (myContent == null) myContent = "";
 
+        myTitle = myTitle.toString().replace("\n", " ");
+        otherTitle = otherTitle.toString().replace("\n", " ");
+        myText = myText.toString().replace("\n", " ");
+        otherText = otherText.toString().replace("\n", " ");
+        myContent = myContent.toString().replace("\n", " ");
+        otherContent = otherContent.toString().replace("\n", " ");
+
         boolean titlesdup = otherTitle.toString().trim().equals(myTitle.toString().trim());
         boolean textdup = otherText.toString().trim().startsWith(myText.toString().trim());
         boolean contentsdup = otherContent.toString().trim().startsWith(myContent.toString().trim());
@@ -85,6 +92,10 @@ public class NotificationData implements Parcelable
         {
             Log.d(TAG, "notification is not similar to "+ packageName + ":" + id + "T" + tag);
             Log.d(TAG, String.format("titlesdup: %s textdup: %s contentsdup: %s sideloaded: %s other sideloaded: %s", titlesdup, textdup, contentsdup, sideLoaded, nd.sideLoaded));
+            Log.d(TAG, String.format("title1: %s title2: %s", myTitle, otherTitle));
+            Log.d(TAG, String.format("text1: %s text2: %s", myText, otherText));
+            Log.d(TAG, String.format("content1: %s content2: %s", myContent, otherContent));
+
             return false;
         }
     }

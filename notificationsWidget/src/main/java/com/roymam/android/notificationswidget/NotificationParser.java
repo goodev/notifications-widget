@@ -339,6 +339,8 @@ public class NotificationParser
 
     private List<NotificationData> getMultipleNotificationsFromInboxView(RemoteViews bigContentView, NotificationData baseNotification)
     {
+        Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
+
         String privacy = SettingsManager.getPrivacy(context, baseNotification.packageName);
         ArrayList<NotificationData> notifications = new ArrayList<NotificationData>();
         HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(bigContentView);
@@ -358,6 +360,7 @@ public class NotificationParser
         if (strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
 
+        Log.d(TAG, events.size() + " events found.");
         int eventsOrder = 0;
 
         // create a notification for each event
@@ -389,6 +392,7 @@ public class NotificationParser
             // extract title from content for first/last event
             if (event != null)
             {
+                Log.d(TAG, "processing event:" + event);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(event);
 
                 // try to split it by text style
@@ -396,6 +400,7 @@ public class NotificationParser
 
                 // if there are spans and the first doesn't contain the whole text
                 if (spans.length > 0 && ssb.getSpanEnd(spans[0]) < ssb.length() - 1) {
+                    Log.d(TAG, "event contains multiple styles. separate it.");
                     int s0start = ssb.getSpanStart(spans[0]);
                     int s0end = ssb.getSpanEnd(spans[0]);
                     nd.title = event.subSequence(s0start, s0end).toString();
@@ -407,16 +412,19 @@ public class NotificationParser
                 {
                     // try to split it by ":" delimiter
                     // first make sure it's not having the time prefix
-                    event = nd.text;
                     removeTimePrefix(nd);
+                    event = nd.text;
 
                     String[] parts = event.toString().split(": ", 2);
                     if (parts.length == 1) parts = event.toString().split(":", 2);
                     if (parts.length == 2 && parts[1].length()>2) // parts[1].length()>2 special exception for missed calls time 
                     {
+                        Log.d(TAG, "event contains delimiter. separate it.");
+
                         // a fix for whatsapp group messages
                         if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+"))
                         {
+                            Log.d(TAG, "special whatsapp group message handling...");
                             nd.title = parts[0] + " @ " + nd.title;
                         }
                         else

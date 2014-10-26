@@ -44,7 +44,7 @@ public class NotificationsListener extends NotificationListenerService
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void reloadActiveNotifications() {
+    private void reloadActiveNotifications() {
         try {
             StatusBarNotification[] notifications = getActiveNotifications();
             Log.d(TAG, "reloadActiveNotifications: active notifications:" + notifications.length);
