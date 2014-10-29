@@ -411,15 +411,27 @@ public class NotificationParser
                 else
                 {
                     // try to split it by ":" delimiter
-                    // first make sure it's not having the time prefix
+                    // first make sure it's not having the time prefix or sufix
                     removeTimePrefix(nd);
                     event = nd.text;
 
-                    String[] parts = event.toString().split(": ", 2);
-                    if (parts.length == 1) parts = event.toString().split(":", 2);
-                    if (parts.length == 2 && parts[1].length()>2) // parts[1].length()>2 special exception for missed calls time 
+                    boolean isTime = true;
+                    int delimiterPos = 0;
+
+                    while (delimiterPos != -1 && isTime) {
+                        // search for a ":" delimiter that is not part of a time string
+                        delimiterPos = TextUtils.indexOf(event, ':', delimiterPos+1);
+                        isTime = delimiterPos >= 2 && event.length() >= delimiterPos + 3 &&
+                                TextUtils.isDigitsOnly(event.subSequence(delimiterPos - 2, delimiterPos).toString().trim()) &&
+                                TextUtils.isDigitsOnly(event.subSequence(delimiterPos + 1, delimiterPos + 3).toString().trim());
+                    }
+                    if (!isTime && delimiterPos != -1)
                     {
                         Log.d(TAG, "event contains delimiter. separate it.");
+
+                        CharSequence[] parts = new CharSequence[2];
+                        parts[0] = event.subSequence(0, delimiterPos);
+                        parts[1] = event.subSequence(delimiterPos+1, event.length());
 
                         // a fix for whatsapp group messages
                         if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+"))
@@ -466,6 +478,26 @@ public class NotificationParser
             nd.text = nd.text.subSequence(match.start(3), match.end(3));
         }
     }
+
+    private void removeTimeSufix(NotificationData nd) {
+        CharSequence str = nd.text;
+
+        String timeRegExp = "(.*)(\\d\\d?:\\d\\d? ?([AP]M )?)$";
+
+        Pattern timePat = Pattern.compile(timeRegExp);
+
+        // search for time label in the title
+        Matcher match = timePat.matcher(str);
+        if (match.matches())
+        {
+            // if it has it - set it as the event time
+            if (parseTime(match.group(2)) > 0) {
+                nd.received = parseTime(match.group(2));
+                nd.text = str.subSequence(match.start(0), match.end(0));
+            }
+        }
+    }
+
 
     private long parseTime(String time)
     {
