@@ -79,7 +79,9 @@ public class NotificationData implements Parcelable
 
         boolean titlesdup = otherTitle.toString().trim().equals(myTitle.toString().trim());
         boolean textdup = otherText.toString().trim().startsWith(myText.toString().trim());
-        boolean contentsdup = otherContent.toString().trim().startsWith(myContent.toString().trim());
+        boolean contentsdup = otherContent.toString().trim().startsWith(myContent.toString().trim())
+                // do not compare content between sideloaded and not sideloaded notifications
+                || sideLoaded != nd.sideLoaded;
         boolean allDup = titlesdup && textdup && (contentsdup || !compareContent);
 
         if (nd.packageName.equals(this.packageName) && allDup &&

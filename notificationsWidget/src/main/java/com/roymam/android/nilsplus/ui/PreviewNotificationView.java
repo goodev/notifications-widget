@@ -119,7 +119,8 @@ public class PreviewNotificationView extends RelativeLayout {
     }
 
     public void showQuickReplyBox() {
-        if (ni.getQuickReplyAction() != null && mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+        if (ni.getQuickReplyAction() != null &&
+            mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.setVisibility(View.VISIBLE);
             mQuickReplyBox.setScaleY(0);
             mQuickReplyBox.animate().scaleY(1).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
@@ -133,6 +134,11 @@ public class PreviewNotificationView extends RelativeLayout {
                     }
                 }
             });
+            Log.d(TAG, "ni is null: " + (ni == null));
+            Log.d(TAG, "ni.quickReplyAction is null: " + (ni.getQuickReplyAction() == null));
+            Log.d(TAG, "mQuickReplyLabel is null:" + (mQuickReplyLabel == null));
+            Log.d(TAG, "ni.quickReplyAction.title is null:" + (ni.getQuickReplyAction().title != null));
+
             mQuickReplyLabel.setText(ni.getQuickReplyAction().title);
             mQuickReplyText.setText("");
         }
