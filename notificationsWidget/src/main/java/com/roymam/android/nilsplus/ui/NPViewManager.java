@@ -574,13 +574,20 @@ public class NPViewManager
             // calc offset (where to start animation)
             //yOffset = calcOffset();
 
-            View rowView = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+            final View rowView = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
             if (rowView != null) {
                 mPreviewItem = ni;
                 mPreviewPosition = position;
 
-                // animation fade out of list view
-                mListView.animate().alpha(0).setDuration(mAnimationDuration).setListener(null);
+                // animation fade out of list view & make the selected row fully transparent
+                rowView.animate().alpha(0).setDuration(mAnimationDuration/10).setListener(null);
+                mListView.animate().alpha(0).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // make the selected row fully opaque again
+                        rowView.setAlpha(1);
+                    }
+                });
 
                 Rect rect = new Rect();
 
@@ -594,13 +601,18 @@ public class NPViewManager
                 rect.right = rect.left + rect.left;
 
                 // animate pop in of the preview view
-                mPreviewView.show(rect);
+                boolean showKeyboard = (mPreviewItem != null && mPreviewItem.getQuickReplyAction() != null);
+
+                mPreviewView.show(rect, showKeyboard);
+
+                // if keyboard need to be shown - update layout to show it
+                if (showKeyboard) {
+                    showKeyboardOnPreview();
+                }
 
                 // hide touch area
                 mTouchAreaView.setVisibility(View.GONE);
 
-                // show quick reply keyboard if needed
-                showKeyboardOnPreview();
             }
             else
             {
@@ -697,9 +709,6 @@ public class NPViewManager
         mWindowManager.removeViewImmediate(mEditModeView);
         mWindowManager.removeViewImmediate(mTouchAreaView);
         mWindowManager.removeViewImmediate(mDotsView);
-        //safeRemoveView(mNPListView);
-        //safeRemoveView(mPreviewView);
-        //safeRemoveView(mEditModeView);
     }
 
     public void showKeyboardOnPreview()
@@ -707,8 +716,6 @@ public class NPViewManager
         if (mPreviewItem != null && mPreviewItem.getQuickReplyAction() != null)
         {
             mWindowManager.updateViewLayout(mPreviewView, getPreviewWithKeyboardParams());
-            //mWindowManager.removeViewImmediate(mTouchAreaView);
-            mPreviewView.showQuickReplyBox();
         }
     }
 
@@ -717,7 +724,6 @@ public class NPViewManager
         if (mPreviewItem != null && mPreviewItem.getQuickReplyAction() != null)
         {
             mWindowManager.updateViewLayout(mPreviewView, getPreviewWindowParams());
-            //mWindowManager.addView(mTouchAreaView, getTouchAreaLayoutParams(true));
             mPreviewView.hideQuickReplyBox();
         }
     }
@@ -800,7 +806,7 @@ public class NPViewManager
         // show touch area
         mTouchAreaView.setVisibility(View.VISIBLE);
 
-        hideKeyboardOnPreview();
+        //hideKeyboardOnPreview();
         mPreviewItem = null;
 
         mHandler.postDelayed(mUpdateTouchAreaSize, mAnimationDuration*2);

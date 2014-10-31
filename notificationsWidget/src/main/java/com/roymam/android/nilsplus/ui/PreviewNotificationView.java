@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
@@ -87,8 +88,7 @@ public class PreviewNotificationView extends RelativeLayout {
     private boolean mHorizontalDrag;
     private boolean mIgnoreTouch;
     private boolean mIsSoftKeyVisible = false;
-    private int mStartHeight = 0;
-    private int mRowTop = 0;
+    private Rect mStartRect;
     private int mIconSize;
 
     public void updateSizeAndPosition(Point pos, Point size)
@@ -118,36 +118,70 @@ public class PreviewNotificationView extends RelativeLayout {
         mPreviewNotificationView.setLayoutParams(params);
     }
 
-    public void showQuickReplyBox() {
+    public void prepareQuickReplyBox() {
         if (ni.getQuickReplyAction() != null &&
-            mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+                mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.setVisibility(View.VISIBLE);
-            mQuickReplyBox.setScaleY(0);
-            mQuickReplyBox.animate().scaleY(1).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    showSoftKeyboard();
+            mQuickReplyBox.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
+            mQuickReplyBox.requestLayout();
 
-                    // scroll the text down again if there is additional text (because the textbox hide part of it)
-                    if (ni.additionalText != null ) {
-                        mScrollView.fullScroll(View.FOCUS_DOWN);
-                    }
-                }
-            });
-            Log.d(TAG, "ni is null: " + (ni == null));
-            Log.d(TAG, "ni.quickReplyAction is null: " + (ni.getQuickReplyAction() == null));
-            Log.d(TAG, "mQuickReplyLabel is null:" + (mQuickReplyLabel == null));
-            Log.d(TAG, "ni.quickReplyAction.title is null:" + (ni.getQuickReplyAction().title != null));
+            // scroll the text down again if there is additional text (because the textbox hide part of it)
+            if (ni.additionalText != null) {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
 
             mQuickReplyLabel.setText(ni.getQuickReplyAction().title);
             mQuickReplyText.setText("");
         }
     }
 
+    public void showQuickReplyBox() {
+        if (ni.getQuickReplyAction() != null &&
+            mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+            mQuickReplyBox.getLayoutParams().height = 0;
+            mQuickReplyBox.requestLayout();
+
+            expand(mQuickReplyBox, mQuickReplyBox.getLayoutParams().width, LayoutParams.WRAP_CONTENT, new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    scrollDown();
+                    showSoftKeyboard();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            showSoftKeyboard();
+        }
+    }
+
+    private void scrollDown() {
+        // make sure the conversation is fully scrolled down before re-drawing the view again
+        mPreviewNotificationView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mPreviewNotificationView.getViewTreeObserver().removeOnPreDrawListener(this);
+                // full scroll down - if there is a conversation content
+                if (ni.additionalText != null) {
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                }
+                return true;
+            }
+        });
+    }
+
     public void hideQuickReplyBox() {
         if (mQuickReplyBox != null)
         {
-            mQuickReplyBox.setVisibility(View.GONE);
+            collapse(mQuickReplyBox, mQuickReplyBox.getLayoutParams().width, 0, null);
+            //mQuickReplyBox.setVisibility(View.GONE);
             hideSoftKeyboard();
         }
     }
@@ -346,6 +380,7 @@ public class PreviewNotificationView extends RelativeLayout {
                     RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                     try {
                         action.actionIntent.send(context, 0, intent);
+                        hide();
                         mCallbacks.onDismiss(ni);
                     } catch (PendingIntent.CanceledException e) {
                         e.printStackTrace();
@@ -369,19 +404,43 @@ public class PreviewNotificationView extends RelativeLayout {
     }
 
 
-    public void expand(final View v) {
-        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-        mStartHeight = v.getLayoutParams().height;
+    public void expand(final View v, final int w, final int h, Animation.AnimationListener listener) {
+        //Log.d(TAG, String.format("expand(%d, %d, %d)", v.getId(), w, h));
+        final boolean changeWidth = w != v.getLayoutParams().width;
+        final boolean changeHeight = h != v.getLayoutParams().height;
+
+        v.measure(v.getLayoutParams().width, v.getLayoutParams().height);
+        final int startWidth = v.getLayoutParams().width >= 0? v.getLayoutParams().width : v.getMeasuredWidth();
+        final int startHeight = v.getLayoutParams().height >= 0? v.getLayoutParams().height : v.getMeasuredHeight();
+
+        v.measure(w, h);
+        final int targetWidth = w>0?w:v.getMeasuredWidth();
+        final int targetHeight = h>0?h:v.getMeasuredHeight();
+
+        //Log.d(TAG, String.format("expand view:%d startWidth:%d startHeight:%d targetWidth:%d targetHeight:%d", v.getId(), startWidth, startHeight, targetWidth, targetHeight));
 
         Animation a = new Animation()
         {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? LayoutParams.WRAP_CONTENT
-                        : mStartHeight +  (int)((targetHeight - mStartHeight) * interpolatedTime);
-                v.requestLayout();
+                int prevw = v.getLayoutParams().width;
+                int prevh = v.getLayoutParams().height;
+
+                if (changeWidth)
+                    v.getLayoutParams().width = interpolatedTime == 1
+                        ? w
+                        : startWidth +  (int)((targetWidth - startWidth) * interpolatedTime);
+
+                if (changeHeight)
+                    v.getLayoutParams().height = interpolatedTime == 1
+                        ? h
+                        : startHeight +  (int)((targetHeight - startHeight) * interpolatedTime);
+
+                if (prevw != v.getLayoutParams().width ||
+                        prevh != v.getLayoutParams().height) {
+                    //Log.d(TAG, String.format("size changed: vid:%d w:%d h:%d", v.getId(), v.getLayoutParams().width, v.getLayoutParams().height));
+                    v.requestLayout();
+                }
             }
 
             @Override
@@ -391,21 +450,43 @@ public class PreviewNotificationView extends RelativeLayout {
         };
 
         a.setDuration(mAnimationDuration);
+        a.setAnimationListener(listener);
         v.startAnimation(a);
     }
 
-    public void collapse(final View v) {
-        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int maxHeight = v.getMeasuredHeight();
-
+    public void collapse(final View v, final int w, final int h, Animation.AnimationListener listener) {
+        //Log.d(TAG, String.format("collapse(%d, %d, %d)", v.getId(), w, h));
+        final boolean changeWidth = w != v.getLayoutParams().width;
+        final boolean changeHeight = h != v.getLayoutParams().height;
+        v.measure(v.getLayoutParams().width, v.getLayoutParams().height);
+        final int startWidth = v.getMeasuredWidth();
+        final int startHeight = v.getMeasuredHeight();
+        v.measure(w, h);
+        final int targetWidth = w>=0?w:v.getMeasuredWidth();
+        final int targetHeight = h>=0?h:v.getMeasuredHeight();
+        //Log.d(TAG, String.format("collapse view:%d startWidth:%d startHeight:%d targetWidth:%d targetHeight:%d", v.getId(), startWidth, startHeight, targetWidth, targetHeight));
         Animation a = new Animation()
         {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? LayoutParams.WRAP_CONTENT
-                        : mStartHeight +  (int)((maxHeight - mStartHeight) * (1-interpolatedTime));
-                v.requestLayout();
+                int prevw = v.getLayoutParams().width;
+                int prevh = v.getLayoutParams().height;
+
+                if (changeWidth)
+                    v.getLayoutParams().width = interpolatedTime == 1
+                            ? w
+                            : targetWidth +  (int)((startWidth - targetWidth) * (1-interpolatedTime));
+
+                if (changeHeight)
+                    v.getLayoutParams().height = interpolatedTime == 1
+                            ? h
+                            : targetHeight +  (int)((startHeight - targetHeight) * (1-interpolatedTime));
+
+                if (prevw != v.getLayoutParams().width ||
+                    prevh != v.getLayoutParams().height) {
+                    //Log.d(TAG, String.format("size changed: vid:%d w:%d h:%d", v.getId(), v.getLayoutParams().width, v.getLayoutParams().height));
+                    v.requestLayout();
+                }
             }
 
             @Override
@@ -415,6 +496,7 @@ public class PreviewNotificationView extends RelativeLayout {
         };
 
         a.setDuration(mAnimationDuration);
+        a.setAnimationListener(listener);
         v.startAnimation(a);
     }
 
@@ -441,47 +523,69 @@ public class PreviewNotificationView extends RelativeLayout {
         return offset;
     }
 
-    public void show(Rect startRect)
+    public void show(Rect startRect, final boolean showKeyboard)
     {
         setVisibility(View.VISIBLE);
-        mPreviewNotificationView.setAlpha(0);
+        mPreviewNotificationView.setAlpha(1);
         mPreviewNotificationView.setVisibility(View.VISIBLE);
         mPreviewNotificationView.setTranslationX(0);
         mPreviewNotificationView.getLayoutParams().height = startRect.height();
         mPreviewNotificationView.requestLayout();
-        mRowTop = startRect.top;
-        mPreviewNotificationView.setTranslationY(mRowTop);
+        mStartRect = startRect;
+        mPreviewNotificationView.setTranslationY(mStartRect.top);
 
-        mPreviewNotificationView.animate().alpha(1).translationY(calcOffset()).setDuration(mAnimationDuration).setListener(null);
-        expand(mPreviewNotificationView);
+        mPreviewIconBG.getLayoutParams().width = BitmapUtils.dpToPx(mIconSize);
+        mPreviewIconBG.getLayoutParams().height = BitmapUtils.dpToPx(mIconSize);
+        mPreviewIconBG.requestLayout();
 
-        // animate icon size change
-        float ratio = mIconSize / mPreviewIconSize;
-        mPreviewIconBG.setScaleX(ratio);
-        mPreviewIconBG.setScaleY(ratio);
-        mPreviewIconBG.setTranslationX(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2));
-        mPreviewIconBG.setTranslationY(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2));
-        mPreviewIconBG.animate().setDuration(mAnimationDuration).scaleY(1).scaleX(1).translationX(0).translationY(0).setListener(null);
+        mPreviewNotificationView.animate().translationY(calcOffset()).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // scroll down the text if it is a conversation mode
+                scrollDown();
+            }
+        });
+
+        // prepare the quick reply box to start animating with the preview expand
+        if (showKeyboard) {
+            prepareQuickReplyBox();
+        }
+
+        // animate opening the preview view and the preview icon
+        expand(mPreviewNotificationView, mPreviewNotificationView.getLayoutParams().width, LayoutParams.WRAP_CONTENT, null);
+        expand(mPreviewIconBG, BitmapUtils.dpToPx(mPreviewIconSize), BitmapUtils.dpToPx(mPreviewIconSize), null);
+
+        // start animating the quick reply box
+        if (showKeyboard) {
+            showQuickReplyBox();
+        }
+
+        // if the time is not displayed on list view - animate it grows
+        //if (!prefs.getBoolean(SettingsManager.SHOW_TIME, SettingsManager.DEFAULT_SHOW_TIME)) {
+        //    mPreviewTime.getLayoutParams().width = 0;
+        //    resize(mPreviewTime, LayoutParams.WRAP_CONTENT, mPreviewTime.getLayoutParams().height);
+        //}
     }
 
     public void hide()
     {
-        collapse(mPreviewNotificationView);
-        mPreviewNotificationView.animate().alpha(0).translationY(mRowTop).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
+        collapse(mPreviewNotificationView, mPreviewNotificationView.getLayoutParams().width, mStartRect.height(), null);
+        collapse(mPreviewIconBG, BitmapUtils.dpToPx(mIconSize), BitmapUtils.dpToPx(mIconSize), null);
+        hideQuickReplyBox();
+
+        // if the time is not displayed on list view - animate it shrinks
+        //if (!prefs.getBoolean(SettingsManager.SHOW_TIME, SettingsManager.DEFAULT_SHOW_TIME)) {
+        //    resize(mPreviewTime, 0, mPreviewTime.getLayoutParams().height);
+        //}
+
+        mPreviewNotificationView.animate().translationY(mStartRect.top).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mPreviewNotificationView.setVisibility(View.GONE);
                 setVisibility(View.GONE);
+
             }
         });
-
-        // animate icon size change
-        float ratio = mIconSize / mPreviewIconSize;
-        mPreviewIconBG.animate().setDuration(mAnimationDuration).scaleX(ratio)
-                                .scaleY(ratio)
-                                .translationX(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2))
-                                .translationY(BitmapUtils.dpToPx(-(mPreviewIconSize - mIconSize) / 2))
-                                .setListener(null);
     }
 
 
