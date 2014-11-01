@@ -208,13 +208,13 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                 if (startTop != top) {
                     int delta = startTop - top;
                     child.setTranslationY(delta);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        child.setHasTransientState(true);
+                    //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        //child.setHasTransientState(true);
                     child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                child.setHasTransientState(false);
+                     //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                     //           child.setHasTransientState(false);
                         }
                     });
                     if (firstAnimation) {
@@ -235,8 +235,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                 startTop = top + (i > 0 ? childHeight : -childHeight);
                 int delta = startTop - top;
                 NotificationData nd = (NotificationData) child.getTag(R.integer.notification_data_tag);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    child.setHasTransientState(true);
+                //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                //    child.setHasTransientState(true);
 
                 if (nd.newOne) {
                     child.setPivotY(0);
@@ -244,8 +244,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                     child.animate().setDuration(mAnimationTime * 2).rotationX(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                child.setHasTransientState(false);
+                    //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    //            child.setHasTransientState(false);
                         }
                     });
                     nd.newOne = false;
@@ -255,8 +255,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                     child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                child.setHasTransientState(false);
+                    //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    //            child.setHasTransientState(false);
                         }
                     });
                 }
