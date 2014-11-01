@@ -688,6 +688,22 @@ public class NotificationParser
                 text = notificationStrings.get(2131362543);
             }
 
+            // TorAlaram text
+            if (notificationStrings.containsKey(2131361911) &&
+                notificationStrings.containsKey(2131361920) &&
+                    notificationStrings.containsKey(2131361916) &&
+                    notificationStrings.containsKey(2131361918) &&
+                    notificationStrings.containsKey(2131361913))
+            {
+                title = notificationStrings.get(2131361911);
+                text = String.format("%s %s-%s %s",
+                        notificationStrings.get(2131361920),
+                        notificationStrings.get(2131361916),
+                        notificationStrings.get(2131361918),
+                        notificationStrings.get(2131361913));
+            } else if (notificationStrings.containsKey(2131361924))
+                text = notificationStrings.get(2131361924);
+
             // get title string if available
             if (notificationStrings.containsKey(notification_title_id))
             {
