@@ -186,6 +186,11 @@ public class PreviewNotificationView extends RelativeLayout {
         }
     }
 
+    public void updateContent(NotificationData newPreview) {
+        setContent(newPreview, mCallbacks);
+        mPreviewNotificationView.requestLayout();
+    }
+
     public interface Callbacks
     {
         public void onDismiss(NotificationData ni);

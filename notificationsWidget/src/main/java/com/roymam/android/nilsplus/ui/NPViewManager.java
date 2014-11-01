@@ -1085,12 +1085,12 @@ public class NPViewManager
                 data = NotificationsService.getSharedInstance().getNotifications();
 
             // check if the preview item still exists
-            boolean exists = false;
+            NotificationData newPreview = null;
             for (NotificationData ni : data)
-                if (ni == mPreviewItem) exists = true;
+                if (ni.getUid() == mPreviewItem.getUid()) newPreview = ni;
 
             // close preview if the item is no longer exists
-            if (!exists)
+            if (newPreview == null)
             {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
@@ -1119,6 +1119,11 @@ public class NPViewManager
                 }
                 else
                     hideNotificationPreview();
+            }
+            else // if it exists, it might have changed
+            {
+                mPreviewItem = newPreview;
+                mPreviewView.updateContent(newPreview);
             }
         }
     }
