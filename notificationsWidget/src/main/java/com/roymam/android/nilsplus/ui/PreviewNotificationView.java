@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.RemoteInput;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -707,14 +708,19 @@ public class PreviewNotificationView extends RelativeLayout {
         if (mQuickReplyText != null) mQuickReplyText.setTextColor(secondaryTextColor);
 
         mPreviewTime.setTextColor(secondaryTextColor);
-        mPreviewBackground.setBackgroundColor(mNotificationBGColor);
+        if (mTheme.allowOpacityChange || theme.previewBG == null)
+            mPreviewBackground.setAlpha(prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100.0f);
+        else
+            mPreviewBackground.setBackgroundColor(mNotificationBGColor);
+
         mPreviewIconBG.setBackgroundColor(iconBGColor);
 
         // apply theme
         if (theme.previewBG != null)
         {
             theme.previewBG.setAlpha(255 * prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100);
-            mPreviewBackground.setBackgroundDrawable(theme.previewBG);
+            if (!(mPreviewBackground instanceof CardView))
+                mPreviewBackground.setBackgroundDrawable(theme.previewBG);
         }
 
         Bitmap largestBitmap = null;

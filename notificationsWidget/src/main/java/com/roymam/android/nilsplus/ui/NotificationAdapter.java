@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
@@ -183,7 +184,12 @@ public class NotificationAdapter extends BaseAdapter
         holder.tvTitle.setTextColor(primaryTextColor);
         holder.tvDescription.setTextColor(secondaryTextColor);
         holder.tvTime.setTextColor(secondaryTextColor);
-        holder.vNotificationBG.setBackgroundColor(even?altNotificationBGColor:notificationBGColor);
+
+        if (theme.allowOpacityChange)
+            holder.vNotificationBG.setAlpha(prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100.0f);
+        else
+            holder.vNotificationBG.setBackgroundColor(even?altNotificationBGColor:notificationBGColor);
+
         holder.vIconBG.setBackgroundColor(even?altIconBGColor:iconBGColor);
 
         // handle single line
@@ -236,7 +242,8 @@ public class NotificationAdapter extends BaseAdapter
                 Drawable background = even?theme.altBackground:theme.background;
                     background.setAlpha(255 * prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100);
                 //noinspection deprecation
-                holder.vNotificationBG.setBackgroundDrawable(background);
+                if (!(holder.vNotificationBG instanceof CardView))
+                    holder.vNotificationBG.setBackgroundDrawable(background);
             }
 
             Drawable textBG = even ? theme.altTextBG : theme.textBG;

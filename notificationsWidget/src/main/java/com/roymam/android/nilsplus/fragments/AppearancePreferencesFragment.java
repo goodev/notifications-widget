@@ -184,7 +184,7 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
         if (mTheme != null && mTheme.background != null)
             ((PreferenceGroup) getPreferenceScreen().findPreference("colors_category")).removePreference(findPreference(SettingsManager.MAIN_BG_COLOR));
         if (mTheme == null ||
-            (mTheme.background == null && mTheme.previewBG == null && mTheme.textBG == null && mTheme.previewTextBG == null))
+            (mTheme.background == null && mTheme.previewBG == null && mTheme.textBG == null && mTheme.previewTextBG == null && !mTheme.allowOpacityChange))
             ((PreferenceGroup) getPreferenceScreen().findPreference("colors_category")).removePreference(findPreference(SettingsManager.MAIN_BG_OPACITY));
 
     }

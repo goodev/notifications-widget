@@ -11,7 +11,6 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
 
 import com.roymam.android.notificationswidget.SettingsManager;
 
@@ -153,8 +152,10 @@ public class ThemeManager
         // load booleans
         theme.prominentIconBg = loadBoolean(res, packageName, "prominentIconBg", theme.prominentIconBg);
         theme.prominentAppIconBg = loadBoolean(res, packageName, "prominentIconBg", theme.prominentAppIconBg);
+        theme.allowOpacityChange = loadBoolean(res, packageName, "allowOpacityChange", theme.allowOpacityChange);
         theme.notificationLayout = loadThemeLayout(res, packageName, "notification_layout");
         theme.previewLayout = loadThemeLayout(res, packageName, "notification_preview");
+
 
         if (theme.notificationLayout != null || theme.previewLayout != null)
             theme.customLayoutIdMap = loadCustomThemeLayoutIds(res, packageName);

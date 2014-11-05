@@ -48,6 +48,7 @@ public class Theme extends ThemeInfo
     public boolean prominentIconBg = false;
     public boolean prominentAppIconBg = false;
     public Drawable appIconBg = null;
+    public boolean allowOpacityChange = false;
 
     public Theme(String packageName, String title)
     {
