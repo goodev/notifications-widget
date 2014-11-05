@@ -183,10 +183,12 @@ public class NotificationParser
                     nd.actions = getActionsFromNotification(context, n, packageName);
                 }
 
+                HashMap<Integer, CharSequence> notificationStrings = new HashMap<Integer, CharSequence>();
+
                 if (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) ||
                         privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) ||
                         privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY)) {
-                    getExpandedText(n, nd);
+                    notificationStrings = getExpandedText(n, nd);
                     // replace text with content if no text
                     if (nd.text == null || nd.text.equals("") &&
                             nd.content != null && !nd.content.equals("")) {
@@ -200,7 +202,7 @@ public class NotificationParser
 
                     if (nd.title == null && nd.text == null) {
                         Log.d(TAG, "missing text from:" + packageName);
-                        printStringsFromNotification();
+                        printStringsFromNotification(notificationStrings);
                     }
 
                     // try to get additional text from wear pages
@@ -234,13 +236,13 @@ public class NotificationParser
                     if (nd.text == null) {
                         // if both text and title are null - that's non informative notification - ignore it
                         Log.d(TAG, "ignoring notification with empty title & text from :" + packageName);
-                        printStringsFromNotification();
+                        printStringsFromNotification(notificationStrings);
                         return new ArrayList<NotificationData>();
                     }
                 } else if (nd.text == null) {
                     // if both text and title are null - that's non informative notification - ignore it
                     Log.d(TAG, "a notification with no text from:" + packageName);
-                    printStringsFromNotification();
+                    printStringsFromNotification(notificationStrings);
                 }
 
                 if (nd.text != null) removeTimePrefix(nd);
@@ -325,7 +327,7 @@ public class NotificationParser
         return new ArrayList<NotificationData>();
     }
 
-    private void printStringsFromNotification()
+    private void printStringsFromNotification(HashMap<Integer, CharSequence> notificationStrings)
     {
         if (notificationStrings != null)
         {
@@ -339,7 +341,7 @@ public class NotificationParser
 
     private List<NotificationData> getMultipleNotificationsFromInboxView(RemoteViews bigContentView, NotificationData baseNotification)
     {
-        Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
+        //Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
 
         String privacy = SettingsManager.getPrivacy(context, baseNotification.packageName);
         ArrayList<NotificationData> notifications = new ArrayList<NotificationData>();
@@ -360,7 +362,7 @@ public class NotificationParser
         if (strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
 
-        Log.d(TAG, events.size() + " events found.");
+        //Log.d(TAG, events.size() + " events found.");
         int eventsOrder = 0;
 
         // create a notification for each event
@@ -392,7 +394,7 @@ public class NotificationParser
             // extract title from content for first/last event
             if (event != null)
             {
-                Log.d(TAG, "processing event:" + event);
+                //Log.d(TAG, "processing event:" + event);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(event);
 
                 // try to split it by text style
@@ -564,7 +566,7 @@ public class NotificationParser
                     // find drawable
                     // extract app icons
                     a.drawable = BitmapCache.getInstance(context).getBitmap(packageName, a.icon);
-                    Log.d(TAG, String.format("title:%s (no remote inputs)", a.title));
+                    //Log.d(TAG, String.format("title:%s (no remote inputs)", a.title));
                     returnActions.add(a);
                 }
             }
@@ -584,7 +586,7 @@ public class NotificationParser
             a2.title = a.title;
             a2.drawable = BitmapCache.getInstance(context).getBitmap(packageName, a.icon);
             a2.remoteInputs = a.getRemoteInputs();
-            Log.d(TAG, String.format("title:%s remoteInputs:%s", a.title, a2.remoteInputs));
+            //Log.d(TAG, String.format("title:%s remoteInputs:%s", a.title, a2.remoteInputs));
             returnActions.add(a2);
         }
 
@@ -593,12 +595,14 @@ public class NotificationParser
         return returnArray;
     }
 
-    private void getExpandedText(Notification n, NotificationData nd)
+    private HashMap<Integer, CharSequence> getExpandedText(Notification n, NotificationData nd)
     {
+        HashMap<Integer, CharSequence> strings;
+
         RemoteViews view = n.contentView;
 
         // first get information from the original content view
-        extractTextFromView(view, nd);
+        strings = extractTextFromView(view, nd);
 
         nd.bitmaps = new ArrayList<Bitmap>();
 
@@ -606,10 +610,12 @@ public class NotificationParser
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             view = getBigContentView(n);
-            extractTextFromView(view, nd);
+            strings = extractTextFromView(view, nd);
 
             nd.bitmaps = getBitmapsFromRemoteViews(view);
         }
+
+        return strings;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -623,15 +629,13 @@ public class NotificationParser
         }
     }
 
-    HashMap<Integer, CharSequence> notificationStrings;
-
-    private void extractTextFromView(RemoteViews view, NotificationData nd)
+    private HashMap<Integer, CharSequence> extractTextFromView(RemoteViews view, NotificationData nd)
     {
         CharSequence title = null;
         CharSequence text = null;
         CharSequence content = null;
 
-        notificationStrings = getNotificationStringFromRemoteViews(view);
+        HashMap<Integer, CharSequence> notificationStrings = getNotificationStringFromRemoteViews(view);
 
         if (notificationStrings.size() > 0)
         {
@@ -696,11 +700,10 @@ public class NotificationParser
                     notificationStrings.containsKey(2131361913))
             {
                 title = notificationStrings.get(2131361911);
-                text = String.format("%s %s-%s %s",
-                        notificationStrings.get(2131361920),
-                        notificationStrings.get(2131361916),
-                        notificationStrings.get(2131361918),
-                        notificationStrings.get(2131361913));
+                text = notificationStrings.get(2131361920) + " " +
+                       notificationStrings.get(2131361916) + "-" +
+                       notificationStrings.get(2131361918) + " " +
+                       notificationStrings.get(2131361913);
             } else if (notificationStrings.containsKey(2131361924))
                 text = notificationStrings.get(2131361924);
 
@@ -718,15 +721,12 @@ public class NotificationParser
 
             // try to extract details lines
             content = null;
-            CharSequence firstEventStr = null;
-            CharSequence lastEventStr = null;
 
             if (notificationStrings.containsKey(inbox_notification_event_1_id))
             {
                 CharSequence s = notificationStrings.get(inbox_notification_event_1_id);
                 if (s!= null && !s.equals(""))
                 {
-                    firstEventStr = s;
                     content = s;
                 }
             }
@@ -737,7 +737,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content, "\n", s);
-                    lastEventStr = s;
                 }
             }
 
@@ -747,7 +746,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -757,7 +755,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -767,7 +764,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -777,7 +773,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -787,7 +782,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -797,7 +791,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -807,7 +800,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -817,7 +809,6 @@ public class NotificationParser
                 if (s!= null && !s.equals(""))
                 {
                     content = TextUtils.concat(content,"\n",s);
-                    lastEventStr = s;
                 }
             }
 
@@ -852,6 +843,8 @@ public class NotificationParser
         {
             nd.content = content;
         }
+
+        return notificationStrings;
     }
 
     // use reflection to extract string from remoteviews object
