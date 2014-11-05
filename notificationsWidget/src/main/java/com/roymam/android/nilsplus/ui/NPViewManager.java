@@ -1113,6 +1113,8 @@ public class NPViewManager
                                         showNotificationPreview(finalData.get(mPreviewPosition - 1), mPreviewPosition - 1);
                                     else if (finalData.size() > 0)
                                         showNotificationPreview(finalData.get(finalData.size()-1), finalData.size()-1);
+                                    else // finalData.size == 0
+                                        hideNotificationPreview();
                                 }
                             }
                         }, mAnimationDuration);
