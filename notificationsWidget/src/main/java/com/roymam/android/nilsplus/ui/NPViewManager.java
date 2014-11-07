@@ -524,6 +524,9 @@ public class NPViewManager
                 mEditModeView.setVisibility(View.GONE);
             }
         });
+
+        // fix preview view position and size
+        safeUpdateView(mPreviewView, getPreviewWindowParams());
     }
 
     public void updateTouchArea()
@@ -1133,9 +1136,10 @@ public class NPViewManager
     public void refreshLayout(boolean recreate)
     {
         // re-create adapter
-        if (recreate)
+        if (recreate) {
             mNPListView.reloadAppearance();
-
+            mPreviewView.reloadAppearance();
+        }
         // calculate updated sizes
         Point size = getWidgetSize();
         Point pos = getWidgetPosition(size);

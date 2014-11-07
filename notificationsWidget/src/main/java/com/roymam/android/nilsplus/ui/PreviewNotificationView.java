@@ -117,6 +117,7 @@ public class PreviewNotificationView extends RelativeLayout {
         }
 
         mPreviewNotificationView.setLayoutParams(params);
+        requestLayout();
     }
 
     public void prepareQuickReplyBox() {
@@ -192,33 +193,11 @@ public class PreviewNotificationView extends RelativeLayout {
         mPreviewNotificationView.requestLayout();
     }
 
-    public interface Callbacks
-    {
-        public void onDismiss(NotificationData ni);
-        public void onOpen(NotificationData ni);
-        public void onClick();
-        public void onAction(NotificationData ni, int actionPos);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
-    {
-        // handling touching the view without interfering with the standard touch handling by the scrollview, textbox, etc..
-        if (handleTouch(this, ev))
-            return true;
-        else
-            return super.dispatchTouchEvent(ev);
-    }
-
-    public PreviewNotificationView(final Context ctxt, Point size, Point pos, DotsSwipeView dotsView)
-    {
-        super(ctxt);
-        this.context = ctxt;
-        prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
-
-        mDotsView = dotsView;
-
+    public void reloadAppearance() {
         mTheme = ThemeManager.getInstance(context).getCurrentTheme();
+
+        if (mPreviewNotificationView != null)
+            removeView(mPreviewNotificationView);
 
         // build view from resource
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -229,15 +208,12 @@ public class PreviewNotificationView extends RelativeLayout {
         else
             mPreviewNotificationView = inflater.inflate(R.layout.notification_preview, null);
 
-        addView(mPreviewNotificationView, new RelativeLayout.LayoutParams(size.x, size.y));
+        addView(mPreviewNotificationView, new RelativeLayout.LayoutParams(mLastSizeX, mLastSizeY));
 
         if (mTheme != null && mTheme.previewLayout != null)
             mPreviewBackground = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("full_notification"));
         else
             mPreviewBackground = mPreviewNotificationView.findViewById(R.id.full_notification);
-
-        updateSizeAndPosition(pos, size);
-        hideImmediate();
 
         // get fields
         if (mTheme != null && mTheme.previewLayout != null) {
@@ -281,7 +257,42 @@ public class PreviewNotificationView extends RelativeLayout {
             mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(R.id.quick_reply_text);
             mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(R.id.quick_text_label);
             mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
-         }
+        }
+    }
+
+    public interface Callbacks
+    {
+        public void onDismiss(NotificationData ni);
+        public void onOpen(NotificationData ni);
+        public void onClick();
+        public void onAction(NotificationData ni, int actionPos);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev)
+    {
+        // handling touching the view without interfering with the standard touch handling by the scrollview, textbox, etc..
+        if (handleTouch(this, ev))
+            return true;
+        else
+            return super.dispatchTouchEvent(ev);
+    }
+
+    public PreviewNotificationView(final Context ctxt, Point size, Point pos, DotsSwipeView dotsView)
+    {
+        super(ctxt);
+        this.context = ctxt;
+        prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+
+        mDotsView = dotsView;
+
+        mLastSizeX = size.x;
+        mLastSizeY = size.y;
+        reloadAppearance();
+
+        updateSizeAndPosition(pos, size);
+        hideImmediate();
+
 
         ViewConfiguration vc = ViewConfiguration.get(context);
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
@@ -708,7 +719,7 @@ public class PreviewNotificationView extends RelativeLayout {
         if (mQuickReplyText != null) mQuickReplyText.setTextColor(secondaryTextColor);
 
         mPreviewTime.setTextColor(secondaryTextColor);
-        if (mTheme.allowOpacityChange || theme.previewBG == null)
+        if (mTheme.allowOpacityChange)
             mPreviewBackground.setAlpha(prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100.0f);
         else
             mPreviewBackground.setBackgroundColor(mNotificationBGColor);
