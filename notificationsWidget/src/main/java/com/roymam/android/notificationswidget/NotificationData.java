@@ -93,10 +93,10 @@ public class NotificationData implements Parcelable
         else
         {
             Log.d(TAG, "notification is not similar to "+ packageName + ":" + id + "T" + tag);
-            Log.d(TAG, String.format("titlesdup: %s textdup: %s contentsdup: %s sideloaded: %s other sideloaded: %s", titlesdup, textdup, contentsdup, sideLoaded, nd.sideLoaded));
-            Log.d(TAG, String.format("title1: %s title2: %s", myTitle, otherTitle));
-            Log.d(TAG, String.format("text1: %s text2: %s", myText, otherText));
-            Log.d(TAG, String.format("content1: %s content2: %s", myContent, otherContent));
+            //Log.d(TAG, String.format("titlesdup: %s textdup: %s contentsdup: %s sideloaded: %s other sideloaded: %s", titlesdup, textdup, contentsdup, sideLoaded, nd.sideLoaded));
+            //Log.d(TAG, String.format("title1: %s title2: %s", myTitle, otherTitle));
+            //Log.d(TAG, String.format("text1: %s text2: %s", myText, otherText));
+            //Log.d(TAG, String.format("content1: %s content2: %s", myContent, otherContent));
 
             return false;
         }

@@ -18,16 +18,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.RemoteInput;
 import android.support.v7.graphics.Palette;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.text.style.CharacterStyle;
-import android.text.style.StyleSpan;
-import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +35,6 @@ import android.widget.TextView;
 import com.google.android.clockwork.stream.LegacyNotificationUtil;
 import com.roymam.android.common.BitmapCache;
 import com.roymam.android.common.IconPackManager;
-import com.roymam.android.common.SysUtils;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -309,12 +304,12 @@ public class NotificationParser
                         return new ArrayList<NotificationData>();
                     }
 
-                    // if no group info found and it still has a bigcontentview try to extract individual events from the summary
                     if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
-                        n.bigContentView != null &&
-                       (n.bigContentView.getLayoutId() == mInboxLayoutId || packageName.equals("com.whatsapp")) &&
+                            ((n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) ||
+                             packageName.equals("com.whatsapp") || packageName.equals("org.telegram.messenger")) &&
                        (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
-                        List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(n.bigContentView, nd);
+                        RemoteViews rv = n.bigContentView != null? n.bigContentView : n.contentView;
+                        List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(rv, nd);
                         // make sure we've at least one notification
                         if (separatedNotifications.size() > 0) notifications = separatedNotifications;
                     }
@@ -341,7 +336,7 @@ public class NotificationParser
 
     private List<NotificationData> getMultipleNotificationsFromInboxView(RemoteViews bigContentView, NotificationData baseNotification)
     {
-        //Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
+        Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
 
         String privacy = SettingsManager.getPrivacy(context, baseNotification.packageName);
         ArrayList<NotificationData> notifications = new ArrayList<NotificationData>();
@@ -359,10 +354,10 @@ public class NotificationParser
         if (strings.containsKey(inbox_notification_event_3_id)) events.add(strings.get(inbox_notification_event_3_id));
         if (strings.containsKey(inbox_notification_event_2_id)) events.add(strings.get(inbox_notification_event_2_id));
         if (strings.containsKey(inbox_notification_event_1_id)) events.add(strings.get(inbox_notification_event_1_id));
-        if (strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
-        if (strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
-
-        //Log.d(TAG, events.size() + " events found.");
+        if (events.size() == 0 && strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
+        if (events.size() == 0 && strings.containsKey(notification_subtext_id)) events.add(strings.get(notification_subtext_id));
+        if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
+        Log.d(TAG, events.size() + " events found.");
         int eventsOrder = 0;
 
         // create a notification for each event
@@ -394,7 +389,7 @@ public class NotificationParser
             // extract title from content for first/last event
             if (event != null)
             {
-                //Log.d(TAG, "processing event:" + event);
+                Log.d(TAG, "processing event:" + event);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(event);
 
                 // try to split it by text style
@@ -435,10 +430,11 @@ public class NotificationParser
                         parts[0] = event.subSequence(0, delimiterPos);
                         parts[1] = event.subSequence(delimiterPos+1, event.length());
 
-                        // a fix for whatsapp group messages
-                        if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+"))
+                        // a fix for whatsapp/telegram group messages
+                        if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+") ||
+                            nd.packageName.equals("org.telegram.messenger") && nd.title != null && !nd.title.equals("Telegram"))
                         {
-                            Log.d(TAG, "special whatsapp group message handling...");
+                            Log.d(TAG, "special whatsapp/telegram group message handling...");
                             nd.title = parts[0] + " @ " + nd.title;
                         }
                         else

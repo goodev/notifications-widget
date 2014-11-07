@@ -416,13 +416,20 @@ public class NotificationsService extends Service implements NotificationsProvid
                             handled = true; // break the loop - this notification should be ignored
                         } else if (oldnd.isSimilar(nd, true)) {
                             // the notification is a detailed notification of the existing one
-                            Log.d(TAG, "(the notification is extending an exisiting one)");
+                            Log.d(TAG, "(the notification is extending an existing one)");
 
                             // copy uid and delete status from the old notification
                             nd.uid = oldnd.uid;
                             nd.setDeleted(oldnd.isDeleted());
                             nd.newOne = oldnd.newOne;
                             nd.protect = true;
+
+                            if (nd.packageName.equals("org.telegram.messenger") &&
+                                notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
+                                nd.sideLoaded) {
+                                Log.d(TAG, "a specific exception for telegram with separated mode, use the non sideloaded text");
+                                nd.text = oldnd.text;
+                            }
 
                             // delete the old notification
                             iter.remove();
@@ -452,7 +459,16 @@ public class NotificationsService extends Service implements NotificationsProvid
                                 // copy id and tag if from the original notification
                                 oldnd.id = nd.id;
                                 oldnd.tag = nd.tag;
+
+                                // a specific exception for telegram with separated mode
+                                if (nd.packageName.equals("org.telegram.messenger") &&
+                                    notificationMode.equals(SettingsManager.MODE_SEPARATED)) {
+                                    Log.d(TAG, "a specific exception for telegram with separated mode, use the non sideloaded text");
+                                    oldnd.text = nd.text;
+                                }
                             }
+
+
                             // break the loop - this notification should be ignored, there is no need to keep looking for other ones
                             handled = true;
                         }
