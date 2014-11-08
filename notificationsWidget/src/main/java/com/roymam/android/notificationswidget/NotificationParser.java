@@ -354,9 +354,9 @@ public class NotificationParser
         if (strings.containsKey(inbox_notification_event_3_id)) events.add(strings.get(inbox_notification_event_3_id));
         if (strings.containsKey(inbox_notification_event_2_id)) events.add(strings.get(inbox_notification_event_2_id));
         if (strings.containsKey(inbox_notification_event_1_id)) events.add(strings.get(inbox_notification_event_1_id));
+        if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
         if (events.size() == 0 && strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (events.size() == 0 && strings.containsKey(notification_subtext_id)) events.add(strings.get(notification_subtext_id));
-        if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
         Log.d(TAG, events.size() + " events found.");
         int eventsOrder = 0;
 
