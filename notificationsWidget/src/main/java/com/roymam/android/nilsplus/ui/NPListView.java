@@ -155,6 +155,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         // re-position everything
         updateSizeAndPosition(mMaxPos,mMaxSize);
+
+        // re-connect touch listeners
+        prepareListView();
     }
 
     HashMap<Long, Integer> mItemIdTopMap = new HashMap<Long, Integer>();
@@ -317,13 +320,6 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         }
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
-
-        //listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-        //    @Override
-        //    public void onMovedToScrapHeap(View view) {
-        //
-        //    }
-        //});
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);
 
 

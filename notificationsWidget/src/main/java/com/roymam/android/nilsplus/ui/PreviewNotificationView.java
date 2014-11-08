@@ -258,6 +258,8 @@ public class PreviewNotificationView extends RelativeLayout {
             mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(R.id.quick_text_label);
             mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
         }
+
+        prepareListeners();
     }
 
     public interface Callbacks
@@ -293,12 +295,15 @@ public class PreviewNotificationView extends RelativeLayout {
         updateSizeAndPosition(pos, size);
         hideImmediate();
 
-
         ViewConfiguration vc = ViewConfiguration.get(context);
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationDuration = Resources.getSystem().getInteger(android.R.integer.config_shortAnimTime);
 
+
+    }
+
+    private void prepareListeners() {
         mPreviewIcon.setOnTouchListener(new OnTouchListener()
         {
             public int mActionSelected;
