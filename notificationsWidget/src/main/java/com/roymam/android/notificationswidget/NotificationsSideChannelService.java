@@ -12,6 +12,8 @@ import android.support.v4.app.INotificationSideChannel;
 import android.support.v4.app.NotificationCompatSideChannelService;
 import android.util.Log;
 
+import com.roymam.android.nils.services.NotificationsService;
+
 public class NotificationsSideChannelService extends NotificationCompatSideChannelService {
     private static final String TAG = NotificationsSideChannelService.class.getSimpleName();
 

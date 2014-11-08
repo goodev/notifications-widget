@@ -1,4 +1,4 @@
-package com.roymam.android.nilsplus.ui;
+package com.roymam.android.nils.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.roymam.android.notificationswidget.NotificationData;
-import com.roymam.android.nilsplus.ui.theme.Theme;
-import com.roymam.android.nilsplus.ui.theme.ThemeManager;
+import com.roymam.android.nils.ui.theme.Theme;
+import com.roymam.android.nils.ui.theme.ThemeManager;
 import com.roymam.android.notificationswidget.R;
 
 import java.util.ArrayList;

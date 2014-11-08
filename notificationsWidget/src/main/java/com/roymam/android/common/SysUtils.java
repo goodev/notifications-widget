@@ -11,9 +11,9 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationsListener;
-import com.roymam.android.notificationswidget.SettingsManager;
 
 import java.util.Iterator;
 import java.util.List;

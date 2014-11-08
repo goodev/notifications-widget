@@ -1,6 +1,5 @@
 package com.roymam.android.nils.ui;
 
-import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -9,7 +8,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
@@ -24,17 +23,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.roymam.android.common.BitmapUtils;
-import com.roymam.android.notificationswidget.NotificationData;
-import com.roymam.android.notificationswidget.NotificationsService;
+import com.roymam.android.nils.common.NotificationData;
+import com.roymam.android.nils.services.NotificationsService;
 import com.roymam.android.notificationswidget.R;
-import com.roymam.android.notificationswidget.SettingsManager;
+import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.nils.ui.theme.Theme;
 import com.roymam.android.nils.ui.theme.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder>
+public class NotificationAdapter extends BaseAdapter
 {
     private static final String TAG = NotificationAdapter.class.getSimpleName();
     private Theme mTheme = null;
@@ -44,47 +43,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     {
         this.context = context;
         mTheme = ThemeManager.getInstance(context).getCurrentTheme();
-        setHasStableIds(true);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int i)
+    public int getViewTypeCount()
     {
-        // create a new view
-        View itemLayoutView;
-
-        if (mTheme != null && mTheme.notificationLayout != null)
-            itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(mTheme.notificationLayout, parent, false);
-        else
-            itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_row, parent, false);
-
-        ThemeManager.getInstance(context).reloadLayouts(mTheme);
-
-        // create ViewHolder
-        ViewHolder viewHolder = new ViewHolder(itemLayoutView);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position)
-    {
-        final NotificationData item = getItem(position);
-        View convertView = viewHolder.itemView;
-        if (item != null)
-            applySettingsToView(context, viewHolder, convertView, item, position, mTheme, false);
-
-        // make sure that the view is visible (might have been hidden previously)
-        convertView.setAlpha(1);
-        convertView.setTranslationY(0);
-        convertView.setTranslationX(0);
-        convertView.setTag(item);
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NotificationsService.getSharedInstance().clearNotification(((NotificationData)view.getTag()).getUid());
-                notifyItemRemoved(position);
-            }
-        });
+        return 2;
     }
 
     @Override
@@ -93,6 +57,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return (position % 2);
     }
 
+    @Override
+    public int getCount()
+    {
+        if (NotificationsService.getSharedInstance() != null)
+            return NotificationsService.getSharedInstance().getNotifications().size();
+        else
+            return 0;
+    }
+
+    @Override
     public NotificationData getItem(int position)
     {
         if (NotificationsService.getSharedInstance() != null)
@@ -120,23 +94,61 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             return -1;
     }
 
-    @Override
-    public int getItemCount() {
-        if (NotificationsService.getSharedInstance() != null)
-            return NotificationsService.getSharedInstance().getNotifications().size();
-        else
-            return 0;
-    }
-
-    public static void applySettingsToView(Context context, NotificationAdapter.ViewHolder holder, View notificationView, NotificationData item, int position, Theme theme, boolean preview)
+    public static void applySettingsToView(Context context, View notificationView, NotificationData item, int position, Theme theme, boolean preview)
     {
         boolean even = position % 2 == 0;
 
+        ViewHolder holder;
+        if (notificationView.getTag() == null)
+        {
+            holder = new ViewHolder();
+
+            if (theme == null || theme.customLayoutIdMap == null) {
+                holder.notificationView = notificationView.findViewById(R.id.front);
+                holder.ivImage = (ImageView) notificationView.findViewById(R.id.notification_image);
+                holder.tvTitle = (TextView) notificationView.findViewById(R.id.notification_title);
+                holder.tvDescription = (TextView) notificationView.findViewById(R.id.notification_text);
+                holder.tvTime = (TextView) notificationView.findViewById(R.id.notification_time);
+                holder.vNotificationBG = notificationView.findViewById(R.id.front);
+                holder.vTextBG = notificationView.findViewById(R.id.notification_text_container);
+                holder.vIconBG = notificationView.findViewById(R.id.notification_bg);
+                holder.vIconBgImage = (ImageView) notificationView.findViewById(R.id.icon_bg);
+                holder.vIconFgImage = (ImageView) notificationView.findViewById(R.id.icon_fg);
+            }
+            else
+            {
+                holder.notificationView = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
+                holder.ivImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_image"));
+                holder.tvTitle = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_title"));
+                holder.tvDescription = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_text"));
+                holder.tvTime = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_time"));
+                holder.vNotificationBG = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
+                holder.vTextBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_text_container"));
+                holder.vIconBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_bg"));
+                holder.vIconBgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_bg"));
+                holder.vIconFgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_fg"));
+
+                if (theme.customLayoutIdMap.get("app_icon") != null)
+                    holder.vAppIconImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("app_icon"));
+
+                if (theme.customLayoutIdMap.get("app_icon_bg") != null)
+                    holder.vAppIconBGImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("app_icon_bg"));
+            }
+
+            notificationView.setTag(holder);
+        }
+        else
+        {
+            holder = (ViewHolder) notificationView.getTag();
+        }
+
         notificationView.setTag(R.integer.uid, new Long(item.getUid()));
+        notificationView.setTag(R.integer.notification_data_tag, item);
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         int primaryTextColor = prefs.getInt(SettingsManager.PRIMARY_TEXT_COLOR, SettingsManager.DEFAULT_PRIMARY_TEXT_COLOR);
-        if (SettingsManager.getBoolean(context, SettingsManager.AUTO_TITLE_COLOR, false))
+        if (item.appColor != 0 && prefs.getBoolean(SettingsManager.AUTO_TITLE_COLOR, false))
             primaryTextColor = item.appColor;
         int secondaryTextColor = prefs.getInt(SettingsManager.SECONDARY_TEXT_COLOR, SettingsManager.DEFAULT_SECONDARY_TEXT_COLOR);
         int notificationBGColor = prefs.getInt(SettingsManager.MAIN_BG_COLOR, SettingsManager.DEFAULT_MAIN_BG_COLOR);
@@ -172,7 +184,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.tvTitle.setTextColor(primaryTextColor);
         holder.tvDescription.setTextColor(secondaryTextColor);
         holder.tvTime.setTextColor(secondaryTextColor);
-        holder.vNotificationBG.setBackgroundColor(even?altNotificationBGColor:notificationBGColor);
+
+        if (theme.allowOpacityChange)
+            holder.vNotificationBG.setAlpha(prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100.0f);
+        else
+            holder.vNotificationBG.setBackgroundColor(even?altNotificationBGColor:notificationBGColor);
+
         holder.vIconBG.setBackgroundColor(even?altIconBGColor:iconBGColor);
 
         // handle single line
@@ -225,7 +242,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 Drawable background = even?theme.altBackground:theme.background;
                     background.setAlpha(255 * prefs.getInt(SettingsManager.MAIN_BG_OPACITY, SettingsManager.DEFAULT_MAIN_BG_OPACITY) / 100);
                 //noinspection deprecation
-                holder.vNotificationBG.setBackgroundDrawable(background);
+                if (!(holder.vNotificationBG instanceof CardView))
+                    holder.vNotificationBG.setBackgroundDrawable(background);
             }
 
             Drawable textBG = even ? theme.altTextBG : theme.textBG;
@@ -370,6 +388,38 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return icon;
     }
 
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
+        final NotificationData item = getItem(position);
+
+        if (convertView == null)
+        {
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ThemeManager.getInstance(context).reloadLayouts(mTheme);
+            if (mTheme != null && mTheme.notificationLayout != null)
+                convertView = li.inflate(mTheme.notificationLayout, parent, false);
+            else
+                convertView = li.inflate(R.layout.notification_row, parent, false);
+        }
+
+        if (item != null)
+            applySettingsToView(context, convertView, item, position, mTheme, false);
+
+        // make sure that the view is visible (might have been hidden previously)
+        convertView.setAlpha(1);
+        convertView.setTranslationY(0);
+        convertView.setTranslationX(0);
+
+        return convertView;
+    }
+
+    @Override
+    public boolean hasStableIds()
+    {
+        return true;
+    }
+
     public void remove(int position)
     {
         if (NotificationsService.getSharedInstance() != null)
@@ -378,7 +428,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder
+    static class ViewHolder
     {
         long uid;
         ImageView ivImage;
@@ -393,43 +443,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public TextView tvTime;
         public ImageView vAppIconImage;
         public ImageView vAppIconBGImage;
-
-        public ViewHolder(View notificationView)
-        {
-            super(notificationView);
-            Theme theme = ThemeManager.getInstance(notificationView.getContext()).getCurrentTheme();
-
-            if (theme == null || theme.customLayoutIdMap == null) {
-                this.notificationView = notificationView.findViewById(R.id.front);
-                ivImage = (ImageView) notificationView.findViewById(R.id.notification_image);
-                tvTitle = (TextView) notificationView.findViewById(R.id.notification_title);
-                tvDescription = (TextView) notificationView.findViewById(R.id.notification_text);
-                tvTime = (TextView) notificationView.findViewById(R.id.notification_time);
-                vNotificationBG = notificationView.findViewById(R.id.front);
-                vTextBG = notificationView.findViewById(R.id.notification_text_container);
-                vIconBG = notificationView.findViewById(R.id.notification_bg);
-                vIconBgImage = (ImageView) notificationView.findViewById(R.id.icon_bg);
-                vIconFgImage = (ImageView) notificationView.findViewById(R.id.icon_fg);
-            }
-            else
-            {
-                this.notificationView = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
-                ivImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_image"));
-                tvTitle = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_title"));
-                tvDescription = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_text"));
-                tvTime = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_time"));
-                vNotificationBG = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
-                vTextBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_text_container"));
-                vIconBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_bg"));
-                vIconBgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_bg"));
-                vIconFgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_fg"));
-
-                if (theme.customLayoutIdMap.get("app_icon") != null)
-                    vAppIconImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("app_icon"));
-
-                if (theme.customLayoutIdMap.get("app_icon_bg") != null)
-                    vAppIconBGImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("app_icon_bg"));
-            }
-        }
     }
 }

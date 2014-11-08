@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.widget.Toast;
 
-import com.roymam.android.nilsplus.CardPreferenceFragment;
+import com.roymam.android.nils.fragments.CardPreferenceFragment;
 import com.roymam.android.notificationswidget.R;
 
 import java.io.File;

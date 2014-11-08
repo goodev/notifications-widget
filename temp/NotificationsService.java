@@ -36,8 +36,8 @@ import android.widget.Toast;
 
 import com.roymam.android.common.PopupDialog;
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.nilsplus.activities.OpenNotificationActivity;
-import com.roymam.android.nilsplus.ui.NPViewManager;
+import com.roymam.android.nils.activities.OpenNotificationActivity;
+import com.roymam.android.nils.ui.NPViewManager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

@@ -11,6 +11,8 @@ import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.roymam.android.nils.services.NotificationsService;
+
 
 @TargetApi(18)
 public class NotificationsListener extends NotificationListenerService

@@ -1,4 +1,4 @@
-package com.roymam.android.nilsplus.ui;
+package com.roymam.android.nils.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -25,12 +25,10 @@ import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 import com.roymam.android.notificationswidget.SettingsManager;
-import com.roymam.android.nilsplus.ui.theme.Theme;
-import com.roymam.android.nilsplus.ui.theme.ThemeManager;
+import com.roymam.android.nils.ui.theme.Theme;
+import com.roymam.android.nils.ui.theme.ThemeManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPreDrawListener {
     private Callbacks callbacks;
