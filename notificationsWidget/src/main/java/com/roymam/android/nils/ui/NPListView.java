@@ -1,4 +1,4 @@
-package com.roymam.android.nils.ui;
+package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -16,15 +17,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationData;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
-import com.roymam.android.nils.common.SettingsManager;
-import com.roymam.android.nils.ui.theme.Theme;
-import com.roymam.android.nils.ui.theme.ThemeManager;
+import com.roymam.android.notificationswidget.SettingsManager;
+import com.roymam.android.nilsplus.ui.theme.Theme;
+import com.roymam.android.nilsplus.ui.theme.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,6 +155,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         // re-position everything
         updateSizeAndPosition(mMaxPos,mMaxSize);
+
+        // re-connect touch listeners
+        prepareListView();
     }
 
     HashMap<Long, Integer> mItemIdTopMap = new HashMap<Long, Integer>();
@@ -315,13 +320,6 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         }
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
-
-        //listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-        //    @Override
-        //    public void onMovedToScrapHeap(View view) {
-        //
-        //    }
-        //});
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);
 
 

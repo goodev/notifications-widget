@@ -1,4 +1,4 @@
-package com.roymam.android.nils.common;
+package com.roymam.android.notificationswidget;
 
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
@@ -35,10 +35,6 @@ import android.widget.TextView;
 import com.google.android.clockwork.stream.LegacyNotificationUtil;
 import com.roymam.android.common.BitmapCache;
 import com.roymam.android.common.IconPackManager;
-import com.roymam.android.nils.activities.AppSettingsActivity;
-import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
-import com.roymam.android.nils.services.NotificationsService;
-import com.roymam.android.notificationswidget.R;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -1072,7 +1068,7 @@ public class NotificationParser
         {
             // check if user requested to treat all notifications as persistent
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            if (prefs.getBoolean(packageName+"."+ PersistentNotificationSettingsActivity.SHOW_PERSISTENT_NOTIFICATION, false) &&
+            if (prefs.getBoolean(packageName+"."+PersistentNotificationSettingsActivity.SHOW_PERSISTENT_NOTIFICATION, false) &&
                 prefs.getBoolean(packageName+"."+PersistentNotificationSettingsActivity.CATCH_ALL_NOTIFICATIONS, true))
                 isPersistent = true;
         }
