@@ -43,8 +43,8 @@ public class NPViewManager
     private final Callbacks mCallbacks;
 
     private final View mResizeRect;
-    private NPListView mNPListView;
-    private PreviewNotificationView mPreviewView;
+    private com.roymam.android.nils.ui.NPListView mNPListView;
+    private com.roymam.android.nils.ui.PreviewNotificationView mPreviewView;
     private final View mEditModeView;
     private final View mTouchAreaView;
     private final DotsSwipeView mDotsView;
