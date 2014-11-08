@@ -34,11 +34,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.roymam.android.common.BitmapUtils;
-import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.nils.ui.theme.Theme;
 import com.roymam.android.nils.ui.theme.ThemeManager;
+import com.roymam.android.nils.common.NotificationData;
 import com.roymam.android.notificationswidget.R;
+import com.roymam.android.nils.common.SettingsManager;
 
 import static java.lang.Math.abs;
 
@@ -139,7 +139,7 @@ public class PreviewNotificationView extends RelativeLayout {
 
     public void showQuickReplyBox() {
         if (ni.getQuickReplyAction() != null &&
-            mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+                mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.getLayoutParams().height = 0;
             mQuickReplyBox.requestLayout();
 
@@ -258,6 +258,8 @@ public class PreviewNotificationView extends RelativeLayout {
             mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(R.id.quick_text_label);
             mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
         }
+
+        prepareListeners();
     }
 
     public interface Callbacks
@@ -293,12 +295,15 @@ public class PreviewNotificationView extends RelativeLayout {
         updateSizeAndPosition(pos, size);
         hideImmediate();
 
-
         ViewConfiguration vc = ViewConfiguration.get(context);
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationDuration = Resources.getSystem().getInteger(android.R.integer.config_shortAnimTime);
 
+
+    }
+
+    private void prepareListeners() {
         mPreviewIcon.setOnTouchListener(new OnTouchListener()
         {
             public int mActionSelected;
@@ -445,13 +450,13 @@ public class PreviewNotificationView extends RelativeLayout {
 
                 if (changeWidth)
                     v.getLayoutParams().width = interpolatedTime == 1
-                        ? w
-                        : startWidth +  (int)((targetWidth - startWidth) * interpolatedTime);
+                            ? w
+                            : startWidth +  (int)((targetWidth - startWidth) * interpolatedTime);
 
                 if (changeHeight)
                     v.getLayoutParams().height = interpolatedTime == 1
-                        ? h
-                        : startHeight +  (int)((targetHeight - startHeight) * interpolatedTime);
+                            ? h
+                            : startHeight +  (int)((targetHeight - startHeight) * interpolatedTime);
 
                 if (prevw != v.getLayoutParams().width ||
                         prevh != v.getLayoutParams().height) {
@@ -500,7 +505,7 @@ public class PreviewNotificationView extends RelativeLayout {
                             : targetHeight +  (int)((startHeight - targetHeight) * (1-interpolatedTime));
 
                 if (prevw != v.getLayoutParams().width ||
-                    prevh != v.getLayoutParams().height) {
+                        prevh != v.getLayoutParams().height) {
                     //Log.d(TAG, String.format("size changed: vid:%d w:%d h:%d", v.getId(), v.getLayoutParams().width, v.getLayoutParams().height));
                     v.requestLayout();
                 }
@@ -741,14 +746,14 @@ public class PreviewNotificationView extends RelativeLayout {
                 if (largestBitmap == null)
                     largestBitmap = bitmap;
                 else
-                    if (largestBitmap.getHeight()*largestBitmap.getWidth() <
+                if (largestBitmap.getHeight()*largestBitmap.getWidth() <
                         bitmap.getHeight()*bitmap.getWidth())
-                        largestBitmap = bitmap;
+                    largestBitmap = bitmap;
             }
 
         if (largestBitmap != null &&
                 (largestBitmap.getWidth() > context.getResources().getDimension(R.dimen.big_picture_min_size) ||
-                 largestBitmap.getHeight() > context.getResources().getDimension(R.dimen.big_picture_min_size)))
+                        largestBitmap.getHeight() > context.getResources().getDimension(R.dimen.big_picture_min_size)))
             mPreviewBigPicture.setImageBitmap(largestBitmap);
         else
             mPreviewBigPicture.setImageBitmap(null);

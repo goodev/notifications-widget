@@ -22,8 +22,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.nils.ui.theme.Theme;
 import com.roymam.android.nils.ui.theme.ThemeManager;
 import com.roymam.android.notificationswidget.R;
@@ -212,12 +212,12 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                     int delta = startTop - top;
                     child.setTranslationY(delta);
                     //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        //child.setHasTransientState(true);
+                    //child.setHasTransientState(true);
                     child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                     //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                     //           child.setHasTransientState(false);
+                            //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            //           child.setHasTransientState(false);
                         }
                     });
                     if (firstAnimation) {
@@ -247,8 +247,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                     child.animate().setDuration(mAnimationTime * 2).rotationX(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                    //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    //            child.setHasTransientState(false);
+                            //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            //            child.setHasTransientState(false);
                         }
                     });
                     nd.newOne = false;
@@ -258,8 +258,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                     child.animate().setDuration(mAnimationTime).translationY(0).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                    //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    //            child.setHasTransientState(false);
+                            //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            //            child.setHasTransientState(false);
                         }
                     });
                 }
@@ -412,8 +412,8 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
                                 NotificationData ni = data.get(position);
                                 mDotsView.setIcons(r, ni.getAppIcon(),
-                                                   ni.getActions().length > 0?ni.getActions()[0].drawable:null,
-                                                   ni.getActions().length > 1?ni.getActions()[1].drawable:null);
+                                        ni.getActions().length > 0?ni.getActions()[0].drawable:null,
+                                        ni.getActions().length > 1?ni.getActions()[1].drawable:null);
                                 mDotsView.dispatchTouchEvent(touchEvent);
                             }
 

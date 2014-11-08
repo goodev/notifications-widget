@@ -37,9 +37,6 @@ import com.roymam.android.common.BitmapCache;
 import com.roymam.android.common.IconPackManager;
 import com.roymam.android.nils.activities.AppSettingsActivity;
 import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
-import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.PersistentNotification;
-import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.nils.services.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 
@@ -87,7 +84,7 @@ public class NotificationParser
         this.context = context;
         detectNotificationIds();
     }
-    
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, boolean sideLoaded) {
         if (n != null) {
@@ -313,8 +310,8 @@ public class NotificationParser
 
                     if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
                             ((n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) ||
-                             packageName.equals("com.whatsapp") || packageName.equals("org.telegram.messenger")) &&
-                       (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
+                                    packageName.equals("com.whatsapp") || packageName.equals("org.telegram.messenger")) &&
+                            (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
                         RemoteViews rv = n.bigContentView != null? n.bigContentView : n.contentView;
                         List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(rv, nd);
                         // make sure we've at least one notification
@@ -361,9 +358,9 @@ public class NotificationParser
         if (strings.containsKey(inbox_notification_event_3_id)) events.add(strings.get(inbox_notification_event_3_id));
         if (strings.containsKey(inbox_notification_event_2_id)) events.add(strings.get(inbox_notification_event_2_id));
         if (strings.containsKey(inbox_notification_event_1_id)) events.add(strings.get(inbox_notification_event_1_id));
+        if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
         if (events.size() == 0 && strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (events.size() == 0 && strings.containsKey(notification_subtext_id)) events.add(strings.get(notification_subtext_id));
-        if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
         Log.d(TAG, events.size() + " events found.");
         int eventsOrder = 0;
 
@@ -439,7 +436,7 @@ public class NotificationParser
 
                         // a fix for whatsapp/telegram group messages
                         if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+") ||
-                            nd.packageName.equals("org.telegram.messenger") && nd.title != null && !nd.title.equals("Telegram"))
+                                nd.packageName.equals("org.telegram.messenger") && nd.title != null && !nd.title.equals("Telegram"))
                         {
                             Log.d(TAG, "special whatsapp/telegram group message handling...");
                             nd.title = parts[0] + " @ " + nd.title;
@@ -528,8 +525,8 @@ public class NotificationParser
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         if (!prefs.getBoolean(SettingsManager.COLLECT_ON_UNLOCK, true) &&
-            !km.inKeyguardRestrictedInputMode() &&
-            !prefs.getBoolean("widgetlocker", false) ||
+                !km.inKeyguardRestrictedInputMode() &&
+                !prefs.getBoolean("widgetlocker", false) ||
                 prefs.getBoolean(packageName + "." + AppSettingsActivity.IGNORE_APP, false) ||
                 packageName.equals("com.android.providers.downloads"))
             return true;
@@ -697,16 +694,16 @@ public class NotificationParser
 
             // TorAlaram text
             if (notificationStrings.containsKey(2131361911) &&
-                notificationStrings.containsKey(2131361920) &&
+                    notificationStrings.containsKey(2131361920) &&
                     notificationStrings.containsKey(2131361916) &&
                     notificationStrings.containsKey(2131361918) &&
                     notificationStrings.containsKey(2131361913))
             {
                 title = notificationStrings.get(2131361911);
                 text = notificationStrings.get(2131361920) + " " +
-                       notificationStrings.get(2131361916) + "-" +
-                       notificationStrings.get(2131361918) + " " +
-                       notificationStrings.get(2131361913);
+                        notificationStrings.get(2131361916) + "-" +
+                        notificationStrings.get(2131361918) + " " +
+                        notificationStrings.get(2131361913);
             } else if (notificationStrings.containsKey(2131361924))
                 text = notificationStrings.get(2131361924);
 
@@ -1070,13 +1067,13 @@ public class NotificationParser
     public boolean isPersistent(Notification n, String packageName)
     {
         boolean isPersistent = (((n.flags & Notification.FLAG_NO_CLEAR) == Notification.FLAG_NO_CLEAR) ||
-                                ((n.flags & Notification.FLAG_ONGOING_EVENT) == Notification.FLAG_ONGOING_EVENT));
+                ((n.flags & Notification.FLAG_ONGOING_EVENT) == Notification.FLAG_ONGOING_EVENT));
         if (!isPersistent)
         {
             // check if user requested to treat all notifications as persistent
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            if (prefs.getBoolean(packageName+"."+ PersistentNotificationSettingsActivity.SHOW_PERSISTENT_NOTIFICATION, false) &&
-                prefs.getBoolean(packageName+"."+PersistentNotificationSettingsActivity.CATCH_ALL_NOTIFICATIONS, true))
+            if (prefs.getBoolean(packageName+"."+PersistentNotificationSettingsActivity.SHOW_PERSISTENT_NOTIFICATION, false) &&
+                    prefs.getBoolean(packageName+"."+ PersistentNotificationSettingsActivity.CATCH_ALL_NOTIFICATIONS, true))
                 isPersistent = true;
         }
         return isPersistent;
@@ -1087,7 +1084,7 @@ public class NotificationParser
         // keep only the last persistent notification for the app
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean useExpanded = (sharedPref.getBoolean(packageName + "." + AppSettingsActivity.USE_EXPANDED_TEXT,
-                               sharedPref.getBoolean(AppSettingsActivity.USE_EXPANDED_TEXT, true)));
+                sharedPref.getBoolean(AppSettingsActivity.USE_EXPANDED_TEXT, true)));
 
         PersistentNotification pn = new PersistentNotification();
         if (useExpanded && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
