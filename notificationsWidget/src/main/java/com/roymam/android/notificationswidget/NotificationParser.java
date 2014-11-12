@@ -304,6 +304,11 @@ public class NotificationParser
                         return new ArrayList<NotificationData>();
                     }
 
+                    // ignore side-loaded notifications on separated mode for some apps
+                    if (notificationMode.equals(SettingsManager.MODE_SEPARATED) && nd.sideLoaded &&
+                        packageName.equals("com.textra"))
+                        return new ArrayList<NotificationData>();
+
                     if (notificationMode.equals(SettingsManager.MODE_SEPARATED) &&
                             ((n.bigContentView != null && n.bigContentView.getLayoutId() == mInboxLayoutId) ||
                              packageName.equals("com.whatsapp") || packageName.equals("org.telegram.messenger")) &&
@@ -390,7 +395,11 @@ public class NotificationParser
             if (event != null)
             {
                 Log.d(TAG, "processing event:" + event);
-                SpannableStringBuilder ssb = new SpannableStringBuilder(event);
+
+                // first make sure it's not having the time prefix
+                removeTimePrefix(nd);
+
+                SpannableStringBuilder ssb = new SpannableStringBuilder(nd.text);
 
                 // try to split it by text style
                 CharacterStyle[] spans = ssb.getSpans(0, event.length(), CharacterStyle.class);
@@ -402,14 +411,12 @@ public class NotificationParser
                     int s0end = ssb.getSpanEnd(spans[0]);
                     nd.title = event.subSequence(s0start, s0end).toString();
                     int s1start = s0end + 1;
-                    int s1end = ssb.length() - 1;
+                    int s1end = ssb.length();
                     nd.text = event.subSequence(s1start, s1end).toString();
                 }
                 else
                 {
                     // try to split it by ":" delimiter
-                    // first make sure it's not having the time prefix or sufix
-                    removeTimePrefix(nd);
                     event = nd.text;
 
                     boolean isTime = true;
