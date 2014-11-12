@@ -26,6 +26,7 @@ import java.util.List;
 
 public class StartupWizardActivity extends Activity implements ViewPager.OnPageChangeListener {
     public static final String EXTRA_FIRST_TIME = "extra_not_first_time";
+    public static final String EXTRA_IS_ACTIVE = "nils_is_active";
     public static final String EXTRA_SUGGEST_NOTIFICATIONS_PANEL = "extra_suggest_np";
     private static int NILS_IS_ACTIVE_PAGE = 2;
     private static int WELCOME_PAGE_INDEX = 0;
@@ -67,11 +68,12 @@ public class StartupWizardActivity extends Activity implements ViewPager.OnPageC
     {
         super.onCreate(savedInstanceState);
 
-        boolean firstTime = getIntent().getBooleanExtra(EXTRA_FIRST_TIME, false);
+        final boolean firstTime = getIntent().getBooleanExtra(EXTRA_FIRST_TIME, false);
+        boolean isActive = getIntent().getBooleanExtra(EXTRA_IS_ACTIVE, false);
         boolean suggestNotificationsPanel = getIntent().getBooleanExtra(EXTRA_SUGGEST_NOTIFICATIONS_PANEL, false);
 
         fragments = new ArrayList<Fragment>();
-        if (firstTime)
+        if (firstTime || isActive)
         {
             fragments.add(new WelcomeFragment());
             fragments.add(new StartServiceFragment());
@@ -142,11 +144,19 @@ public class StartupWizardActivity extends Activity implements ViewPager.OnPageC
             @Override
             public void onClick(View v)
             {
+                // let the service know that this is the first time
+                if (firstTime)
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first_time", true).commit();
+
                 Intent intent = SettingsManager.getNotificationsServiesIntent();
                 startActivity(intent);
                 Toast.makeText(getApplicationContext(), R.string.enable_service_tip, Toast.LENGTH_LONG).show();
             }
         });
+
+        // if the service has just been activated - switch to the tutorial
+        if (isActive)
+            mViewPager.setCurrentItem(START_SERVICE_PAGE_INDEX+1, false);
     }
 
 
