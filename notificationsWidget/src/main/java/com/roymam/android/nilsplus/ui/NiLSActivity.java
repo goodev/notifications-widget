@@ -331,6 +331,7 @@ public class NiLSActivity extends Activity
         else if (installedVer == -1) {
             // if this the first installation - store version number and show welcome tutorial
             prefs.edit().putInt("installed_version", currentVer).commit();
+
             showWelcomeTutorial();
             return true;
         }

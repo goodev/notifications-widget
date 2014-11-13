@@ -8,8 +8,8 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 457
-        versionName '1.5.2.457'
+        versionCode 458
+        versionName '1.5.2.458'
     }
     buildTypes {
         debug {

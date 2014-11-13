@@ -141,6 +141,28 @@ public class NotificationsService extends Service implements NotificationsProvid
 
         // notify world that the service is ready
         context.sendBroadcast(new Intent(NotificationsProvider.ACTION_SERVICE_READY));
+
+        // things to do first time the service runs
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean first_time = prefs.getBoolean("first_time", false);
+        if (first_time) {
+            // set default values for new users
+            SharedPreferences.Editor editor = prefs.edit();
+
+            // if it is Android 4.3 - make conversation mode default
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                editor.putString(SettingsManager.NOTIFICATION_MODE, SettingsManager.MODE_CONVERSATION);
+
+            // make sure it won't run again
+            editor.putBoolean("first_time", false);
+            editor.commit();
+
+            // go back to NiLS wizard after the service was enabled
+            Intent intent = new Intent(this, StartupWizardActivity.class);
+            intent.putExtra(StartupWizardActivity.EXTRA_IS_ACTIVE, true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        }
     }
 
 
@@ -1205,7 +1227,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     public class LocalBinder extends Binder
     {
-        public NotificationsService getService()
+        NotificationsService getService()
         {
             // Return this instance of LocalService so clients can call public methods
             return NotificationsService.this;
