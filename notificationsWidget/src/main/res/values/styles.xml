@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="Theme.NiLSTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/nils_primary</item>
+        <item name="colorPrimaryDark">@color/nils_primary_dark</item>
+        <item name="colorAccent">@color/nils_primary</item>
+        <item name="android:textColorPrimary">@color/actionbar_title</item>
+    </style>
+
+    <style name="Theme.NiLSTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/nils_primary</item>
+        <item name="colorPrimaryDark">@color/nils_primary_dark</item>
+        <item name="colorAccent">@color/nils_primary</item>
+        <item name="android:textColorPrimary">@color/actionbar_title</item>
+    </style>
+
     <style name="Theme.QuickReply" parent="android:Theme">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>

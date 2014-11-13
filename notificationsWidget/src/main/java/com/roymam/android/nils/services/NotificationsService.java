@@ -37,6 +37,7 @@ import com.roymam.android.common.SysUtils;
 import com.roymam.android.nils.activities.AppSettingsActivity;
 import com.roymam.android.nils.activities.OpenNotificationActivity;
 import com.roymam.android.nils.activities.QuickReplyActivity;
+import com.roymam.android.nils.activities.StartupWizardActivity;
 import com.roymam.android.nils.common.NotificationParser;
 import com.roymam.android.nils.ui.NPViewManager;
 import com.roymam.android.nils.common.NotificationData;
@@ -1227,7 +1228,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     public class LocalBinder extends Binder
     {
-        NotificationsService getService()
+        public NotificationsService getService()
         {
             // Return this instance of LocalService so clients can call public methods
             return NotificationsService.this;

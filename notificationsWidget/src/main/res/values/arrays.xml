@@ -119,7 +119,7 @@
         <item>@drawable/ic_nils_icon_mono</item>
         <item>@drawable/settings</item>
         <item>@drawable/persistent</item>
-        <item>@drawable/headsup</item>
+        <item>@drawable/ic_interaction</item>
         <item>@drawable/ic_interaction</item>
         <item>@drawable/hardware_phone</item>
         <item>@drawable/apps</item>

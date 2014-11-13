@@ -1,4 +1,4 @@
-package com.roymam.android.nilsplus.fragments;
+package com.roymam.android.nils.fragments;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -28,11 +28,11 @@ import com.roymam.android.common.ListPreferenceChangeListener;
 import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.SettingsManager;
-import com.roymam.android.nilsplus.ui.NiLSActivity;
-import com.roymam.android.nilsplus.ui.NotificationAdapter;
-import com.roymam.android.nilsplus.ui.theme.Theme;
-import com.roymam.android.nilsplus.ui.theme.ThemeInfo;
-import com.roymam.android.nilsplus.ui.theme.ThemeManager;
+import com.roymam.android.nils.ui.NiLSActivity;
+import com.roymam.android.nils.ui.NotificationAdapter;
+import com.roymam.android.nils.ui.theme.Theme;
+import com.roymam.android.nils.ui.theme.ThemeInfo;
+import com.roymam.android.nils.ui.theme.ThemeManager;
 import com.roymam.android.notificationswidget.R;
 
 import net.margaritov.preference.colorpicker.AlphaPatternDrawable;

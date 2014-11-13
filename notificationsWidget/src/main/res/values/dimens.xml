@@ -26,6 +26,7 @@
     <!-- Card layout -->
     <dimen name="card_padding">16dp</dimen>
     <dimen name="preview_height">64dp</dimen>
+    <dimen name="card_elevation">5dp</dimen>
 
     <!-- NiLS FP -->
     <dimen name="notification_min_height">24dp</dimen>

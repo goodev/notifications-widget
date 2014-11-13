@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 20
+    compileSdkVersion 21
     buildToolsVersion '19.1.0'
     defaultConfig {
         applicationId 'com.roymam.android.notificationswidget'
@@ -8,8 +8,8 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 458
-        versionName '1.5.2.458'
+        versionCode 461
+        versionName '1.6.461'
     }
     buildTypes {
         debug {
@@ -34,6 +34,7 @@ android {
         compile "com.android.support:recyclerview-v7:21.0.0"
         compile "com.android.support:palette-v7:21.0.0"
         compile "com.android.support:support-v13:21.0.0"
+        compile "com.android.support:appcompat-v7:21.0.+"
         compile files('libs/in-app-purchasing-1.0.3.jar')
     }
     productFlavors {

@@ -21,7 +21,7 @@ public class PersistentNotificationSettingsActivity extends SpecificSettingsPref
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
-        onCreate(savedInstanceState, R.string.persistent_notifications, R.layout.appearance_settings_view, R.xml.persistent_notifications_settings);
+        onCreate(savedInstanceState, R.string.persistent_notifications, R.layout.view_basic_content, R.xml.persistent_notifications_settings);
 	}
 
 	public static void removeAppFromPersistentNotifications(String packageName, Context ctx)

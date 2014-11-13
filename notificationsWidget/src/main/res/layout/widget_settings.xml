@@ -11,6 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/card_elevation">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,8 +22,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:background="@drawable/card_background">
+            android:paddingBottom="16dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,61 +34,65 @@
                         android:text="Notifications"
                         style="@style/TextAppearance.CardTitle"
                         android:layout_weight="1"/>
-                    <Switch
+                    <android.support.v7.widget.SwitchCompat
                         android:id="@+id/show_notifications"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:track="@drawable/apptheme_switch_track_holo_light"
-                        android:thumb="@drawable/apptheme_switch_inner_holo_light"
                         />
                 </LinearLayout>
             <include layout="@layout/tab_notification_settings"/>
         </LinearLayout>
+        </android.support.v7.widget.CardView>
         <View
             android:layout_width="match_parent"
             android:layout_height="16dp"/>
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            >
+            android:elevation="@dimen/card_elevation">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:orientation="horizontal">
-                <TextView
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                >
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Clock"
-                    style="@style/TextAppearance.CardTitle"
-                    android:layout_weight="1"/>
-                <Switch
-                    android:id="@+id/show_clock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:track="@drawable/apptheme_switch_track_holo_light"
-                    android:thumb="@drawable/apptheme_switch_inner_holo_light"
-                    />
+                    android:paddingBottom="8dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Clock"
+                        style="@style/TextAppearance.CardTitle"
+                        android:layout_weight="1"/>
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/show_clock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        />
+                </LinearLayout>
+                <include layout="@layout/tab_clock_settings"/>
             </LinearLayout>
-            <include layout="@layout/tab_clock_settings"/>
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="16dp"/>
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/card_elevation">
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/card_background"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="16dp"
@@ -101,12 +108,10 @@
                     android:text="Persistent Notifications"
                     style="@style/TextAppearance.CardTitle"
                     android:layout_weight="1"/>
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/show_persistent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:track="@drawable/apptheme_switch_track_holo_light"
-                    android:thumb="@drawable/apptheme_switch_inner_holo_light"
                     android:layout_weight="0"/>
             </LinearLayout>
             <Button
@@ -118,5 +123,6 @@
                 style="@style/TextAppearance.CardSubTitle"
                 android:layout_weight="1"/>
         </LinearLayout>
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 </ScrollView>

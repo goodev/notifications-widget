@@ -28,4 +28,8 @@
 
     <color name="line">#ffbcbcbc</color>
 
+    <color name="nils_primary">#01a2ff</color>
+    <color name="nils_primary_dark">#00517f</color>
+    <color name="actionbar_title">#ffffff</color>
+    <color name="actionbar_subtitle">#cccccc</color>
 </resources>

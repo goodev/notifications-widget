@@ -53,7 +53,7 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
 
         removeAppFromAppSpecificSettings(packageName, AppSettingsActivity.this);
         finish();
-        Intent intent = new Intent(getApplicationContext(), this.getClass());
+        Intent intent = new Intent(getApplicationContext(), AppSettingsActivity.class);
         intent.putExtra(EXTRA_PACKAGE_NAME, packageName);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);

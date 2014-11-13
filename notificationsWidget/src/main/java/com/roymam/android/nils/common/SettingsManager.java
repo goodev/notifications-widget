@@ -32,6 +32,7 @@ import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity
 import com.roymam.android.nils.fragments.CardPreferenceFragment;
 import com.roymam.android.nils.activities.AppSettingsActivity;
 import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.nils.ui.NiLSActivity;
 import com.roymam.android.notificationswidget.R;
 
 import java.util.ArrayList;

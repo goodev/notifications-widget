@@ -1,6 +1,5 @@
 package com.roymam.android.nils.fragments;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +14,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -35,7 +37,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ViewAnimator;
@@ -58,9 +59,9 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     private Context mContext;
     private View notificationsSettingsView;
     private View clockSettingsView;
-    private Switch showNotifications;
-    private Switch showClock;
-    private Switch showPersistent;
+    private SwitchCompat showNotifications;
+    private SwitchCompat showClock;
+    private SwitchCompat showPersistent;
     private Button persistentNotificationsSettingsButton;
     private CheckBox mShowActionsCheckbox;
 
@@ -88,7 +89,7 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
         largeClockView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         // main show_clock switch
-        showClock = (Switch) view.findViewById(R.id.show_clock);
+        showClock = (SwitchCompat) view.findViewById(R.id.show_clock);
         showClock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -207,7 +208,7 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
         notificationStyleView = (ViewAnimator) view.findViewById(R.id.notificationViewFlipper);
 
         // toggles
-        showNotifications = (Switch) view.findViewById(R.id.show_notifications);
+        showNotifications = (SwitchCompat) view.findViewById(R.id.show_notifications);
         showNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
@@ -266,7 +267,7 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
         persistentNotificationsSettingsButton = (Button) view.findViewById(R.id.persistent_notifications_settings_button);
         persistentNotificationsSettingsButton.setOnClickListener(this);
 
-        showPersistent = (Switch) view.findViewById(R.id.show_persistent);
+        showPersistent = (SwitchCompat) view.findViewById(R.id.show_persistent);
         showPersistent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -363,16 +364,16 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     private void setupActionBar()
     {
         // Show the Up button in the action bar.
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
         CharSequence[] modes = getResources().getStringArray(R.array.widget_mode_entries);
 
         ArrayAdapter<CharSequence> list = new ArrayAdapter<CharSequence>(getActivity(), R.layout.spinner_widget_mode, android.R.id.text1, modes);
         list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        getActivity().getActionBar().setListNavigationCallbacks(list, this);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(list, this);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // select the last widget mode that was changed
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -384,7 +385,7 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
             itemPosition = 1;
         else
             itemPosition = 2;
-        getActivity().getActionBar().setSelectedNavigationItem(itemPosition);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(itemPosition);
     }
 
     public void onClockStyleChanged(int id)
@@ -1045,9 +1046,9 @@ public class WidgetSettingsFragment extends Fragment implements SeekBar.OnSeekBa
 
             // Insert the fragment by replacing any existing fragment
             activity.replaceFragment(new SettingsManager.PrefsPersistentNotificationsFragment());
-            activity.getActionBar().setDisplayShowTitleEnabled(true);
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(true);
             activity.setTitle(R.string.persistent_notifications);
-            activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            activity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             activity.getDrawerToggle().setDrawerIndicatorEnabled(false);
         }
     }

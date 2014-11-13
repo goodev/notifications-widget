@@ -25,8 +25,8 @@
         <!-- Activities -->
         <!-- main app -->
         <activity
-            android:name="com.roymam.android.nilsplus.ui.NiLSActivity"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:name="com.roymam.android.nils.ui.NiLSActivity"
+            android:theme="@style/Theme.NiLSTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,47 +34,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NotificationActivity"
+            android:name="com.roymam.android.nils.activities.NotificationActivity"
             android:excludeFromRecents="true"
             android:label="@string/title"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent" >
         </activity>
         <activity
-            android:name=".AppSettingsActivity"
+            android:name="com.roymam.android.nils.activities.AppSettingsActivity"
             android:label="@string/app_specific_settings_title"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.NiLSTheme">
         </activity>
         <activity
-            android:name=".PersistentNotificationSettingsActivity"
+            android:name="com.roymam.android.nils.activities.PersistentNotificationSettingsActivity"
             android:label="@string/persistent_notifications"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.NiLSTheme" >
         </activity>
-        <activity android:name=".StartServiceActivity" />
+        <activity android:name="com.roymam.android.nils.activities.StartServiceActivity" />
         <activity
-            android:name="com.roymam.android.nilsplus.activities.OpenNotificationActivity"
+            android:name="com.roymam.android.nils.activities.OpenNotificationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
         <activity
-            android:name="com.roymam.android.nilsplus.activities.StartupWizardActivity"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
+            android:name="com.roymam.android.nils.activities.StartupWizardActivity"
+            android:theme="@style/Theme.NiLSTheme.NoActionBar" />
         <activity
-            android:name="com.roymam.android.nilsplus.activities.WhatsNewActivity"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
+            android:name="com.roymam.android.nils.activities.WhatsNewActivity"
+            android:theme="@style/Theme.NiLSTheme.NoActionBar" />
         <activity
-            android:name="com.roymam.android.nilsplus.activities.LogViewerActivity"
+            android:name="com.roymam.android.nils.activities.LogViewerActivity"
             android:label="@string/view_recent_log"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:theme="@style/Theme.NiLSTheme"/>
         <activity
-            android:name=".UnlockDeviceActivity"
+            android:name="com.roymam.android.nils.activities.UnlockDeviceActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="com.roymam.android.nilsplus.activities.QuickReplyActivity"
+            android:name="com.roymam.android.nils.activities.QuickReplyActivity"
             android:label="@string/title_activity_quick_reply"
             android:theme="@style/Theme.QuickReply"
             android:windowSoftInputMode="adjustResize">
@@ -84,10 +84,10 @@
 
 
         <!-- Main Service -->
-        <service android:name=".NotificationsService" />
+        <service android:name="com.roymam.android.nils.services.NotificationsService" />
         <!-- NiLS Accessibility Service (for Android < 4.3 and for Auto Hide service -->
         <service
-            android:name=".NiLSAccessibilityService"
+            android:name="com.roymam.android.notificationswidget.NiLSAccessibilityService"
             android:label="@string/notifications_service"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
             <intent-filter>
@@ -101,7 +101,7 @@
 
         <!-- NiLS Notifications Listener (for Android >= 4.3 -->
         <service
-            android:name=".NotificationsListener"
+            android:name="com.roymam.android.notificationswidget.NotificationsListener"
             android:label="@string/notifications_service"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
             <intent-filter>
@@ -109,7 +109,7 @@
             </intent-filter>
         </service>
         <!-- NiLS Notifications Side Channel -->
-        <service android:name=".NotificationsSideChannelService" >
+        <service android:name="com.roymam.android.notificationswidget.NotificationsSideChannelService" >
             <intent-filter>
                 <action android:name="android.support.BIND_NOTIFICATION_SIDE_CHANNEL" />
             </intent-filter>
@@ -117,16 +117,16 @@
 
         <!-- widget stuff -->
         <service
-            android:name=".NotificationsRemoteViewsFactoryService"
+            android:name="com.roymam.android.nils.services.NotificationsRemoteViewsFactoryService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".NotificationsWidgetService" />
-        <service android:name=".ClockService" />
-        <service android:name="com.roymam.android.nilsplus.services.PopupNotificationService" />
+        <service android:name="com.roymam.android.nils.services.NotificationsWidgetService" />
+        <service android:name="com.roymam.android.nils.services.ClockService" />
+        <service android:name="com.roymam.android.nils.services.PopupNotificationService" />
 
         <!-- Receivers -->
         <!-- The widget provider -->
-        <receiver android:name=".NotificationsWidgetProvider" >
+        <receiver android:name="com.roymam.android.nils.receivers.NotificationsWidgetProvider" >
             <intent-filter>
 
                 <!-- widget add/remove events -->
@@ -151,7 +151,7 @@
         </receiver>
 
         <!-- TODO: merge with NiLS FP events handler -->
-        <receiver android:name=".EventsHandler" >
+        <receiver android:name="com.roymam.android.nils.receivers.EventsHandler" >
             <intent-filter>
 
                 <!-- internal events -->

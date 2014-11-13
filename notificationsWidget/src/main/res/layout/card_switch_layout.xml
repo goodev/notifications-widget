@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:paddingTop="16dp">
 
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_background">
+        android:elevation="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,13 +33,11 @@
                     android:id="@android:id/title"
                     style="@style/TextAppearance.CardTitle"/>
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@android:id/checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:track="@drawable/apptheme_switch_track_holo_light"
-                    android:thumb="@drawable/apptheme_switch_inner_holo_light"
                     android:focusable="false"
                     android:clickable="false"/>
             </LinearLayout>
@@ -51,5 +49,5 @@
                 android:text="Text"
                 android:id="@android:id/summary" />
         </LinearLayout>
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

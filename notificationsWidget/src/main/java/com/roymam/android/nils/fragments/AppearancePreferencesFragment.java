@@ -59,8 +59,8 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
         ViewGroup previewContainer = (ViewGroup) v.findViewById(R.id.preview_container);
         mPreviewCard = new ScrollView(getActivity());
         createPreviewView();
-        mPreviewCard.setPadding((int) getResources().getDimension(R.dimen.card_padding), (int) getResources().getDimension(R.dimen.card_padding), (int) getResources().getDimension(R.dimen.card_padding), 0);
-        mPreviewCard.setBackgroundResource(R.drawable.card_background);
+        //mPreviewCard.setPadding((int) getResources().getDimension(R.dimen.card_padding), (int) getResources().getDimension(R.dimen.card_padding), (int) getResources().getDimension(R.dimen.card_padding), 0);
+        //mPreviewCard.setBackgroundResource(R.drawable.card_background);
         previewContainer.addView(mPreviewCard, ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.preview_height));
         Drawable gridbg = new AlphaPatternDrawable((int) (5 * getActivity().getResources().getDisplayMetrics().density));
         gridbg.setAlpha(64);

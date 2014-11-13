@@ -17,13 +17,15 @@ android:orientation="vertical" >
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="-4dip"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/actionbar_title"/>
 
     <TextView
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/actionbar_subtitle"/>
 
 </LinearLayout>
 
