@@ -1,6 +1,5 @@
 package com.roymam.android.nils.ui;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -22,8 +21,8 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -74,17 +73,19 @@ import static com.roymam.android.nils.common.SettingsManager.*;
 
 public class NiLSActivity extends ActionBarActivity
 {
-    private static final int MAIN_PAGE_INDEX = 0;
-    private static final int GLOBAL_SETTINGS_INDEX = 1;
-    private static final int APPEARANCE_PAGE_INDEX = 2;
-    private static final int HEADSUP_PAGE_INDEX = 3;
-    private static final int INTERACTION_PAGE_INDEX = 4;
-    private static final int WIDGET_PAGE_INDEX = 5;
-    private static final int APP_SPECIFIC_PAGE_INDEX = 6;
-    private static final int BACKUP_RESTORE_PAGE_INDEX = 7;
-    private static final int CONTACTUS_PAGE_INDEX = 8;
-    private static final int ABOUT_PAGE_INDEX = 9;
-    private static final int UNLOCK_PAGE_INDEX = 10;
+    public static final int MAIN_PAGE_INDEX = 0;
+    public static final int GLOBAL_SETTINGS_INDEX = 1;
+    public static final int WIDGET_PAGE_INDEX = 2;
+    public static final int APP_SPECIFIC_PAGE_INDEX = 3;
+    public static final int BACKUP_RESTORE_PAGE_INDEX = 4;
+    public static final int CONTACTUS_PAGE_INDEX = 5;
+    public static final int ABOUT_PAGE_INDEX = 6;
+    public static final int UNLOCK_PAGE_INDEX = 7;
+
+    // non side menu items
+    public static final int APPEARANCE_PAGE_INDEX = 8;
+    public static final int HEADSUP_PAGE_INDEX = 9;
+    public static final int INTERACTION_PAGE_INDEX = 10;
 
     private CharSequence mTitle;
     private String[] mTitles;
@@ -273,8 +274,7 @@ public class NiLSActivity extends ActionBarActivity
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // set event for open/close drawer
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close)
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
         {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view)
@@ -354,6 +354,10 @@ public class NiLSActivity extends ActionBarActivity
         return false;
     }
 
+    public void switchFragment(int id)
+    {
+        selectItem(id);
+    }
 
     /** Swaps fragments in the main content view */
     private void selectItem(int position)
@@ -362,7 +366,9 @@ public class NiLSActivity extends ActionBarActivity
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
-        setTitle(mTitles[position]);
+
+        if (position < mTitles.length)
+            setTitle(mTitles[position]);
 
         // Create a new fragment and specify the planet to show based on position
         switch (position)

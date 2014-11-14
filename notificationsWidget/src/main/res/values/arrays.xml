@@ -102,11 +102,8 @@
     </string-array>
 
     <string-array name="prefs_array" translatable="false">
-        <item>@string/title</item>
+        <item>@string/home</item>
         <item>@string/service</item>
-        <item>@string/floating_panel</item>
-        <item>@string/notification_popup</item>
-        <item>@string/interaction</item>
         <item>@string/widget</item>
         <item>@string/app_specific_settings_title</item>
         <item>@string/backup_restore</item>
@@ -118,9 +115,6 @@
     <string-array name="prefs_icons_array" translatable="false">
         <item>@drawable/ic_nils_icon_mono</item>
         <item>@drawable/settings</item>
-        <item>@drawable/persistent</item>
-        <item>@drawable/ic_interaction</item>
-        <item>@drawable/ic_interaction</item>
         <item>@drawable/hardware_phone</item>
         <item>@drawable/apps</item>
         <item>@drawable/save</item>
@@ -174,4 +168,5 @@
     </string-array>
 
 
+    <string name="home">Home</string>
 </resources>
