@@ -411,10 +411,10 @@ public class NotificationParser
                     Log.d(TAG, "event contains multiple styles. separate it.");
                     int s0start = ssb.getSpanStart(spans[0]);
                     int s0end = ssb.getSpanEnd(spans[0]);
-                    nd.title = event.subSequence(s0start, s0end).toString();
+                    nd.title = event.subSequence(s0start, s0end).toString().trim();
                     int s1start = s0end + 1;
                     int s1end = ssb.length();
-                    nd.text = event.subSequence(s1start, s1end).toString();
+                    nd.text = event.subSequence(s1start, s1end).toString().trim();
                 }
                 else
                 {
