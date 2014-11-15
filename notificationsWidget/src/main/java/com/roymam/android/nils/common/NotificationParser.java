@@ -86,7 +86,7 @@ public class NotificationParser
     }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, boolean sideLoaded) {
+    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, String key, boolean sideLoaded) {
         if (n != null) {
             // handle only dismissable notifications
             if (!isPersistent(n, packageName) && !shouldIgnore(n, packageName)) {
@@ -248,6 +248,7 @@ public class NotificationParser
 
                 nd.id = notificationId;
                 nd.tag = tag;
+                nd.key = key;
 
                 // check if this notifications belong to a group of notifications
                 nd.group = NotificationCompat.getGroup(n);
@@ -390,6 +391,7 @@ public class NotificationParser
             nd.group = baseNotification.group;
             nd.sideLoaded = baseNotification.sideLoaded;
             nd.actions = baseNotification.actions;
+            nd.key = baseNotification.key;
             nd.groupOrder = String.format("%010d", eventsOrder);
             nd.event = true;
             nd.protect = true;
@@ -554,7 +556,7 @@ public class NotificationParser
         try
         {
             Object[] actions = null;
-            Field fs = n.getClass().getDeclaredField("actions");
+            Field fs = Notification.class.getDeclaredField("actions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -862,7 +864,7 @@ public class NotificationParser
         try
         {
             ArrayList<Parcelable> actions = null;
-            Field fs = view.getClass().getDeclaredField("mActions");
+            Field fs = RemoteViews.class.getDeclaredField("mActions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -921,7 +923,7 @@ public class NotificationParser
         try
         {
             ArrayList<Parcelable> actions = null;
-            Field fs = view.getClass().getDeclaredField("mActions");
+            Field fs = RemoteViews.class.getDeclaredField("mActions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -929,7 +931,7 @@ public class NotificationParser
             }
 
             Object bitmapCache = null;
-            fs = view.getClass().getDeclaredField("mBitmapCache");
+            fs = RemoteViews.class.getDeclaredField("mBitmapCache");
             if (fs != null)
             {
                 fs.setAccessible(true);

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -30,10 +31,14 @@ public class NotificationsListener extends NotificationListenerService
                 String packageName = intent.getStringExtra(NotificationsService.EXTRA_PACKAGENAME);
                 String tag = intent.getStringExtra(NotificationsService.EXTRA_TAG);
                 int id = intent.getIntExtra(NotificationsService.EXTRA_ID, -1);
+                String key = intent.getStringExtra(NotificationsService.EXTRA_KEY);
 
                 Log.d(TAG,"cancel notification #" + id);
                 try {
-                    cancelNotification(packageName, tag, id);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH)
+                        cancelNotification(key);
+                    else
+                        cancelNotification(packageName, tag, id);
                 }
                 catch(java.lang.SecurityException exp)
                 {
@@ -123,7 +128,10 @@ public class NotificationsListener extends NotificationListenerService
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
         else
         {
-            mService.onNotificationPosted(sbn.getNotification(), sbn.getPackageName(), sbn.getId(), sbn.getTag(), false);
+            String key = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH)
+                key = sbn.getKey();
+            mService.onNotificationPosted(sbn.getNotification(), sbn.getPackageName(), sbn.getId(), sbn.getTag(), key, false);
         }
     }
 

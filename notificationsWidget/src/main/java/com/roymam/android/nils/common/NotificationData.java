@@ -49,6 +49,7 @@ public class NotificationData implements Parcelable
     public boolean sideLoaded = false;
     public CharSequence additionalText = null;
     public boolean newOne = true;
+    public String key = null;
 
     public NotificationData()
     {
