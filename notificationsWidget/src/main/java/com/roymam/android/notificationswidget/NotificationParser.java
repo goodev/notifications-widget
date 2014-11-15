@@ -550,7 +550,7 @@ public class NotificationParser
         try
         {
             Object[] actions = null;
-            Field fs = n.getClass().getDeclaredField("actions");
+            Field fs = Notification.class.getDeclaredField("actions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -858,7 +858,7 @@ public class NotificationParser
         try
         {
             ArrayList<Parcelable> actions = null;
-            Field fs = view.getClass().getDeclaredField("mActions");
+            Field fs = RemoteViews.class.getDeclaredField("mActions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -917,7 +917,7 @@ public class NotificationParser
         try
         {
             ArrayList<Parcelable> actions = null;
-            Field fs = view.getClass().getDeclaredField("mActions");
+            Field fs = RemoteViews.class.getDeclaredField("mActions");
             if (fs != null)
             {
                 fs.setAccessible(true);
@@ -925,7 +925,7 @@ public class NotificationParser
             }
 
             Object bitmapCache = null;
-            fs = view.getClass().getDeclaredField("mBitmapCache");
+            fs = RemoteViews.class.getDeclaredField("mBitmapCache");
             if (fs != null)
             {
                 fs.setAccessible(true);
