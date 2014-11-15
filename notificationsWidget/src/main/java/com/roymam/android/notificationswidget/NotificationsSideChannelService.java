@@ -73,7 +73,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
         else {
             if (!packageName.equals(this.getPackageName())) // won't show NiLS internal side channel notifications
-                mService.onNotificationPosted(notification, packageName, id, tag, true);
+                mService.onNotificationPosted(notification, packageName, id, tag, null, true);
         }
     }
 

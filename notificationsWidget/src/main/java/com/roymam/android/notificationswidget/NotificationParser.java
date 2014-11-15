@@ -82,7 +82,7 @@ public class NotificationParser
     }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, boolean sideLoaded) {
+    public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, String key, boolean sideLoaded) {
         if (n != null) {
             // handle only dismissable notifications
             if (!isPersistent(n, packageName) && !shouldIgnore(n, packageName)) {
@@ -244,6 +244,7 @@ public class NotificationParser
 
                 nd.id = notificationId;
                 nd.tag = tag;
+                nd.key = key;
 
                 // check if this notifications belong to a group of notifications
                 nd.group = NotificationCompat.getGroup(n);
@@ -386,6 +387,7 @@ public class NotificationParser
             nd.group = baseNotification.group;
             nd.sideLoaded = baseNotification.sideLoaded;
             nd.actions = baseNotification.actions;
+            nd.key = baseNotification.key;
             nd.groupOrder = String.format("%010d", eventsOrder);
             nd.event = true;
             nd.protect = true;
@@ -439,7 +441,7 @@ public class NotificationParser
 
                         // a fix for whatsapp/telegram group messages
                         if (nd.packageName.equals("com.whatsapp") && nd.title != null && !nd.title.equals("WhatsApp") && !nd.title.equals("WhatsApp+") ||
-                            nd.packageName.equals("org.telegram.messenger") && nd.title != null && !nd.title.equals("Telegram"))
+                                nd.packageName.equals("org.telegram.messenger") && nd.title != null && !nd.title.equals("Telegram"))
                         {
                             Log.d(TAG, "special whatsapp/telegram group message handling...");
                             nd.title = parts[0] + " @ " + nd.title;
@@ -528,8 +530,8 @@ public class NotificationParser
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         if (!prefs.getBoolean(SettingsManager.COLLECT_ON_UNLOCK, true) &&
-            !km.inKeyguardRestrictedInputMode() &&
-            !prefs.getBoolean("widgetlocker", false) ||
+                !km.inKeyguardRestrictedInputMode() &&
+                !prefs.getBoolean("widgetlocker", false) ||
                 prefs.getBoolean(packageName + "." + AppSettingsActivity.IGNORE_APP, false) ||
                 packageName.equals("com.android.providers.downloads"))
             return true;

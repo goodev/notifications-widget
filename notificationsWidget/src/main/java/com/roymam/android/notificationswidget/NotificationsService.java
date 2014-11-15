@@ -61,6 +61,7 @@ public class NotificationsService extends Service implements NotificationsProvid
     public static final String EXTRA_UID = "EXTRA_UID";
     public static final String EXTRA_ID = "EXTRA_ID";
     public static final String EXTRA_TAG = "EXTRA_TAG";
+    public static final String EXTRA_KEY = "EXTRA_KEY";
 
     // notification list modification events
     public static final String REMOVE_NOTIFICATION = "com.roymam.android.nils.remove_notification";
@@ -432,11 +433,13 @@ public class NotificationsService extends Service implements NotificationsProvid
                         } else if (nd.sideLoaded && !oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
                             // if conversation mode is active - delete the non-sideloaded notification
                             Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
+                            nd.key = oldnd.key;
                             iter.remove();
                             oldnd.cleanup();
                             // ( do not break the loop - so other non-sideloaded notifications will be removed as well )
                         } else if (!nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
                             ignoreNotification = true;
+                            oldnd.key = nd.key;
                             handled = true; // break the loop - this notification should be ignored
                         } else if (oldnd.isSimilar(nd, true)) {
                             // the notification is a detailed notification of the existing one
@@ -446,6 +449,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                             nd.uid = oldnd.uid;
                             nd.setDeleted(oldnd.isDeleted());
                             nd.newOne = oldnd.newOne;
+                            nd.key   = oldnd.key;
                             nd.protect = true;
 
                             if (nd.packageName.equals("org.telegram.messenger") &&
@@ -483,6 +487,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                                 // copy id and tag if from the original notification
                                 oldnd.id = nd.id;
                                 oldnd.tag = nd.tag;
+                                oldnd.key = nd.key;
 
                                 // a specific exception for telegram with separated mode
                                 if (nd.packageName.equals("org.telegram.messenger") &&
@@ -819,13 +824,13 @@ public class NotificationsService extends Service implements NotificationsProvid
             if (syncback)
                 try
                 {
-                    cancelNotification(nd.packageName, nd.tag, nd.id);
+                    cancelNotification(nd.packageName, nd.tag, nd.id, nd.key);
 
                     // cancel also the grouped notifications for this app if it has any
                     if (groupedNotifications.containsKey(nd.packageName))
                     {
                         NotificationData groupedNd = groupedNotifications.get(nd.packageName);
-                        cancelNotification(groupedNd.packageName, groupedNd.tag, groupedNd.id);
+                        cancelNotification(groupedNd.packageName, groupedNd.tag, groupedNd.id, groupedNd.key);
                         groupedNotifications.remove(nd.packageName);
                     }
                 }
@@ -841,7 +846,7 @@ public class NotificationsService extends Service implements NotificationsProvid
         callRefresh();
     }
 
-    private void cancelNotification(String packageName, String tag, int id)
+    private void cancelNotification(String packageName, String tag, int id, String key)
     {
         Log.d(TAG,"NotificationsService:cancelNotification " + packageName + ":" + id);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -853,6 +858,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                 intent.putExtra(EXTRA_PACKAGENAME, packageName);
                 intent.putExtra(EXTRA_TAG, tag);
                 intent.putExtra(EXTRA_ID, id);
+                intent.putExtra(EXTRA_KEY, key);
                 startService(intent);
             }
             catch (Exception exp)
@@ -911,7 +917,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                 if (syncback)
                     try
                     {
-                        cancelNotification(nd.packageName, nd.tag, nd.id);
+                        cancelNotification(nd.packageName, nd.tag, nd.id, nd.key);
                     }
                     catch (Exception exp)
                     {
@@ -996,13 +1002,13 @@ public class NotificationsService extends Service implements NotificationsProvid
                 try
                 {
                     Log.d(TAG, "no more notifications with the same id(+"+removedNd.id+"), removing it also from status bar. hasGroup:"+hasGroup);
-                    cancelNotification(removedNd.packageName, removedNd.tag, removedNd.id);
+                    cancelNotification(removedNd.packageName, removedNd.tag, removedNd.id, removedNd.key);
 
                     // cancel also the grouped notifications for this app if it has any
                     if (groupedNotifications.containsKey(removedNd.packageName))
                     {
                         NotificationData groupedNd = groupedNotifications.get(removedNd.packageName);
-                        cancelNotification(groupedNd.packageName, groupedNd.tag, groupedNd.id);
+                        cancelNotification(groupedNd.packageName, groupedNd.tag, groupedNd.id, groupedNd.key);
                         groupedNotifications.remove(removedNd.packageName);
                     }
                 }
@@ -1032,12 +1038,12 @@ public class NotificationsService extends Service implements NotificationsProvid
         }
     }
 
-    public void onNotificationPosted(Notification n, String packageName, int id, String tag, boolean sideLoaded)
+    public void onNotificationPosted(Notification n, String packageName, int id, String tag, String key, boolean sideLoaded)
     {
         Log.d(TAG, "onNotificationPosted package:"+packageName+" id:"+id+" tag:"+tag);
         try {
             if (!parser.isPersistent(n, packageName)) {
-                List<NotificationData> notifications = parser.parseNotification(n, packageName, id, tag, sideLoaded);
+                List<NotificationData> notifications = parser.parseNotification(n, packageName, id, tag, key, sideLoaded);
                 if (viewManager != null) viewManager.saveNotificationsState();
                 unprotectNotifications(packageName);
                 for (NotificationData nd : notifications) {
@@ -1219,7 +1225,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     public class LocalBinder extends Binder
     {
-        NotificationsService getService()
+        public NotificationsService getService()
         {
             // Return this instance of LocalService so clients can call public methods
             return NotificationsService.this;

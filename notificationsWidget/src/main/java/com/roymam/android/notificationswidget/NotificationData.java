@@ -22,19 +22,19 @@ public class NotificationData implements Parcelable
     public static int nextUID = 0;
     public int uid;
     public int id;
-    CharSequence 	text;
-    CharSequence	title;
-    CharSequence	content;
-    Bitmap 	icon;
-    Bitmap 	appicon;
-    long	received;
-    String	packageName;
-    PendingIntent action;
-    int 	count;
-    boolean pinned = false;
-    boolean selected = false;
-    private boolean deleted = false;
-    boolean protect = false;
+    public CharSequence 	text;
+    public CharSequence	title;
+    public CharSequence	content;
+    public Bitmap 	icon;
+    public Bitmap 	appicon;
+    public long	received;
+    public String	packageName;
+    public PendingIntent action;
+    public int 	count;
+    public boolean pinned = false;
+    public boolean selected = false;
+    public boolean deleted = false;
+    public boolean protect = false;
     public Action[] actions = new Action[0];
     public int priority;
     public String tag;
@@ -47,6 +47,7 @@ public class NotificationData implements Parcelable
     public boolean sideLoaded = false;
     public CharSequence additionalText = null;
     public boolean newOne = true;
+    public String key = null;
 
     public NotificationData()
     {
