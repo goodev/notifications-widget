@@ -35,10 +35,10 @@ public class CardPreferenceFragment extends PreferenceFragment
         super.addPreferencesFromResource(preferencesResId);
 
         PreferenceScreen prefScreen = getPreferenceScreen();
-        applyLayoutToPreferences(prefScreen);
+        //applyLayoutToPreferences(prefScreen);
     }
 
-    public static void applyLayoutToPreferences(PreferenceScreen prefScreen)
+    /*public static void applyLayoutToPreferences(PreferenceScreen prefScreen)
     {
         for(int i=0; i<prefScreen.getPreferenceCount();i++)
         {
@@ -65,7 +65,7 @@ public class CardPreferenceFragment extends PreferenceFragment
                 ((PreferenceGroup) pref).addPreference(cardBottom);
             }
         }
-    }
+    }*/
 
     public static void applyListPrefAutoDescription(ListPreference pref)
     {

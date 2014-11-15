@@ -122,7 +122,7 @@ public class SpecificSettingsPreferencesActivity extends ActionBarActivity
             }
 
             // apply card layout
-            CardPreferenceFragment.applyLayoutToPreferences(prefScreen);
+            //CardPreferenceFragment.applyLayoutToPreferences(prefScreen);
 
             return view;
         }

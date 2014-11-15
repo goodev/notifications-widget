@@ -28,18 +28,17 @@
                         android:orientation="horizontal"
                         android:layout_weight="0">
 
-                        <ImageView
+                        <!--<ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_action_action_view_list"
                             android:layout_gravity="top"
                             android:padding="4dp"
-                            android:layout_weight="0"/>
+                            android:layout_weight="0"/>-->
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="center"
                             android:text="Lock Screen Notifications"
                             style="@style/TextAppearance.CardTitle"
                             android:layout_weight="1"/>
@@ -68,7 +67,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Notifications will be displayed on top of your lock screen"
-                            android:gravity="center"
                             style="@style/TextAppearance.Text"
                             android:layout_weight="1"/>
                         <ImageButton
@@ -100,18 +98,17 @@
                         android:orientation="horizontal"
                         android:layout_weight="0.5">
 
-                        <ImageView
+                        <!--<ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_action_action_announcement"
                             android:layout_gravity="top"
                             android:padding="4dp"
-                            android:layout_weight="0"/>
+                            android:layout_weight="0"/>-->
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="center"
                             android:text="Heads Up Notifications"
                             style="@style/TextAppearance.CardTitle"
                             android:layout_weight="1"/>
@@ -141,7 +138,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="A top banner will appear over your current app on every incoming notification"
-                            android:gravity="center"
                             style="@style/TextAppearance.Text"
                             android:layout_weight="1"/>
                         <ImageButton
@@ -190,7 +186,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:background="@color/nils_primary"
+                android:background="@android:color/transparent"
+                android:textColor="@color/nils_primary"
+                android:textStyle="bold"
                 android:text="Enable"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
