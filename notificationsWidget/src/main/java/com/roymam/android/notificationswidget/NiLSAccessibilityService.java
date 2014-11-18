@@ -335,9 +335,14 @@ public class NiLSAccessibilityService extends AccessibilityService
             // hide NiLS when status bar or power menu are displayed
             else if (packageName.equals("com.android.systemui") /*|| packageName.equals("android")*/)
             {
-                mHiddenBecauseOfSystemUI = true;
-                Log.d(TAG,"window content has been changed:" + packageName.toString());
-                mService.hide(false);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    mHiddenBecauseOfSystemUI = true;
+                    Log.d(TAG, "window content has been changed:" + packageName.toString());
+                    mService.hide(false);
+                }
+                else {
+                    Log.w(TAG, "auto hide service doesn't work on Lollipop. use hide on outside tap instead");
+                }
             }
         }
     }
