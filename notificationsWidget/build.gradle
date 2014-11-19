@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 20
+    compileSdkVersion 21
     buildToolsVersion '19.1.0'
     defaultConfig {
         applicationId 'com.roymam.android.notificationswidget'
@@ -8,8 +8,8 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 458
-        versionName '1.5.2.458'
+        versionCode 459
+        versionName '1.5.2.459'
     }
     buildTypes {
         debug {
