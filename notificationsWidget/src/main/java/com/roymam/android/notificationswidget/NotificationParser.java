@@ -411,10 +411,14 @@ public class NotificationParser
                     Log.d(TAG, "event contains multiple styles. separate it.");
                     int s0start = ssb.getSpanStart(spans[0]);
                     int s0end = ssb.getSpanEnd(spans[0]);
-                    nd.title = event.subSequence(s0start, s0end).toString().trim();
-                    int s1start = s0end + 1;
+                    nd.title = event.subSequence(s0start, s0end-1).toString().trim();
+                    int s1start = s0end;
                     int s1end = ssb.length();
                     nd.text = event.subSequence(s1start, s1end).toString().trim();
+
+                    // remove ":" if appears at the end of the text or the start of the title
+                    if (nd.text.length()>0 && nd.text.charAt(0) == ':') nd.text = nd.text.subSequence(1,nd.text.length()).toString().trim();
+                    if (nd.title.length()>0 && nd.title.charAt(nd.title.length()-1) == ':') nd.title = nd.title.subSequence(0, nd.title.length()-1).toString().trim();
                 }
                 else
                 {
