@@ -1,6 +1,7 @@
 package com.roymam.android.notificationswidget;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +34,7 @@ public class NotificationsListener extends NotificationListenerService
 
                 Log.d(TAG,"cancel notification #" + id);
                 try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         cancelNotification(key);
                     else
                         cancelNotification(packageName, tag, id);
@@ -120,6 +121,7 @@ public class NotificationsListener extends NotificationListenerService
     @Override
     public void onNotificationPosted(StatusBarNotification sbn)
     {
+        boolean sideloaded = false;
         Log.d(TAG,"onNotificationPosted package:"+sbn.getPackageName()+" id:" + sbn.getId() + " tag:" + sbn.getTag());
 
         if (!mBound)
@@ -127,9 +129,12 @@ public class NotificationsListener extends NotificationListenerService
         else
         {
             String key = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 key = sbn.getKey();
-            mService.onNotificationPosted(sbn.getNotification(), sbn.getPackageName(), sbn.getId(), sbn.getTag(), key, false);
+                if (sbn.getGroupKey() != null && !NotificationCompat.isGroupSummary(sbn.getNotification()))
+                    sideloaded = true;
+            }
+            mService.onNotificationPosted(sbn.getNotification(), sbn.getPackageName(), sbn.getId(), sbn.getTag(), key, sideloaded);
         }
     }
 
