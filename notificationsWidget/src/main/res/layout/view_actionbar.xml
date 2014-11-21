@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/notificationActionbar"
     android:layout_width="match_parent"
-    android:layout_height="28dp"
+    android:layout_height="wrap_content"
     android:layout_weight="0"
     style="?android:attr/buttonBarStyle"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     	<LinearLayout android:id="@+id/customAction1"
 	        style="?android:attr/buttonBarButtonStyle"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp">
 
     	    <ImageView
     	        android:id="@+id/customAction1Image"
@@ -33,7 +35,9 @@
 	        style="?android:attr/buttonBarButtonStyle"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp">
 
     	    <ImageView
     	        android:id="@+id/customAction2Image"
@@ -55,7 +59,9 @@
                       style="?android:attr/buttonBarButtonStyle"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_weight="1">
+                      android:layout_weight="1"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp">
 
             <ImageView
                     android:id="@+id/actionSettingsImage"
@@ -77,11 +83,13 @@
                       style="?android:attr/buttonBarButtonStyle"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_weight="1">
+                      android:layout_weight="1"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp">
 
             <ImageView
                     android:id="@+id/actionPinImage"
-                    android:layout_width="28dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/pin"
                     android:contentDescription="@string/pin"/>
@@ -127,6 +135,8 @@
 	        android:layout_weight="0"
 	        android:contentDescription="@string/clear_notification"
 	        android:minWidth="96dp"
-	        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+	        android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp" />
 
 	</LinearLayout>
