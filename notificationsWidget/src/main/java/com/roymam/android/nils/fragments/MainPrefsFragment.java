@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.roymam.android.common.SysUtils;
 import com.roymam.android.nils.ui.NiLSActivity;
+import com.roymam.android.notificationswidget.LSNotificationsSettingsActivity;
 import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.R;
 import com.roymam.android.nils.common.SettingsManager;
@@ -115,7 +116,8 @@ public class MainPrefsFragment extends Fragment
         mFPSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((NiLSActivity) getActivity()).switchFragment(NiLSActivity.INTERACTION_PAGE_INDEX);
+              startActivity(new Intent(mContext, LSNotificationsSettingsActivity.class));
+              //  ((NiLSActivity) getActivity()).switchFragment(NiLSActivity.INTERACTION_PAGE_INDEX);
             }
         });
 

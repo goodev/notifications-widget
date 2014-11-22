@@ -49,15 +49,6 @@
             android:defaultValue="time"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/lock_screen">
-        <CheckBoxPreference
-            android:key="auto_detect_lock_screen_app"
-            android:title="@string/auto_detect_lock_screen"
-            android:summary="@string/current_lock_screen_app"
-            android:defaultValue="false"
-            />
-    </PreferenceCategory>
-
     <PreferenceCategory android:key="sync" android:title="@string/sync">
         <MultiSelectListPreference android:key="auto_clear"
             android:title="@string/auto_clear_notifications"

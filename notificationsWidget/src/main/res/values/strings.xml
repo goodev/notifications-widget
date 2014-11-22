@@ -56,11 +56,9 @@
     <string name="clear_all_from_same_app">Clear all from the same app</string>
     <string name="clear_all_from_same_app_summary">When a notification is opened, clear all of the remaining notifications from the same app</string>
     <string name="icon_pack">Icon Pack</string>
-
     <string name="grouped">Grouped</string>
     <string name="separated">Separated</string>
     <string name="conversation">Conversation (if available)</string>
-
     <string name="notification_mode">Notification mode</string>
 
     <!-- Privacy Options -->
@@ -204,11 +202,13 @@
     <string name="clear_all_notifications">Clear All Notifications</string>
     <string name="action_bar">Action Bar</string>
     <string name="notification_icon">Notification Icon</string>
+
     <string-array name="icon_pack_entries">
         <item>None</item>
     </string-array>
 
     <string name="app_icon">App Icon</string>
+
     <string-array name="notification_icon_entries">
         <item>Notification Large Icon</item>
         <item>Notification Monochrome Icon</item>
@@ -304,7 +304,7 @@
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer close</string>
     <string name="sync">Sync</string>
-    <!--<string name="integration">Integration</string>-->
+    <!-- <string name="integration">Integration</string> -->
     <string name="swipe_to_open">Swipe right to open</string>
     <string name="swipe_to_open_summary">When enabled, swiping notification to the right will open the notification</string>
     <string name="dont_hide">Always visible</string>
@@ -501,4 +501,7 @@
     <string name="crowdin_summary">Help translating NiLS by joining us on Crowdin</string>
     <string name="ignore_repeating_notifications">Ignore repeating notifications</string>
     <string name="ignore_repeating_notifications_summary">Ignore notifications with the same text like the previously dismissed ones</string>
+    <string name="title_activity_lsnotifications_settings">Lock Screen Notifications</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/lock_screen">
+        <CheckBoxPreference
+            android:key="auto_detect_lock_screen_app"
+            android:title="@string/auto_detect_lock_screen"
+            android:summary="@string/current_lock_screen_app"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:title="@string/hide_on_click"
+            android:summary="@string/hide_on_click_summary"
+            android:defaultValue="false"
+            android:key="hide_on_click"/>
+        <CheckBoxPreference
+            android:title="@string/unlock_on_open"
+            android:summary="@string/unlock_on_open_summary"
+            android:key="unlock_on_open"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/gestures">
         <CheckBoxPreference
             android:title="@string/swipe_to_open"
@@ -26,16 +43,6 @@
             android:key="swipe_down_to_dismiss_all"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/more_options">
-        <CheckBoxPreference
-            android:title="@string/hide_on_click"
-            android:summary="@string/hide_on_click_summary"
-            android:defaultValue="false"
-            android:key="hide_on_click"/>
-        <CheckBoxPreference
-            android:title="@string/unlock_on_open"
-            android:summary="@string/unlock_on_open_summary"
-            android:key="unlock_on_open"
-            android:defaultValue="true"/>
         <CheckBoxPreference
             android:title="@string/continuous_reading_mode"
             android:summary="@string/continuous_reading_mode_summary"

@@ -1435,8 +1435,8 @@ public class NotificationsService extends Service implements NotificationsProvid
 
         if (pd == null) pd = PopupDialog.create(context);
         if (pd2 != null) pd2.hide();
-        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SettingsManager.PrefsGeneralFragment.getAppName(context, currentApp)))
-          .setText(context.getString(R.string.new_lock_screen_detected_text, SettingsManager.PrefsGeneralFragment.getCurrentLockScreenAppName(context)))
+        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SysUtils.getAppName(context, currentApp)))
+          .setText(context.getString(R.string.new_lock_screen_detected_text, SysUtils.getCurrentLockScreenAppName(context)))
           .setPositiveButton(context.getString(R.string.yes), new View.OnClickListener() {
               @Override
               public void onClick(View v) {

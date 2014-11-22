@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -14,6 +16,7 @@ import android.util.Log;
 import com.roymam.android.nils.common.SettingsManager;
 import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationsListener;
+import com.roymam.android.notificationswidget.R;
 
 import java.util.Iterator;
 import java.util.List;
@@ -283,5 +286,30 @@ public class SysUtils
         prefs.edit().remove("device_timeout").commit();
     }
 
+    public static String getAppName(Context context, String packageName)
+    {
+        Log.d(TAG, "getAppName(" + packageName + ")");
+        String appName = context.getString(R.string.stock_lock_screen);
+
+        if (!packageName.equals(SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME))
+            try {
+                PackageManager pm = context.getPackageManager();
+                ApplicationInfo ai = pm.getApplicationInfo(packageName, 0);
+                appName = pm.getApplicationLabel(ai).toString();
+            } catch (PackageManager.NameNotFoundException e)
+            {
+                appName = "Unknown";
+            }
+
+        return appName;
+    }
+
+    public static String getCurrentLockScreenAppName(Context context)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String currentLSpackagename = prefs.getString(SettingsManager.LOCKSCREEN_APP, SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME);
+
+        return getAppName(context, currentLSpackagename);
+    }
 
 }
