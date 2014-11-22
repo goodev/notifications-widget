@@ -37,7 +37,7 @@ import com.roymam.android.common.BitmapCache;
 import com.roymam.android.common.IconPackManager;
 import com.roymam.android.nils.activities.AppSettingsActivity;
 import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 
 import java.lang.reflect.Field;

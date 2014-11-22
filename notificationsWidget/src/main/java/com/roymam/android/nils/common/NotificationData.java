@@ -13,7 +13,7 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationsService;
 
 import java.util.ArrayList;
 

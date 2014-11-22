@@ -22,7 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 
 public class QuickReplyActivity extends Activity {

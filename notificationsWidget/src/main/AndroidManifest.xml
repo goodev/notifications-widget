@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LSNotificationsSettingsActivity"
+            android:name="com.roymam.android.nils.activities.LSNotificationsSettingsActivity"
             android:label="@string/title_activity_lsnotifications_settings"
             android:theme="@style/Theme.NiLSTheme.NoActionBar">
         </activity>

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 import com.roymam.android.nils.common.SettingsManager;
 

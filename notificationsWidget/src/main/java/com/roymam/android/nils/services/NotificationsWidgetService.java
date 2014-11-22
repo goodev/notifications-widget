@@ -37,6 +37,7 @@ import com.roymam.android.nils.common.NotificationsProvider;
 import com.roymam.android.nils.receivers.NotificationsWidgetProvider;
 import com.roymam.android.nils.common.PersistentNotification;
 import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 import com.roymam.android.nils.common.SettingsManager;
 

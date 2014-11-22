@@ -12,12 +12,11 @@ import android.support.v4.app.INotificationSideChannel;
 import android.support.v4.app.NotificationCompatSideChannelService;
 import android.util.Log;
 
-import com.roymam.android.nils.services.NotificationsService;
 
 public class NotificationsSideChannelService extends NotificationCompatSideChannelService {
     private static final String TAG = NotificationsSideChannelService.class.getSimpleName();
 
-    private NotificationsService mService;
+    private com.roymam.android.notificationswidget.NotificationsService mService;
     boolean mBound = false;
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -28,7 +27,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
                                        IBinder service)
         {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            NotificationsService.LocalBinder binder = (NotificationsService.LocalBinder) service;
+            com.roymam.android.notificationswidget.NotificationsService.LocalBinder binder = (com.roymam.android.notificationswidget.NotificationsService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
         }
@@ -42,7 +41,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
 
     public void onCreate() {
         Log.d(TAG, "onCreate");
-        Intent intent = new Intent(this, NotificationsService.class);
+        Intent intent = new Intent(this, com.roymam.android.notificationswidget.NotificationsService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -75,7 +74,7 @@ public class NotificationsSideChannelService extends NotificationCompatSideChann
             Log.e(TAG, "Notifications Service is not bounded. stop and restart NotificationsListener to rebind it");
         else {
             if (!packageName.equals(this.getPackageName())) // won't show NiLS internal side channel notifications
-                mService.onNotificationPosted(notification, packageName, id, tag, true);
+                mService.onNotificationPosted(notification, packageName, id, tag, null, true);
         }
     }
 

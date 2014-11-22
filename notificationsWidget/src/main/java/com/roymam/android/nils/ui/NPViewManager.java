@@ -25,7 +25,7 @@ import android.widget.RelativeLayout;
 import com.roymam.android.common.BitmapUtils;
 import com.roymam.android.common.SysUtils;
 import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 import com.roymam.android.nils.common.SettingsManager;
 
