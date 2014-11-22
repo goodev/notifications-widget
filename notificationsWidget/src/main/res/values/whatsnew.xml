@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="v438_title" translatable="false">v1.5.2</string>
+    <string name="v460_title" translatable="false">v1.5.2.460</string>
+    <string name="v460" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Bug fix</b> - First letter is missing on TouchDown email notifications<br>
+            <b>&#8226;	Bug fix</b> - Grouped mode doesn\'t work on Lollipop<br>
+            <b>&#8226;	Bug fix</b> - Widget actions appears cut on Lollipop<br>
+            <b>&#8226;	Bug fix</b> - Notifications wrong order on ChompSMS and some other apps<br>
+        ]]>
+    </string>
+    <string name="v438_title" translatable="false">v1.5.2.458</string>
     <string name="v438" translatable="false">
         <![CDATA[
             <b>&#8226;	New Feature - Quick Reply</b> - Quickly reply a message without unlocking your phone on Hangouts, WhatsApp, ChompSMS and few other apps. (Requires Android 4.3+)<br>
