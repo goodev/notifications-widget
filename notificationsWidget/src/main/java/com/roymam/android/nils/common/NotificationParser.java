@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -244,7 +245,7 @@ public class NotificationParser
                     printStringsFromNotification(notificationStrings);
                 }
 
-                if (nd.text != null) removeTimePrefix(nd);
+                if (nd.text != null) removeTimePrefix(nd.received, nd);
 
                 nd.id = notificationId;
                 nd.tag = tag;
@@ -403,7 +404,7 @@ public class NotificationParser
                 Log.d(TAG, "processing event:" + event);
 
                 // first make sure it's not having the time prefix
-                removeTimePrefix(nd);
+                removeTimePrefix(baseNotification.received, nd);
 
                 SpannableStringBuilder ssb = new SpannableStringBuilder(nd.text);
 
@@ -419,6 +420,10 @@ public class NotificationParser
                     int s1start = s0end + 1;
                     int s1end = ssb.length();
                     nd.text = event.subSequence(s1start, s1end).toString().trim();
+
+                    // remove ":" if appears at the end of the text or the start of the title
+                    if (nd.text.length()>0 && nd.text.charAt(0) == ':') nd.text = nd.text.subSequence(1,nd.text.length()).toString().trim();
+                    if (nd.title.length()>0 && nd.title.charAt(nd.title.length()-1) == ':') nd.title = nd.title.subSequence(0, nd.title.length()-1).toString().trim();
                 }
                 else
                 {
@@ -466,7 +471,7 @@ public class NotificationParser
         return notifications;
     }
 
-    private void removeTimePrefix(NotificationData nd) {
+    private void removeTimePrefix(long originalTime, NotificationData nd) {
         String timeRegExp = "^(\\d\\d?:\\d\\d? ?([AP]M )?)(.*)";
 
         Pattern timePat = Pattern.compile(timeRegExp);
@@ -476,7 +481,7 @@ public class NotificationParser
         if (match.matches())
         {
             // if it has it - set it as the event time
-            nd.received = parseTime(match.group(1));
+            nd.received = parseTime(originalTime, match.group(1));
             nd.title = nd.title.subSequence(match.start(3), match.end(3));
         }
 
@@ -485,12 +490,12 @@ public class NotificationParser
         if (match.matches())
         {
             // if it has it - set it as the event time
-            nd.received = parseTime(match.group(1));
+            nd.received = parseTime(originalTime, match.group(1));
             nd.text = nd.text.subSequence(match.start(3), match.end(3));
         }
     }
 
-    private void removeTimeSufix(NotificationData nd) {
+    private void removeTimeSufix(long originalTime, NotificationData nd) {
         CharSequence str = nd.text;
 
         String timeRegExp = "(.*)(\\d\\d?:\\d\\d? ?([AP]M )?)$";
@@ -502,15 +507,15 @@ public class NotificationParser
         if (match.matches())
         {
             // if it has it - set it as the event time
-            if (parseTime(match.group(2)) > 0) {
-                nd.received = parseTime(match.group(2));
+            if (parseTime(originalTime, match.group(2)) > 0) {
+                nd.received = parseTime(originalTime, match.group(2));
                 nd.text = str.subSequence(match.start(0), match.end(0));
             }
         }
     }
 
 
-    private long parseTime(String time)
+    private long parseTime(long originalTime, String time)
     {
         String timeFormat = "HH:mm";
         if (!DateFormat.is24HourFormat(context)) timeFormat = "hh:mm a";
@@ -518,14 +523,32 @@ public class NotificationParser
         SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
         try
         {
-            Date d = sdf.parse(time);
-            return d.getTime();
+            Calendar originalDateTime = Calendar.getInstance();
+            originalDateTime.setTime(new Date(originalTime));
+
+            Calendar newTime = Calendar.getInstance();
+            newTime.setTime(sdf.parse(time));
+
+            Calendar resultDateTime = Calendar.getInstance();
+            resultDateTime.setTime(new Date(originalTime));
+
+            resultDateTime.set(Calendar.HOUR, newTime.get(Calendar.HOUR));
+            resultDateTime.set(Calendar.MINUTE, newTime.get(Calendar.MINUTE));
+            resultDateTime.set(Calendar.SECOND, newTime.get(Calendar.SECOND));
+            resultDateTime.set(Calendar.MILLISECOND, newTime.get(Calendar.MILLISECOND));
+
+            // make sure the new time is not in the future
+            if (resultDateTime.after(originalDateTime))
+                // if so - this event is probably from yesterday
+                resultDateTime.add(Calendar.DATE, -1);
+
+            return resultDateTime.getTimeInMillis();
         }
         catch (ParseException e)
         {
             // shouldn't happen - time is in the right format
         }
-        return 0;
+        return originalTime;
     }
 
 

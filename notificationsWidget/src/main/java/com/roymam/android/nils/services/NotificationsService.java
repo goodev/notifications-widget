@@ -1,4 +1,4 @@
-package com.roymam.android.nils.services;
+package com.roymam.android.notificationswidget;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -39,6 +39,8 @@ import com.roymam.android.nils.activities.OpenNotificationActivity;
 import com.roymam.android.nils.activities.QuickReplyActivity;
 import com.roymam.android.nils.activities.StartupWizardActivity;
 import com.roymam.android.nils.common.NotificationParser;
+import com.roymam.android.nils.services.NotificationEventListener;
+import com.roymam.android.nils.services.NotificationEventsAdapter;
 import com.roymam.android.nils.ui.NPViewManager;
 import com.roymam.android.nils.common.NotificationData;
 import com.roymam.android.nils.common.NotificationsProvider;

@@ -84,7 +84,10 @@ public class SysUtils
     {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
-        return tasks.get(0).topActivity.getClassName();
+        if (tasks.size() > 0)
+            return tasks.get(0).topActivity.getClassName();
+        else
+            return "";
     }
 
     public static boolean isAppForground(Context context, String packageName)

@@ -1,4 +1,4 @@
-package com.roymam.android.notificationswidget;
+package com.roymam.android.nils.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
 import com.roymam.android.nils.fragments.ServicePreferencesFragment;
+import com.roymam.android.notificationswidget.R;
 
 public class LSNotificationsSettingsActivity extends ActionBarActivity  {
 
@@ -42,7 +43,7 @@ public class LSNotificationsSettingsActivity extends ActionBarActivity  {
             switch(position)
             {
                 case 0:
-                    return new ServicePreferencesFragment();
+                    //return new ServicePreferencesFragment();
                 case 1:
 
                 default:
