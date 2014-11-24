@@ -53,7 +53,7 @@ public class QuickReplyActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        int uid = getIntent().getIntExtra("uid", -1);
+        final int uid = getIntent().getIntExtra("uid", -1);
         actionPos = getIntent().getIntExtra("actionPos", -1);
         Log.d(TAG, "onStart with uid:" + uid + " and actionPos:" + actionPos);
 
@@ -90,6 +90,7 @@ public class QuickReplyActivity extends Activity {
                 RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                 try {
                     action.actionIntent.send(getApplicationContext(), 0, intent);
+                    NotificationsService.getSharedInstance().clearNotification(uid);
                 } catch (PendingIntent.CanceledException e) {
                     e.printStackTrace();
                 }
