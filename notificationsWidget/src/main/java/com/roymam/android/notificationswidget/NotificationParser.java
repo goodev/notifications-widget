@@ -497,7 +497,7 @@ public class NotificationParser
     }
 
     private CharSequence removeTimeSufix(long originalTime, NotificationData nd, CharSequence str) {
-        String timeRegExp = "^(\\d\\d?:\\d\\d? ?([AP]M )?)(.*)";
+        String timeRegExp = "^(.*)(\\d\\d?:\\d\\d?) ([AP]+M)?$";
 
         Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
 
@@ -508,14 +508,14 @@ public class NotificationParser
             // if it has it - set it as the event time
             if (parseTime(originalTime, match.group(2)) > 0) {
                 nd.received = parseTime(originalTime, match.group(2));
-                return str.subSequence(match.start(0), match.end(0));
+                return str.subSequence(match.start(1), match.end(1));
             }
         }
         return str;
     }
 
     private CharSequence removeTimePrefix(long originalTime, NotificationData nd, CharSequence str) {
-        String timeRegExp = "(.*)(\\d\\d?:\\d\\d? ?([AP]M )?)$";
+        String timeRegExp = "^(\\d\\d?:\\d\\d? ?([AP]+M )?)(.*)$";
 
         Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
 
@@ -524,9 +524,9 @@ public class NotificationParser
         if (match.matches())
         {
             // if it has it - set it as the event time
-            if (parseTime(originalTime, match.group(2)) > 0) {
-                nd.received = parseTime(originalTime, match.group(2));
-                return str.subSequence(match.start(0), match.end(0));
+            if (parseTime(originalTime, match.group(1)) > 0) {
+                nd.received = parseTime(originalTime, match.group(1));
+                return str.subSequence(match.start(3), match.end(3));
             }
         }
         return str;
