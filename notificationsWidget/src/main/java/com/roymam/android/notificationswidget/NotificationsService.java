@@ -434,6 +434,9 @@ public class NotificationsService extends Service implements NotificationsProvid
                             // if conversation mode is active - delete the non-sideloaded notification
                             Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
                             nd.key = oldnd.key;
+                            updated = true;
+                            changed = !oldnd.isEqual(nd);
+
                             iter.remove();
                             oldnd.cleanup();
                             // ( do not break the loop - so other non-sideloaded notifications will be removed as well )
@@ -478,12 +481,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                             ignoreNotification = true;
                             updated = false;
 
-                            // if the sideloaded notification doesn't have an icon - use this notification icon
                             if (oldnd.sideLoaded) {
-                                if (oldnd.largeIcon == null) {
-                                    oldnd.largeIcon = nd.largeIcon;
-                                    oldnd.icon = nd.icon;
-                                }
                                 // copy id and tag if from the original notification
                                 oldnd.id = nd.id;
                                 oldnd.tag = nd.tag;
@@ -505,6 +503,18 @@ public class NotificationsService extends Service implements NotificationsProvid
                         if (ignoreNotification) {
                             // protect the old one from being cleared on next purge command
                             oldnd.protect = true;
+
+                            // use original icon if needed
+                            if (oldnd.largeIcon == null && nd.largeIcon != null) {
+                                oldnd.icon = nd.icon;
+                                oldnd.largeIcon = nd.largeIcon;
+                            }
+                        } else if (updated) {
+                            // use original icon if needed
+                            if (nd.largeIcon == null && oldnd.largeIcon != null) {
+                                nd.icon = oldnd.icon;
+                                nd.largeIcon = oldnd.largeIcon;
+                            }
                         }
                     }
                 }

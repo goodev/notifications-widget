@@ -420,6 +420,11 @@ public class NotificationParser
                     // remove ":" if appears at the end of the text or the start of the title
                     if (nd.text.length()>0 && nd.text.charAt(0) == ':') nd.text = nd.text.subSequence(1,nd.text.length()).toString().trim();
                     if (nd.title.length()>0 && nd.title.charAt(nd.title.length()-1) == ':') nd.title = nd.title.subSequence(0, nd.title.length()-1).toString().trim();
+
+                    // a fix for ChompSMS duplicated notifications
+                    nd.title = removeTimeSufix(nd.received, nd, nd.title).toString().trim();
+                    nd.text = removeTimePrefix(nd.received, nd, nd.text).toString().trim();
+
                 }
                 else
                 {
@@ -470,7 +475,7 @@ public class NotificationParser
     private void removeTimePrefix(long originalTime, NotificationData nd) {
         String timeRegExp = "^(\\d\\d?:\\d\\d? ?([AP]M )?)(.*)";
 
-        Pattern timePat = Pattern.compile(timeRegExp);
+        Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
 
         // search for time label in the title
         Matcher match = timePat.matcher(nd.title);
@@ -491,12 +496,10 @@ public class NotificationParser
         }
     }
 
-    private void removeTimeSufix(long originalTime, NotificationData nd) {
-        CharSequence str = nd.text;
+    private CharSequence removeTimeSufix(long originalTime, NotificationData nd, CharSequence str) {
+        String timeRegExp = "^(\\d\\d?:\\d\\d? ?([AP]M )?)(.*)";
 
-        String timeRegExp = "(.*)(\\d\\d?:\\d\\d? ?([AP]M )?)$";
-
-        Pattern timePat = Pattern.compile(timeRegExp);
+        Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
 
         // search for time label in the title
         Matcher match = timePat.matcher(str);
@@ -505,10 +508,30 @@ public class NotificationParser
             // if it has it - set it as the event time
             if (parseTime(originalTime, match.group(2)) > 0) {
                 nd.received = parseTime(originalTime, match.group(2));
-                nd.text = str.subSequence(match.start(0), match.end(0));
+                return str.subSequence(match.start(0), match.end(0));
             }
         }
+        return str;
     }
+
+    private CharSequence removeTimePrefix(long originalTime, NotificationData nd, CharSequence str) {
+        String timeRegExp = "(.*)(\\d\\d?:\\d\\d? ?([AP]M )?)$";
+
+        Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
+
+        // search for time label in the title
+        Matcher match = timePat.matcher(str);
+        if (match.matches())
+        {
+            // if it has it - set it as the event time
+            if (parseTime(originalTime, match.group(2)) > 0) {
+                nd.received = parseTime(originalTime, match.group(2));
+                return str.subSequence(match.start(0), match.end(0));
+            }
+        }
+        return str;
+    }
+
 
 
     private long parseTime(long originalTime, String time)
