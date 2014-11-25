@@ -307,7 +307,11 @@ public class NPViewManager
             {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-                if (event.getAction() == MotionEvent.ACTION_OUTSIDE && prefs.getBoolean(SettingsManager.HIDE_ON_CLICK, SettingsManager.DEFAULT_HIDE_ON_CLICK)) hide(true);
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE && prefs.getBoolean(SettingsManager.HIDE_ON_CLICK, SettingsManager.DEFAULT_HIDE_ON_CLICK))
+                {
+                    Log.d(TAG, "hide on outside tap");
+                    hide(true);
+                }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) keepScreenOn("user touch");
 
                 if (mPreviewItem == null)

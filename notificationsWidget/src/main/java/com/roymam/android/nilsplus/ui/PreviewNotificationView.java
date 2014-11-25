@@ -560,6 +560,9 @@ public class PreviewNotificationView extends RelativeLayout {
         mPreviewIconBG.getLayoutParams().height = BitmapUtils.dpToPx(mIconSize);
         mPreviewIconBG.requestLayout();
 
+        requestLayout();
+
+        Log.d(TAG, "showing a preview window on offset:" + calcOffset() + " startRect:" + startRect);
         mPreviewNotificationView.animate().translationY(calcOffset()).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
