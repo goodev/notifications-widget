@@ -208,6 +208,12 @@ public class NotificationParser
                         // extract the second page details
                         Notification page = wo.getPages().get(0);
                         nd.additionalText = NotificationCompat.getExtras(page).getCharSequence("android.text");
+                        if (nd.additionalText == null && page.bigContentView != null)
+                        {
+                            HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(page.bigContentView);
+                            if (strings.containsKey(16909106))
+                                nd.additionalText = strings.get(16909106);
+                        }
                     }
 
                     // hide text on private mode
