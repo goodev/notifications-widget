@@ -23,6 +23,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
@@ -88,9 +89,11 @@ public class PreviewNotificationView extends RelativeLayout {
     private boolean mVerticalDrag;
     private boolean mHorizontalDrag;
     private boolean mIgnoreTouch;
+
     private boolean mIsSoftKeyVisible = false;
     private Rect mStartRect;
     private int mIconSize;
+    private OnInteractListener mInteractListener = null;
 
     public void updateSizeAndPosition(Point pos, Point size)
     {
@@ -270,6 +273,11 @@ public class PreviewNotificationView extends RelativeLayout {
         public void onAction(NotificationData ni, int actionPos);
     }
 
+    public interface OnInteractListener
+    {
+        public void onHideSoftkey();
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev)
     {
@@ -299,8 +307,11 @@ public class PreviewNotificationView extends RelativeLayout {
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationDuration = Resources.getSystem().getInteger(android.R.integer.config_shortAnimTime);
+    }
 
-
+    public void setOnInteractListener(OnInteractListener listener)
+    {
+        mInteractListener = listener;
     }
 
     private void prepareListeners() {
@@ -548,6 +559,7 @@ public class PreviewNotificationView extends RelativeLayout {
     public void show(Rect startRect, final boolean showKeyboard)
     {
         setVisibility(View.VISIBLE);
+        setAlpha(1);
         mPreviewNotificationView.setAlpha(1);
         mPreviewNotificationView.setVisibility(View.VISIBLE);
         mPreviewNotificationView.setTranslationX(0);
@@ -929,11 +941,18 @@ public class PreviewNotificationView extends RelativeLayout {
         mIsSoftKeyVisible = true;
     }
 
-    private void hideSoftKeyboard() {
+    public void hideSoftKeyboard() {
         InputMethodManager mgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(mQuickReplyText.getWindowToken(), 0);
         mIsSoftKeyVisible = false;
+
+        if (mInteractListener != null) mInteractListener.onHideSoftkey();
     }
+
+    public boolean ismIsSoftKeyVisible() {
+        return mIsSoftKeyVisible;
+    }
+
 
     public void cleanup()
     {

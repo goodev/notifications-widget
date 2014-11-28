@@ -81,21 +81,23 @@ public class NPViewManager
         @Override
         public void run()
         {
+            // update touch area
+            int height = Math.min(getHeight(), mPreviewItem != null? getPreviewHeight():mNPListView.getItemsHeight());
+            if (height != mPrevHeight)
             {
-                // update touch area
-                int height = Math.min(getHeight(), mPreviewItem != null? getPreviewHeight():mNPListView.getItemsHeight());
-                if (height != mPrevHeight)
-                {
-                    safeUpdateView(mTouchAreaView, getTouchAreaLayoutParams(true));
+                safeUpdateView(mTouchAreaView, getTouchAreaLayoutParams(true));
 
-                    mPrevHeight = height;
-                }
+                mPrevHeight = height;
             }
 
             if (mVisible)
                 mTouchAreaView.setVisibility(View.VISIBLE);
             else
                 mTouchAreaView.setVisibility(View.GONE);
+
+            // update preview view touch area
+            if (mPreviewView != null)
+                safeUpdateView(mPreviewView, getPreviewWindowParams());
         }
     };
     private int mPreviewPosition = -1;
@@ -168,6 +170,28 @@ public class NPViewManager
 
         // create the preview view & add the view to the screen
         mPreviewView = new PreviewNotificationView(mContext, maxSize, maxPos, mDotsView);
+
+        mPreviewView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    if (mPreviewView.ismIsSoftKeyVisible())
+                        mPreviewView.hideSoftKeyboard();
+                    else {
+                        hideNotificationPreview();
+                    }
+                }
+                return true;
+            }
+        });
+
+        mPreviewView.setOnInteractListener(new PreviewNotificationView.OnInteractListener() {
+            @Override
+            public void onHideSoftkey() {
+                // update layout params after hiding the soft key so not all touches will be captured
+                safeUpdateView(mPreviewView, getPreviewWindowParams());
+            }
+        });
 
         // create edit mode view
         mEditModeView = View.inflate(mContext, R.layout.editmode, null);
@@ -676,7 +700,8 @@ public class NPViewManager
             {
                 if (mPreviewItem != null)
                 {
-                    mPreviewView.animate().alpha(0).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter()
+                    mPreviewView.hide();
+                    /*mPreviewView.animate().alpha(0).setDuration(mAnimationDuration).setListener(new AnimatorListenerAdapter()
                     {
                         @Override
                         public void onAnimationEnd(Animator animation)
@@ -686,7 +711,7 @@ public class NPViewManager
                             mPreviewView.hideImmediate();
                             mTouchAreaView.setVisibility(View.VISIBLE);
                         }
-                    });
+                    });*/
                 }
                 else
                 {
@@ -919,8 +944,13 @@ public class NPViewManager
 
     private WindowManager.LayoutParams getPreviewWindowParams()
     {
-        Point displaySize = getDisplaySize();
         Point size = getWidgetSize();
+        return getPreviewWindowParams(size);
+    }
+
+    private WindowManager.LayoutParams getPreviewWindowParams(Point size)
+    {
+        Point displaySize = getDisplaySize();
         Point pos = getWidgetPosition(size);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -949,7 +979,7 @@ public class NPViewManager
                 WindowManager.LayoutParams.MATCH_PARENT,
                 size.y,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                0,
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT
         );
 
