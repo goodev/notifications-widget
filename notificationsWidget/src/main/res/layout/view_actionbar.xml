@@ -9,18 +9,22 @@
 
     	<LinearLayout android:id="@+id/customAction1"
 	        style="?android:attr/buttonBarButtonStyle"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginTop="-10dp"
-            android:layout_marginBottom="-10dp">
+            android:layout_marginBottom="-10dp"
+            android:layout_weight="1"
+            android:visibility="visible">
 
     	    <ImageView
     	        android:id="@+id/customAction1Image"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
     	        android:src="@android:drawable/ic_menu_close_clear_cancel" 	        
-    	        android:contentDescription="@string/notification_action_1"/>
+    	        android:contentDescription="@string/notification_action_1"
+                android:maxHeight="32dp"
+                android:maxWidth="32dp"
+                android:adjustViewBounds="true" />
 
     	    <TextView
     	        android:id="@+id/customAction1Text" 	        
@@ -28,23 +32,27 @@
     	        android:layout_height="wrap_content"
     	        android:text="Action 1"
     	        android:textAppearance="?android:attr/textAppearanceSmall"
-                android:maxLines="1"/>
+                android:maxLines="1" />
     	</LinearLayout>
 	    	
     	<LinearLayout android:id="@+id/customAction2"
 	        style="?android:attr/buttonBarButtonStyle"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginTop="-10dp"
-            android:layout_marginBottom="-10dp">
+            android:layout_marginBottom="-10dp"
+            android:visibility="visible"
+            android:layout_weight="1">
 
     	    <ImageView
     	        android:id="@+id/customAction2Image"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
     	        android:src="@android:drawable/ic_menu_close_clear_cancel" 	        
-    	        android:contentDescription="@string/notification_action_2"/>
+    	        android:contentDescription="@string/notification_action_2"
+                android:adjustViewBounds="true"
+                android:maxHeight="32dp"
+                android:maxWidth="32dp" />
 
     	    <TextView
     	        android:id="@+id/customAction2Text" 	        
@@ -52,56 +60,63 @@
     	        android:layout_height="wrap_content"
     	        android:text="Action 2"
     	        android:textAppearance="?android:attr/textAppearanceSmall"
-                android:maxLines="1"/>
+                android:maxLines="1" />
     	</LinearLayout>
 
-        <LinearLayout android:id="@+id/actionSettings"
-                      style="?android:attr/buttonBarButtonStyle"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-            android:layout_marginTop="-10dp"
-            android:layout_marginBottom="-10dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0">
+            <LinearLayout android:id="@+id/actionSettings"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:layout_marginBottom="-10dp"
+                android:padding="0dp">
 
-            <ImageView
+                <ImageView
                     android:id="@+id/actionSettingsImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_menu_preferences"
-                    android:contentDescription="@string/settings"/>
+                    android:contentDescription="@string/settings" />
 
-            <TextView
+                <TextView
                     android:id="@+id/actionSettingsText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/settings"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:maxLines="1"/>
-        </LinearLayout>
+                    android:maxLines="1" />
+            </LinearLayout>
 
-        <LinearLayout android:id="@+id/actionPin"
-                      style="?android:attr/buttonBarButtonStyle"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-            android:layout_marginTop="-10dp"
-            android:layout_marginBottom="-10dp">
+            <LinearLayout android:id="@+id/actionPin"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:layout_marginBottom="-10dp"
+                android:padding="0dp">
 
-            <ImageView
+                <ImageView
                     android:id="@+id/actionPinImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/pin"
-                    android:contentDescription="@string/pin"/>
+                    android:contentDescription="@string/pin" />
 
-            <TextView
+                <TextView
                     android:id="@+id/actionPinText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pin"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
+            </LinearLayout>
         </LinearLayout>
+
     <!--
     	<Button
     	    android:id="@+id/actionSettings"
