@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="v462_title" translatable="false">v1.5.2.462</string>
+    <string name="v462" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Bugfix </b> - Invisible preview when using hide on outside tap<br>
+            <b>&#8226;	Bugfix </b> - Duplicated notifications on ChompSMS<br>
+            <b>&#8226;	Bugfix </b> - Missing conversation on WhatsApp<br>
+            <b>&#8226;	Improvement </b> - Support transparency on widget background color<br>
+            <b>&#8226;	Improvement </b> - Clear the notification after using the quick reply<br>
+        ]]>
+    </string>
     <string name="v460_title" translatable="false">v1.5.2.460</string>
     <string name="v460" translatable="false">
         <![CDATA[
