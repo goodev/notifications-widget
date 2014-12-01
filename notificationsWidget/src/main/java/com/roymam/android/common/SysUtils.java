@@ -287,4 +287,20 @@ public class SysUtils
     }
 
 
+    public boolean isLockscreenAppActive() {
+        boolean accessibilityServiceIsActive = NiLSAccessibilityService.isServiceRunning(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String currApp;
+        if (accessibilityServiceIsActive)
+            currApp = prefs.getString(NiLSAccessibilityService.LAST_OPENED_WINDOW_PACKAGENAME, SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME);
+        else
+            currApp = SysUtils.getForegroundApp(context);
+
+        String lockScreenApp = prefs.getString(SettingsManager.LOCKSCREEN_APP, SettingsManager.DEFAULT_LOCKSCREEN_APP);
+
+        Log.d(TAG, "isLockscreenAppActive: currApp: "+currApp+ " lockscreenapp:" + lockScreenApp + " locked:" + isKeyguardLocked(context));
+        return (isKeyguardLocked(context) ||
+                currApp != null && currApp.equals(lockScreenApp));
+    }
 }

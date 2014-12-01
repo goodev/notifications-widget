@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,16 +22,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.roymam.android.common.SysUtils;
+import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.nilsplus.ui.theme.Theme;
 import com.roymam.android.nilsplus.ui.theme.ThemeManager;
 import com.roymam.android.notificationswidget.R;
+import com.roymam.android.notificationswidget.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PopupNotification {
     private final String TAG = PopupNotification.class.getName();
+    private final SharedPreferences mPrefs;
     private int mPopupTimeout;
     private Handler mHandler;
     private Theme mTheme;
@@ -43,12 +49,14 @@ public class PopupNotification {
 
     private PopupNotification() {
         // default constructor - prevent creating this class without the "create" method
+        mPrefs = null;
     }
 
     private PopupNotification(Context context) {
         Log.d(TAG, "PopupNotification");
         mContext = context;
         mHandler = new Handler();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         mWindowView = new LinearLayout(context);
         mLayoutParams = new WindowManager.LayoutParams(
@@ -122,6 +130,14 @@ public class PopupNotification {
     public PopupNotification show() {
         if (mVisible) {
             Log.d(TAG, "PopupNotification already visible");
+            return this;
+        }
+
+        // do not popup when the device is locked and lock screen notifications are visible
+        if (mPrefs.getBoolean(SettingsManager.FP_ENABLED, SettingsManager.DEFAULT_FP_ENABLED) &&
+                SysUtils.getInstance(mContext,mHandler).isLockscreenAppActive())
+        {
+            Log.d(TAG, "Lockscreen is active - won't popup notification");
             return this;
         }
 
