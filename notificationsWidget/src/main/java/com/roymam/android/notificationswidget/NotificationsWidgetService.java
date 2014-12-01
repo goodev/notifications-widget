@@ -173,7 +173,7 @@ public class NotificationsWidgetService extends Service
 	    int bgColor = prefs.getInt(widgetMode + "." + SettingsManager.CLOCK_BG_COLOR, Color.BLACK);
 	    int alpha = prefs.getInt(widgetMode + "." + SettingsManager.CLOCK_BG_OPACITY, 0);
 
-	    bgColor = Color.argb(Color.alpha(bgColor) * alpha * 255 / 100, Color.red(bgColor), Color.green(bgColor), Color.blue(bgColor));
+	    bgColor = Color.argb(Color.alpha(bgColor) * alpha / 100, Color.red(bgColor), Color.green(bgColor), Color.blue(bgColor));
         clockRV.setInt(R.id.clockContainer, "setBackgroundColor", bgColor);
 
 		// persistent notifications
