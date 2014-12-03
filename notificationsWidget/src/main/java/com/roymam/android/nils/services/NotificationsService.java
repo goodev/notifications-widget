@@ -34,22 +34,11 @@ import android.widget.Toast;
 
 import com.roymam.android.common.PopupDialog;
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.nils.activities.AppSettingsActivity;
-import com.roymam.android.nils.activities.OpenNotificationActivity;
-import com.roymam.android.nils.activities.QuickReplyActivity;
-import com.roymam.android.nils.activities.StartupWizardActivity;
-import com.roymam.android.nils.common.NotificationParser;
-import com.roymam.android.nils.services.NotificationEventListener;
-import com.roymam.android.nils.services.NotificationEventsAdapter;
-import com.roymam.android.nils.ui.NPViewManager;
-import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.NotificationsProvider;
-import com.roymam.android.nils.common.PersistentNotification;
-import com.roymam.android.notificationswidget.NiLSAccessibilityService;
-import com.roymam.android.notificationswidget.NotificationsListener;
-import com.roymam.android.notificationswidget.R;
-import com.roymam.android.nils.common.SettingsManager;
-import com.roymam.android.nils.activities.UnlockDeviceActivity;
+import com.roymam.android.nilsplus.activities.OpenNotificationActivity;
+import com.roymam.android.nilsplus.activities.QuickReplyActivity;
+import com.roymam.android.nilsplus.activities.StartupWizardActivity;
+import com.roymam.android.nilsplus.ui.NPViewManager;
+import com.roymam.android.nilsplus.ui.NiLSActivity;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1437,8 +1426,8 @@ public class NotificationsService extends Service implements NotificationsProvid
 
         if (pd == null) pd = PopupDialog.create(context);
         if (pd2 != null) pd2.hide();
-        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SysUtils.getAppName(context, currentApp)))
-          .setText(context.getString(R.string.new_lock_screen_detected_text, SysUtils.getCurrentLockScreenAppName(context)))
+        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SettingsManager.PrefsGeneralFragment.getAppName(context, currentApp)))
+          .setText(context.getString(R.string.new_lock_screen_detected_text, SettingsManager.PrefsGeneralFragment.getCurrentLockScreenAppName(context)))
           .setPositiveButton(context.getString(R.string.yes), new View.OnClickListener() {
               @Override
               public void onClick(View v) {

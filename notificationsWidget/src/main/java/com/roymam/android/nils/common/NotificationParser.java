@@ -1,4 +1,4 @@
-package com.roymam.android.nils.common;
+package com.roymam.android.notificationswidget;
 
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
@@ -35,10 +35,6 @@ import android.widget.TextView;
 import com.google.android.clockwork.stream.LegacyNotificationUtil;
 import com.roymam.android.common.BitmapCache;
 import com.roymam.android.common.IconPackManager;
-import com.roymam.android.nils.activities.AppSettingsActivity;
-import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
-import com.roymam.android.notificationswidget.NotificationsService;
-import com.roymam.android.notificationswidget.R;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -417,7 +413,7 @@ public class NotificationParser
                     int s0start = ssb.getSpanStart(spans[0]);
                     int s0end = ssb.getSpanEnd(spans[0]);
                     nd.title = event.subSequence(s0start, s0end).toString().trim();
-                    int s1start = s0end + 1;
+                    int s1start = s0end;
                     int s1end = ssb.length();
                     nd.text = event.subSequence(s1start, s1end).toString().trim();
 

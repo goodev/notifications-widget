@@ -1,4 +1,4 @@
-package com.roymam.android.nils.ui;
+package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roymam.android.nils.common.NotificationData;

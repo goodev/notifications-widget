@@ -1,4 +1,4 @@
-package com.roymam.android.nils.services;
+package com.roymam.android.notificationswidget;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -29,17 +29,6 @@ import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import com.roymam.android.nils.activities.AppSettingsActivity;
-import com.roymam.android.nils.activities.NotificationActivity;
-import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.NotificationsProvider;
-import com.roymam.android.nils.receivers.NotificationsWidgetProvider;
-import com.roymam.android.nils.common.PersistentNotification;
-import com.roymam.android.nils.activities.PersistentNotificationSettingsActivity;
-import com.roymam.android.notificationswidget.NotificationsService;
-import com.roymam.android.notificationswidget.R;
-import com.roymam.android.nils.common.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -430,7 +419,7 @@ public class NotificationsWidgetService extends Service
     					String layout = prefs.getString(packageName +"." + PersistentNotificationSettingsActivity.PERSISTENT_NOTIFICATION_HEIGHT, "normal");
     					RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.notification_persistent);
     					RemoteViews content = pn.content;
-    					if (prefs.getBoolean(packageName + "." + AppSettingsActivity.USE_EXPANDED_TEXT,
+    					if (prefs.getBoolean(packageName + "." + AppSettingsActivity.USE_EXPANDED_TEXT, 
     							prefs.getBoolean(AppSettingsActivity.USE_EXPANDED_TEXT, true)))
     						content = pn.expandedContent;
     					if (layout.equals("small"))

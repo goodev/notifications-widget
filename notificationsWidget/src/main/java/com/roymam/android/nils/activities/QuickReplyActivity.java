@@ -1,4 +1,4 @@
-package com.roymam.android.nils.activities;
+package com.roymam.android.nilsplus.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -17,11 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.roymam.android.nils.common.NotificationData;
+import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 
