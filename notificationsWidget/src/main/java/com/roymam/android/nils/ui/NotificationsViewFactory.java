@@ -1,4 +1,4 @@
-package com.roymam.android.notificationswidget;
+package com.roymam.android.nils.ui;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -23,8 +23,14 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.roymam.android.nilsplus.activities.QuickReplyActivity;
-import com.roymam.android.notificationswidget.NotificationData.Action;
+import com.roymam.android.nils.activities.AppSettingsActivity;
+import com.roymam.android.nils.activities.QuickReplyActivity;
+import com.roymam.android.nils.common.NotificationData;
+import com.roymam.android.nils.common.NotificationsProvider;
+import com.roymam.android.nils.common.SettingsManager;
+import com.roymam.android.nils.receivers.NotificationsWidgetProvider;
+import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.notificationswidget.R;
 
 import java.util.List;
 
@@ -82,7 +88,7 @@ public class NotificationsViewFactory implements RemoteViewsService.RemoteViewsF
 	@Override
 	public RemoteViews getViewAt(int position) 
 	{
-		RemoteViews row=new RemoteViews(ctxt.getPackageName(), R.layout.listitem_notification);	
+		RemoteViews row=new RemoteViews(ctxt.getPackageName(), R.layout.listitem_notification);
 		NotificationsProvider s = NotificationsService.getSharedInstance();
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String widgetMode = preferences.getString(SettingsManager.WIDGET_MODE + "." + widgetId, SettingsManager.EXPANDED_WIDGET_MODE);
@@ -348,7 +354,7 @@ public class NotificationsViewFactory implements RemoteViewsService.RemoteViewsF
 		}
 	}
 
-	private void populateAppActions(RemoteViews actionBar, Action[] actions, int uid)
+	private void populateAppActions(RemoteViews actionBar, NotificationData.Action[] actions, int uid)
 	{
 			if (actions.length >= 1)
 			{

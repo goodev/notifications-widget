@@ -13,6 +13,8 @@ import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.roymam.android.nils.services.NotificationsService;
+
 
 @TargetApi(18)
 public class NotificationsListener extends NotificationListenerService
@@ -25,12 +27,12 @@ public class NotificationsListener extends NotificationListenerService
         Log.d(TAG,"NotificationsListener:onStartCommand");
         if (intent != null && intent.getAction() != null)
         {
-            if (intent.getAction().equals(com.roymam.android.notificationswidget.NotificationsService.CANCEL_NOTIFICATION))
+            if (intent.getAction().equals(NotificationsService.CANCEL_NOTIFICATION))
             {
-                String packageName = intent.getStringExtra(com.roymam.android.notificationswidget.NotificationsService.EXTRA_PACKAGENAME);
-                String tag = intent.getStringExtra(com.roymam.android.notificationswidget.NotificationsService.EXTRA_TAG);
-                int id = intent.getIntExtra(com.roymam.android.notificationswidget.NotificationsService.EXTRA_ID, -1);
-                String key = intent.getStringExtra(com.roymam.android.notificationswidget.NotificationsService.EXTRA_KEY);
+                String packageName = intent.getStringExtra(NotificationsService.EXTRA_PACKAGENAME);
+                String tag = intent.getStringExtra(NotificationsService.EXTRA_TAG);
+                int id = intent.getIntExtra(NotificationsService.EXTRA_ID, -1);
+                String key = intent.getStringExtra(NotificationsService.EXTRA_KEY);
 
                 Log.d(TAG,"cancel notification #" + id);
                 try {
@@ -44,7 +46,7 @@ public class NotificationsListener extends NotificationListenerService
                     Log.e(TAG, "security exception - cannot cancel notification.");
                 }
             }
-            else if (intent.getAction().equals(com.roymam.android.notificationswidget.NotificationsService.RELOAD_ACTIVE_NOTIFICATIONS))
+            else if (intent.getAction().equals(NotificationsService.RELOAD_ACTIVE_NOTIFICATIONS))
                 reloadActiveNotifications();
         }
         return super.onStartCommand(intent, flags, startId);
@@ -72,13 +74,13 @@ public class NotificationsListener extends NotificationListenerService
         //getApplicationContext().startService(intent);
 
         // Bind to NotificationsService
-        Intent intent = new Intent(this, com.roymam.android.notificationswidget.NotificationsService.class);
+        Intent intent = new Intent(this, NotificationsService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         super.onCreate();
     }
 
-    private com.roymam.android.notificationswidget.NotificationsService mService;
+    private NotificationsService mService;
     boolean mBound = false;
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -89,7 +91,7 @@ public class NotificationsListener extends NotificationListenerService
                                        IBinder service)
         {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            com.roymam.android.notificationswidget.NotificationsService.LocalBinder binder = (com.roymam.android.notificationswidget.NotificationsService.LocalBinder) service;
+            NotificationsService.LocalBinder binder = (NotificationsService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
             reloadActiveNotifications();

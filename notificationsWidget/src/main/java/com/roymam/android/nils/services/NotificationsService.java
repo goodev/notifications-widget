@@ -1,4 +1,4 @@
-package com.roymam.android.notificationswidget;
+package com.roymam.android.nils.services;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -34,11 +34,12 @@ import android.widget.Toast;
 
 import com.roymam.android.common.PopupDialog;
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.nilsplus.activities.OpenNotificationActivity;
-import com.roymam.android.nilsplus.activities.QuickReplyActivity;
-import com.roymam.android.nilsplus.activities.StartupWizardActivity;
-import com.roymam.android.nilsplus.ui.NPViewManager;
-import com.roymam.android.nilsplus.ui.NiLSActivity;
+import com.roymam.android.nils.activities.*;
+import com.roymam.android.nils.common.*;
+import com.roymam.android.nils.ui.*;
+import com.roymam.android.notificationswidget.NiLSAccessibilityService;
+import com.roymam.android.notificationswidget.NotificationsListener;
+import com.roymam.android.notificationswidget.R;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1426,8 +1427,8 @@ public class NotificationsService extends Service implements NotificationsProvid
 
         if (pd == null) pd = PopupDialog.create(context);
         if (pd2 != null) pd2.hide();
-        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SettingsManager.PrefsGeneralFragment.getAppName(context, currentApp)))
-          .setText(context.getString(R.string.new_lock_screen_detected_text, SettingsManager.PrefsGeneralFragment.getCurrentLockScreenAppName(context)))
+        pd.setTitle(context.getString(R.string.new_lock_screen_detected, SysUtils.getAppName(context, currentApp)))
+          .setText(context.getString(R.string.new_lock_screen_detected_text, SysUtils.getCurrentLockScreenAppName(context)))
           .setPositiveButton(context.getString(R.string.yes), new View.OnClickListener() {
               @Override
               public void onClick(View v) {

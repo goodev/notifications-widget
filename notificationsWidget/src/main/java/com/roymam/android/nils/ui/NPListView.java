@@ -22,8 +22,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.nils.common.SettingsManager;
+import com.roymam.android.nils.services.NotificationsService;
 import com.roymam.android.nils.ui.theme.Theme;
 import com.roymam.android.nils.ui.theme.ThemeManager;
 import com.roymam.android.notificationswidget.R;

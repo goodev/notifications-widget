@@ -1,4 +1,4 @@
-package com.roymam.android.nilsplus.activities;
+package com.roymam.android.nils.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -22,8 +22,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.roymam.android.notificationswidget.NotificationData;
-import com.roymam.android.notificationswidget.NotificationsService;
+import com.roymam.android.nils.common.NotificationData;
+import com.roymam.android.nils.services.NotificationsService;
 import com.roymam.android.notificationswidget.R;
 
 public class QuickReplyActivity extends Activity {

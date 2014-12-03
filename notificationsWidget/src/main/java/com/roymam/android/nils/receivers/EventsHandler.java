@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.roymam.android.nils.common.NotificationData;
 import com.roymam.android.nils.common.NotificationsProvider;
-import com.roymam.android.notificationswidget.NotificationsService;
+import com.roymam.android.nils.services.NotificationsService;
 
 import java.util.List;
 

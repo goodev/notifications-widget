@@ -1,8 +1,7 @@
-package com.roymam.android.nilsplus.ui;
+package com.roymam.android.nils.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -25,10 +24,10 @@ import android.widget.RelativeLayout;
 
 import com.roymam.android.common.BitmapUtils;
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.notificationswidget.NotificationData;
-import com.roymam.android.notificationswidget.NotificationsService;
+import com.roymam.android.nils.common.NotificationData;
+import com.roymam.android.nils.common.SettingsManager;
+import com.roymam.android.nils.services.NotificationsService;
 import com.roymam.android.notificationswidget.R;
-import com.roymam.android.notificationswidget.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;

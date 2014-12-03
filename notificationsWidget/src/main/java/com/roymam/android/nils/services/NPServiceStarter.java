@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.roymam.android.notificationswidget.NotificationsService;
 
 public class NPServiceStarter extends BroadcastReceiver
 {

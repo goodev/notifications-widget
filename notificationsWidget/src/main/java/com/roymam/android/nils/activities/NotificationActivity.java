@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.nils.common.NotificationData;
 import com.roymam.android.nils.common.NotificationsProvider;
 import com.roymam.android.nils.receivers.NotificationsWidgetProvider;
+import com.roymam.android.nils.services.NotificationsService;
 
 public class NotificationActivity extends Activity 
 {

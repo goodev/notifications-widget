@@ -16,8 +16,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.notificationswidget.NotificationsService;
 import com.roymam.android.nils.common.SettingsManager;
+import com.roymam.android.nils.services.NotificationsService;
 
 public class OpenNotificationActivity extends Activity
 {

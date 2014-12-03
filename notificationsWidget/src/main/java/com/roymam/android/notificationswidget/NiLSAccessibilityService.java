@@ -21,10 +21,10 @@ import android.widget.Toast;
 import com.roymam.android.common.BitmapUtils;
 import com.roymam.android.common.SysUtils;
 import com.roymam.android.nils.common.NotificationData;
-import com.roymam.android.nils.common.NotificationParser;
 import com.roymam.android.nils.common.NotificationsProvider;
 import com.roymam.android.nils.common.SettingsManager;
-import com.roymam.android.notificationswidget.NotificationsService;
+import com.roymam.android.nils.services.NotificationsService;
+import com.roymam.android.nils.common.NotificationParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

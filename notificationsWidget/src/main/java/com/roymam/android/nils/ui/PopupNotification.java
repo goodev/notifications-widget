@@ -1,4 +1,4 @@
-package com.roymam.android.nilsplus.ui;
+package com.roymam.android.nils.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
