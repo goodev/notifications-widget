@@ -3,7 +3,7 @@
     <string name="v463_title" translatable="false">v1.5.2.463</string>
     <string name="v463" translatable="false">
         <![CDATA[
-            <b>&#8226;	Improvement </b> - Heads up notifications won't pop up when lock screen is active<br>
+            <b>&#8226;	Improvement </b> - Heads up notifications won\'t pop up when lock screen is active<br>
             <b>&#8226;	Bugfix </b> - Large icons on the widget actionbar<br>
             <b>&#8226;	Bugfix </b> - Transparent background on the widget<br>
         ]]>
