@@ -1,7 +1,6 @@
 package com.roymam.android.notificationswidget;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +36,7 @@ public class NotificationsListener extends NotificationListenerService
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         cancelNotification(key);
                     else
+                        //noinspection deprecation
                         cancelNotification(packageName, tag, id);
                 }
                 catch(java.lang.SecurityException exp)
