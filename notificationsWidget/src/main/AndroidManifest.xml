@@ -26,7 +26,7 @@
         <!-- main app -->
         <activity
             android:name="com.roymam.android.nilsplus.ui.NiLSActivity"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.NiLSTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,12 +44,12 @@
             android:name=".AppSettingsActivity"
             android:label="@string/app_specific_settings_title"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.NiLSTheme" >
         </activity>
         <activity
             android:name=".PersistentNotificationSettingsActivity"
             android:label="@string/persistent_notifications"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.NiLSTheme" >
         </activity>
         <activity android:name=".StartServiceActivity" />
         <activity
@@ -59,14 +59,14 @@
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar" />
         <activity
             android:name="com.roymam.android.nilsplus.activities.StartupWizardActivity"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
+            android:theme="@style/Theme.NiLSTheme.NoActionBar" />
         <activity
             android:name="com.roymam.android.nilsplus.activities.WhatsNewActivity"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
+            android:theme="@style/Theme.NiLSTheme.NoActionBar" />
         <activity
             android:name="com.roymam.android.nilsplus.activities.LogViewerActivity"
             android:label="@string/view_recent_log"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:theme="@style/Theme.NiLSTheme" />
         <activity
             android:name=".UnlockDeviceActivity"
             android:excludeFromRecents="true"

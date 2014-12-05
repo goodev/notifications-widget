@@ -8,8 +8,8 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 463
-        versionName '1.5.2.463'
+        versionCode 470
+        versionName '1.6.0.470'
     }
     buildTypes {
         debug {
@@ -34,6 +34,7 @@ android {
         compile "com.android.support:recyclerview-v7:21.0.0"
         compile "com.android.support:palette-v7:21.0.0"
         compile "com.android.support:support-v13:21.0.0"
+        compile "com.android.support:appcompat-v7:21.0.+"
         compile files('libs/in-app-purchasing-1.0.3.jar')
     }
     productFlavors {

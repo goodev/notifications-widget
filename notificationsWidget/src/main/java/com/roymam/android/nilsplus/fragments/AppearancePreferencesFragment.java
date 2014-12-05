@@ -15,6 +15,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,7 @@ import net.margaritov.preference.colorpicker.AlphaPatternDrawable;
 
 import java.util.List;
 
-public class AppearancePreferencesFragment extends NiLSPreferenceFragment implements Preference.OnPreferenceChangeListener, ActionBar.OnNavigationListener {
+public class AppearancePreferencesFragment extends NiLSPreferenceFragment implements Preference.OnPreferenceChangeListener, android.support.v7.app.ActionBar.OnNavigationListener {
     private View mPreviewView;
     private Theme mTheme;
     private NotificationData mPreviewNotificationItem;
@@ -226,11 +227,11 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
 
         ArrayAdapter<CharSequence> list = new ArrayAdapter<CharSequence> (getActivity(), R.layout.spinner_theme_select, android.R.id.text1, newEntries);
         list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        getActivity().getActionBar().setListNavigationCallbacks(list, this);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(list, this);
 
         // select current theme
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        getActivity().getActionBar().setSelectedNavigationItem(currThemeIndex);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(currThemeIndex);
     }
 
     private void setMaxLines(int maxLines)
@@ -361,7 +362,7 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
                 String playstoreUrl = "market://search?q=\"NiLS Theme\"&c=apps";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(playstoreUrl));
                 startActivity(browserIntent);
-                getActivity().getActionBar().setSelectedNavigationItem(mLastSelectedTheme);
+                ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(mLastSelectedTheme);
                 return false;
             }
             else
@@ -389,7 +390,7 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
-                    getActivity().getActionBar().setSelectedNavigationItem(mLastSelectedTheme);
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(mLastSelectedTheme);
                     return false;
                 }
             }

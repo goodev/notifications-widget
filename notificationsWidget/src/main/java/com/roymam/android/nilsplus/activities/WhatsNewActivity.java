@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import com.viewpagerindicator.LinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhatsNewActivity extends Activity implements ViewPager.OnPageChangeListener
+public class WhatsNewActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener
 {
     private LimitedViewPager mViewPager;
     private List<Fragment> fragments;

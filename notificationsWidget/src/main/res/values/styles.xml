@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.QuickReply" parent="android:Theme">
+
+    <style name="Theme.NiLSTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/nils_primary</item>
+        <item name="colorPrimaryDark">@color/nils_primary_dark</item>
+        <item name="colorAccent">@color/nils_primary</item>
+        <item name="android:textColorPrimary">@color/actionbar_title</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:preferenceCategoryStyle">@style/nils_pref_category</item>
+    </style>
+
+    <style name="Theme.NiLSTheme.NoActionBar" parent="Theme.NiLSTheme">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.QuickReply" parent="Theme.AppCompat.Light">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -18,7 +33,7 @@
 
     <style name="Button">Button</style>
 
-    <style name="Button.Wizard" parent="@android:style/Widget.DeviceDefault.Light.Button">
+    <style name="Button.Wizard" parent="Widget.AppCompat.Light.ActionButton">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@drawable/item_selector_blue</item>
@@ -26,19 +41,19 @@
         <item name="android:paddingRight">24dp</item>
     </style>
 
-    <style name="TextAppearance.WizardTitle" parent="android:TextAppearance.DeviceDefault.Large">
+    <style name="TextAppearance.WizardTitle" parent="TextAppearance.AppCompat.Title" >
         <item name="android:textColor">@drawable/card_title_color</item>
-        <item name="android:textSize">36dp</item>
+        <item name="android:textSize">32dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
-    <style name="TextAppearance.WizardSubTitle" parent="android:TextAppearance.DeviceDefault.Medium">
+    <style name="TextAppearance.WizardSubTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
         <item name="android:textColor">@drawable/card_text_color</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
-    <style name="TextAppearance.CardTitle" parent="android:TextAppearance.DeviceDefault.Large">
+    <style name="TextAppearance.CardTitle" parent="android:TextAppearance.DeviceDefault.Medium">
         <item name="android:textColor">@drawable/card_title_color</item>
     </style>
 
@@ -47,8 +62,22 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.Text" parent="android:TextAppearance.DeviceDefault.Small">
+    <style name="TextAppearance.Text" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@drawable/card_text_color</item>
+    </style>
+
+    <style name="nils_pref_category">
+        <item name="android:layout">@layout/preference_category</item>
+        <item name="android:shouldDisableView">false</item>
+        <item name="android:selectable">false</item>
+    </style>
+
+    <style name="nils_pref_category_text_style">
+        <item name="android:textColor">@color/nils_primary</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">12dp</item>
     </style>
 
 </resources>

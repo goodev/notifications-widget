@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import com.viewpagerindicator.LinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartupWizardActivity extends Activity implements ViewPager.OnPageChangeListener {
+public class StartupWizardActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener {
     public static final String EXTRA_FIRST_TIME = "extra_not_first_time";
     public static final String EXTRA_IS_ACTIVE = "nils_is_active";
     public static final String EXTRA_SUGGEST_NOTIFICATIONS_PANEL = "extra_suggest_np";

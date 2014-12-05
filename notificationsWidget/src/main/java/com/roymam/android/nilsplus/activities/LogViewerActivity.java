@@ -3,6 +3,7 @@ package com.roymam.android.nilsplus.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -14,7 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-public class LogViewerActivity extends Activity
+public class LogViewerActivity extends ActionBarActivity
 {
     public void onCreate(Bundle savedInstanceState)
     {

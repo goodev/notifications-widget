@@ -13,6 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="-4dip"
+        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/theme_desc"
+        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

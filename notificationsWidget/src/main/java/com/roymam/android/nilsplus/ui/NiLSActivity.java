@@ -1,7 +1,6 @@
 package com.roymam.android.nilsplus.ui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -23,8 +22,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,20 +57,26 @@ import com.roymam.android.common.util.Purchase;
 import com.roymam.android.nilsplus.activities.StartupWizardActivity;
 import com.roymam.android.nilsplus.activities.WhatsNewActivity;
 import com.roymam.android.nilsplus.fragments.AboutPreferencesFragment;
-import com.roymam.android.notificationswidget.BuildConfig;
-import com.roymam.android.notificationswidget.SettingsManager;
 import com.roymam.android.nilsplus.fragments.AppearancePreferencesFragment;
 import com.roymam.android.nilsplus.fragments.MainPrefsFragment;
 import com.roymam.android.nilsplus.fragments.ServicePreferencesFragment;
 import com.roymam.android.nilsplus.fragments.WidgetSettingsFragment;
+import com.roymam.android.notificationswidget.BuildConfig;
 import com.roymam.android.notificationswidget.NotificationsWidgetProvider;
 import com.roymam.android.notificationswidget.R;
+import com.roymam.android.notificationswidget.SettingsManager;
 
 import java.util.Map;
 
-import static com.roymam.android.notificationswidget.SettingsManager.*;
+import static com.roymam.android.notificationswidget.SettingsManager.HowToAddWidgetFragment;
+import static com.roymam.android.notificationswidget.SettingsManager.PrefsAppSpecificFragment;
+import static com.roymam.android.notificationswidget.SettingsManager.PrefsContactFragment;
+import static com.roymam.android.notificationswidget.SettingsManager.PrefsGeneralFragment;
+import static com.roymam.android.notificationswidget.SettingsManager.PrefsPersistentNotificationsFragment;
+import static com.roymam.android.notificationswidget.SettingsManager.ViewClickable;
+import static com.roymam.android.notificationswidget.SettingsManager.WIDGET_PRESENT;
 
-public class NiLSActivity extends Activity
+public class NiLSActivity extends ActionBarActivity
 {
     private static final int UPGRADE_NILS_MENU_POS = 9;
     private CharSequence mTitle;
@@ -191,7 +197,7 @@ public class NiLSActivity extends Activity
     public void setTitle(CharSequence title)
     {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(mTitle);
     }
 
     private DrawerLayout mDrawerLayout;
@@ -257,14 +263,13 @@ public class NiLSActivity extends Activity
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // set event for open/close drawer
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close)
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
         {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view)
             {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to `onPrepareOptionsMenu()
             }
 
@@ -272,7 +277,7 @@ public class NiLSActivity extends Activity
             public void onDrawerOpened(View drawerView)
             {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(R.string.title);
+                getSupportActionBar().setTitle(R.string.title);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -280,8 +285,8 @@ public class NiLSActivity extends Activity
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         if (savedInstanceState == null)
         {
@@ -345,8 +350,8 @@ public class NiLSActivity extends Activity
     private void selectItem(int position)
     {
         // set fragment title
-        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         setTitle(mTitles[position]);
 
@@ -361,8 +366,8 @@ public class NiLSActivity extends Activity
                 break;
             case 2:
                 fragment = new AppearancePreferencesFragment();
-                getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                getActionBar().setDisplayShowTitleEnabled(false);
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
                 break;
             case 3:
                 fragment = new ServicePreferencesFragment();
