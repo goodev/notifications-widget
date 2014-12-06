@@ -35,9 +35,7 @@
                     android:id="@+id/show_notifications"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:focusable="false"
-                    android:clickable="false"/>
+                    android:layout_weight="0"/>
                 </LinearLayout>
             <include layout="@layout/tab_notification_settings"/>
         </LinearLayout>
@@ -70,9 +68,7 @@
                     android:id="@+id/show_clock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:focusable="false"
-                    android:clickable="false"/>
+                    android:layout_weight="0"/>
             </LinearLayout>
             <include layout="@layout/tab_clock_settings"/>
         </LinearLayout>
@@ -104,9 +100,7 @@
                     android:id="@+id/show_persistent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:focusable="false"
-                    android:clickable="false"/>
+                    android:layout_weight="0"/>
             </LinearLayout>
             <Button
                 android:id="@+id/persistent_notifications_settings_button"
