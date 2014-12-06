@@ -38,7 +38,6 @@ import com.roymam.android.nilsplus.activities.OpenNotificationActivity;
 import com.roymam.android.nilsplus.activities.QuickReplyActivity;
 import com.roymam.android.nilsplus.activities.StartupWizardActivity;
 import com.roymam.android.nilsplus.ui.NPViewManager;
-import com.roymam.android.nilsplus.ui.NiLSActivity;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1625,7 +1624,7 @@ public class NotificationsService extends Service implements NotificationsProvid
         registerReceiver(npreceiver, new IntentFilter(DEVICE_UNLOCKED));
         registerReceiver(npreceiver, new IntentFilter(REFRESH_LIST));
 
-        mSysUtils = SysUtils.getInstance(getApplicationContext(), mHandler);
+        mSysUtils = SysUtils.getInstance(getApplicationContext());
     }
 
     private void runPendingIntent(PendingIntent action, String packageName, int uid, Intent paramIntent)

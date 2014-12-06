@@ -1,8 +1,6 @@
 package com.roymam.android.notificationswidget;
 
 import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,15 +11,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.roymam.android.common.SysUtils;
 import com.roymam.android.nilsplus.services.PopupNotificationService;
-import com.roymam.android.nilsplus.ui.PopupNotification;
 
 import java.util.List;
 
@@ -41,7 +35,7 @@ public class NotificationEventsAdapter implements NotificationEventListener
         Log.d(TAG, "NotificationEventsAdapter created");
         this.context = context;
         this.mHandler = handler;
-        mSysUtils = SysUtils.getInstance(context, handler);
+        mSysUtils = SysUtils.getInstance(context);
     }
 
     @Override

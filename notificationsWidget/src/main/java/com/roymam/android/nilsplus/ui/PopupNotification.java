@@ -19,11 +19,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.nilsplus.ui.theme.Theme;
 import com.roymam.android.nilsplus.ui.theme.ThemeManager;
@@ -135,7 +133,7 @@ public class PopupNotification {
 
         // do not popup when the device is locked and lock screen notifications are visible
         if (mPrefs.getBoolean(SettingsManager.FP_ENABLED, SettingsManager.DEFAULT_FP_ENABLED) &&
-                SysUtils.getInstance(mContext,mHandler).isLockscreenAppActive())
+                SysUtils.getInstance(mContext).isLockscreenAppActive())
         {
             Log.d(TAG, "Lockscreen is active - won't popup notification");
             return this;
