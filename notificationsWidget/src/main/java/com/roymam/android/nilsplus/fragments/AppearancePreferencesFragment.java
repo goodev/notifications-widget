@@ -136,7 +136,6 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
         super.onCreate(savedInstanceState);
 
         loadPreferences();
-        prepareThemes();
     }
 
     @Override
@@ -227,11 +226,18 @@ public class AppearancePreferencesFragment extends NiLSPreferenceFragment implem
 
         ArrayAdapter<CharSequence> list = new ArrayAdapter<CharSequence> (getActivity(), R.layout.spinner_theme_select, android.R.id.text1, newEntries);
         list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         ((ActionBarActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(list, this);
 
         // select current theme
         ((ActionBarActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         ((ActionBarActivity)getActivity()).getSupportActionBar().setSelectedNavigationItem(currThemeIndex);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        prepareThemes();
     }
 
     private void setMaxLines(int maxLines)
