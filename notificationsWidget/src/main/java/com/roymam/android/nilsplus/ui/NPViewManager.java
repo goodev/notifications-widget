@@ -2,7 +2,6 @@ package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -473,7 +472,7 @@ public class NPViewManager
     {
         final PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         Log.d(TAG, "keepScreeOn, isScreenOn:"+pm.isScreenOn());
-        SysUtils sysUtils = SysUtils.getInstance(mContext,mHandler);
+        SysUtils sysUtils = SysUtils.getInstance(mContext);
         if (pm.isScreenOn()) sysUtils.turnScreenOn(true, true, reason);
     }
 

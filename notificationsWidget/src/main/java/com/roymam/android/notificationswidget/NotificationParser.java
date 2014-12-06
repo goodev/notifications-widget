@@ -72,8 +72,10 @@ public class NotificationParser
     public int inbox_notification_event_8_id = 0;
     public int inbox_notification_event_9_id = 0;
     public int inbox_notification_event_10_id = 0;
+    @SuppressWarnings("UnusedDeclaration")
     public int bigpictue_notification_id = 0;
     private int mInboxLayoutId = 0;
+    @SuppressWarnings("UnusedDeclaration")
     private int mBigTextLayoutId = 0;
 
     public NotificationParser(Context context)
@@ -85,8 +87,8 @@ public class NotificationParser
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public List<NotificationData> parseNotification(Notification n, String packageName, int notificationId, String tag, String key, boolean sideLoaded) {
         if (n != null) {
-            // handle only dismissable notifications
-            if (!isPersistent(n, packageName) && !shouldIgnore(n, packageName)) {
+            // handle only dismissible notifications
+            if (!isPersistent(n, packageName) && !shouldIgnore(packageName)) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 NotificationCompat.WearableExtender wo = LegacyNotificationUtil.getWearableOptions(n);
 
@@ -419,9 +421,8 @@ public class NotificationParser
                     int s0start = ssb.getSpanStart(spans[0]);
                     int s0end = ssb.getSpanEnd(spans[0]);
                     nd.title = event.subSequence(s0start, s0end).toString().trim();
-                    int s1start = s0end;
                     int s1end = ssb.length();
-                    nd.text = event.subSequence(s1start, s1end).toString().trim();
+                    nd.text = event.subSequence(s0end, s1end).toString().trim();
 
                     // remove ":" if appears at the end of the text or the start of the title
                     if (nd.text.length()>0 && nd.text.charAt(0) == ':') nd.text = nd.text.subSequence(1,nd.text.length()).toString().trim();
@@ -577,17 +578,15 @@ public class NotificationParser
     }
 
 
-    private boolean shouldIgnore(Notification n, String packageName)
+    private boolean shouldIgnore(String packageName)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        if (!prefs.getBoolean(SettingsManager.COLLECT_ON_UNLOCK, true) &&
+        return !prefs.getBoolean(SettingsManager.COLLECT_ON_UNLOCK, true) &&
                 !km.inKeyguardRestrictedInputMode() &&
                 !prefs.getBoolean("widgetlocker", false) ||
                 prefs.getBoolean(packageName + "." + AppSettingsActivity.IGNORE_APP, false) ||
-                packageName.equals("com.android.providers.downloads"))
-            return true;
-        return false;
+                packageName.equals("com.android.providers.downloads");
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -612,13 +611,12 @@ public class NotificationParser
             }
             if (actions != null)
             {
-                for(int i=0; i<actions.length; i++)
-                {
+                for (Object action : actions) {
                     NotificationData.Action a = new NotificationData.Action();
-                    Class<?> actionClass=Class.forName("android.app.Notification$Action");
-                    a.icon = actionClass.getDeclaredField("icon").getInt(actions[i]);
-                    a.title = (CharSequence) actionClass.getDeclaredField("title").get(actions[i]);;
-                    a.actionIntent = (PendingIntent) actionClass.getDeclaredField("actionIntent").get(actions[i]);;
+                    Class<?> actionClass = Class.forName("android.app.Notification$Action");
+                    a.icon = actionClass.getDeclaredField("icon").getInt(action);
+                    a.title = (CharSequence) actionClass.getDeclaredField("title").get(action);
+                    a.actionIntent = (PendingIntent) actionClass.getDeclaredField("actionIntent").get(action);
 
                     // find drawable
                     // extract app icons
@@ -628,7 +626,7 @@ public class NotificationParser
                 }
             }
         }
-        catch(Exception exp)
+        catch(Exception ignored)
         {
 
         }
@@ -793,7 +791,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_2_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content, "\n", s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -802,7 +800,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_3_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -811,7 +809,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_4_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -820,7 +818,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_5_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -829,7 +827,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_6_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -838,7 +836,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_7_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -847,7 +845,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_8_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -856,7 +854,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_9_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -865,7 +863,7 @@ public class NotificationParser
                 CharSequence s = notificationStrings.get(inbox_notification_event_10_id);
                 if (s!= null && !s.equals(""))
                 {
-                    content = TextUtils.concat(content,"\n",s);
+                    content = content!=null?TextUtils.concat(content, "\n", s):s;
                 }
             }
 
@@ -916,13 +914,11 @@ public class NotificationParser
             if (fs != null)
             {
                 fs.setAccessible(true);
+                //noinspection unchecked
                 actions = (ArrayList<Parcelable>) fs.get(view);
             }
             if (actions != null)
             {
-                final int STRING = 9;
-                final int CHAR_SEQUENCE = 10;
-
                 // Find the setText() and setTime() reflection actions
                 for (Parcelable p : actions)
                 {
@@ -938,6 +934,7 @@ public class NotificationParser
                     int viewId = parcel.readInt();
 
                     String methodName = parcel.readString();
+                    //noinspection ConstantConditions
                     if (methodName == null) continue;
 
                         // Save strings
@@ -975,10 +972,11 @@ public class NotificationParser
             if (fs != null)
             {
                 fs.setAccessible(true);
+                //noinspection unchecked
                 actions = (ArrayList<Parcelable>) fs.get(view);
             }
 
-            Object bitmapCache = null;
+            Object bitmapCache;
             fs = RemoteViews.class.getDeclaredField("mBitmapCache");
             if (fs != null)
             {
@@ -988,29 +986,32 @@ public class NotificationParser
                 if (fs != null)
                 {
                     fs.setAccessible(true);
+                    //noinspection unchecked
                     bitmaps = (ArrayList<Bitmap>) fs.get(bitmapCache);
                 }
             }
 
             // Find the setText() and setTime() reflection actions
-            for (Parcelable p : actions)
-            {
-                Parcel parcel = Parcel.obtain();
-                p.writeToParcel(parcel, 0);
-                parcel.setDataPosition(0);
+            if (actions != null)
+                for (Parcelable p : actions)
+                {
+                    Parcel parcel = Parcel.obtain();
+                    p.writeToParcel(parcel, 0);
+                    parcel.setDataPosition(0);
 
-                // The tag tells which type of action it is (2 is ReflectionAction, from the source)
-                int tag = parcel.readInt();
-                if (tag != 12) continue;
+                    // The tag tells which type of action it is (2 is ReflectionAction, from the source)
+                    int tag = parcel.readInt();
+                    if (tag != 12) continue;
 
-                // View ID
-                int viewId = parcel.readInt();
+                    // View ID
+                    parcel.readInt();
 
-                String methodName = parcel.readString();
-                if (methodName == null) continue;
+                    String methodName = parcel.readString();
+                    //noinspection ConstantConditions
+                    if (methodName == null) continue;
 
-                parcel.recycle();
-            }
+                    parcel.recycle();
+                }
         }
         catch(Exception exp)
         {
@@ -1059,9 +1060,8 @@ public class NotificationParser
             mBuilder.setContentTitle("9");
             inboxStyle.setSummaryText("5");
 
-            for (int i=0; i < events.length; i++)
-            {
-                inboxStyle.addLine(events[i]);
+            for (String event : events) {
+                inboxStyle.addLine(event);
             }
             mBuilder.setStyle(inboxStyle);
             n = mBuilder.build();

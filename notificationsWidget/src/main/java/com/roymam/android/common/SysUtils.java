@@ -15,8 +15,10 @@ import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationsListener;
 import com.roymam.android.notificationswidget.SettingsManager;
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SysUtils
 {
@@ -24,21 +26,18 @@ public class SysUtils
 
     private static SysUtils instance;
     private final Context context;
-    private final Handler handler;
     private static int DEFAULT_DEVICE_TIMEOUT = 10000;
     private PowerManager.WakeLock mWakeLock = null;
-    private boolean mPendingCallback = false;
 
-    public SysUtils(Context context, Handler handler)
+    public SysUtils(Context context)
     {
         this.context = context;
-        this.handler = handler;
     }
 
-    public static SysUtils getInstance(Context context, Handler handler)
+    public static SysUtils getInstance(Context context)
     {
         if (instance == null)
-            instance = new SysUtils(context, handler);
+            instance = new SysUtils(context);
         return instance;
     }
 
@@ -69,40 +68,54 @@ public class SysUtils
            return isServiceRunning(context, NiLSAccessibilityService.class);
     }
 
-    public static String getForegroundApp(Context context)
-    {
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
-        Log.d(TAG, tasks.get(0).topActivity.getClassName());
-        return tasks.get(0).topActivity.getPackageName();
+    private static String[] getForegroundApps(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return new String[] {getForegroundAppLegacy(context)};
+        else {
+            ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            final Set<String> activePackages = new HashSet<String>();
+            final List<ActivityManager.RunningAppProcessInfo> processInfos = mActivityManager.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : processInfos) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    activePackages.addAll(Arrays.asList(processInfo.pkgList));
+                }
+            }
+            return activePackages.toArray(new String[activePackages.size()]);
+        }
     }
 
-    public static String getForegroundActivity(Context context)
-    {
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
-        if (tasks.size() > 0)
-            return tasks.get(0).topActivity.getClassName();
+    public static String getForegroundApp(Context context) {
+        String[] apps = getForegroundApps(context);
+        if (apps.length > 0)
+            return apps[0];
         else
             return "";
     }
 
-    public static boolean isAppForground(Context context, String packageName)
+    private static String getForegroundAppLegacy(Context context)
     {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> l = mActivityManager
-                .getRunningAppProcesses();
-        Iterator<ActivityManager.RunningAppProcessInfo> i = l.iterator();
-        while (i.hasNext())
-        {
-            ActivityManager.RunningAppProcessInfo info = i.next();
-            for (String p : info.pkgList)
-            {
-                if (p.equals(packageName) && info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND)
-                    return true;
-            }
+        @SuppressWarnings("deprecation")
+        List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
+        if (tasks.size() > 0 && tasks.get(0).topActivity != null) {
+            Log.d(TAG, tasks.get(0).topActivity.getClassName());
+            return tasks.get(0).topActivity.getPackageName();
         }
-        return false;
+        else
+            return "";
+    }
+
+    // this method is longer possible with Android Lollipop
+    @Deprecated
+    public static String getForegroundActivity(Context context)
+    {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        @SuppressWarnings("deprecation")
+        List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
+        if (tasks.size() > 0 && tasks.get(0).topActivity != null)
+            return tasks.get(0).topActivity.getClassName();
+        else
+            return "";
     }
 
     public static boolean isKeyguardLocked(Context context)
@@ -154,7 +167,7 @@ public class SysUtils
         }
 
         // turn the screen on only if it was off or acquired by previous wakelock
-        if (    !pm.isScreenOn() ||
+        if (    !isScreenOn(pm) ||
                 mWakeLock != null && mWakeLock.isHeld() ||
                 force)
         {
@@ -162,17 +175,18 @@ public class SysUtils
             if (mWakeLock == null || !mWakeLock.isHeld())
             {
                 Log.d(TAG, "wake lock is not held, acquiring new one");
-                // @SuppressWarnings("deprecation")
+                //noinspection deprecation
                 mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
                 mWakeLock.acquire(newTimeout);
             }
             else // mWakeLock != null && mWakeLock.isHeld()
             {
                 // if screen is off, release the previous wake lock
-                if (!pm.isScreenOn())
+                if (!isScreenOn(pm))
                 {
                     Log.d(TAG, "wakelock is already held and screen is off, releasing and creating a new one");
                     mWakeLock.release();
+                    //noinspection deprecation
                     mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
                 }
 
@@ -181,12 +195,19 @@ public class SysUtils
                 mWakeLock.acquire(newTimeout);
             }
 
-            mPendingCallback = true;
         }
         else
         {
-            Log.d(TAG, "turnScreenOn ignored, isScreenOn:" + pm.isScreenOn() + " mWakelock:"+mWakeLock);
+            Log.d(TAG, "turnScreenOn ignored, isScreenOn:" + isScreenOn(pm) + " mWakelock:"+mWakeLock);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private boolean isScreenOn(PowerManager pm) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return pm.isScreenOn();
+        else
+            return pm.isInteractive();
     }
 
     private void storeDeviceTimeout()
