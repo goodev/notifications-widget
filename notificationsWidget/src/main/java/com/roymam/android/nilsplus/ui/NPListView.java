@@ -317,7 +317,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         else {
             //noinspection ResourceType
             listView.setDivider(Resources.getSystem().getDrawable(android.R.color.transparent));
+
         }
+        listView.setClipToPadding(false);
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);
