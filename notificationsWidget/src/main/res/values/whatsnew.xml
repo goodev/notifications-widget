@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="v464_title" translatable="false">v1.5.2.463</string>
+    <string name="v464" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Translation </b> - Dutch translation was added. Thanks Kars &amp; Silknl<br>
+        ]]>
+    </string>
     <string name="v463_title" translatable="false">v1.5.2.463</string>
     <string name="v463" translatable="false">
         <![CDATA[
