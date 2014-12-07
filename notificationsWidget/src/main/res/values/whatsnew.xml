@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="v470_title" translatable="false">v1.6</string>
+    <string name="v470" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Improvement </b> - Interact with heads up notifications, swipe to dismiss<br>
+        ]]>
+    </string>
     <string name="v463_title" translatable="false">v1.5.2.463</string>
     <string name="v463" translatable="false">
         <![CDATA[
