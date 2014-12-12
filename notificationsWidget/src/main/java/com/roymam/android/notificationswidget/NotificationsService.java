@@ -98,6 +98,7 @@ public class NotificationsService extends Service implements NotificationsProvid
     private ReadWriteLock lock = new ReentrantReadWriteLock();;
     private ArrayList<NotificationData> mFilteredNotificationsList;
     private final Handler mHandler = new Handler();
+    private static String mLastApp = null;
 
     public HashMap<String, NotificationData> groupedNotifications = new HashMap<String, NotificationData>();
 
@@ -1383,6 +1384,10 @@ public class NotificationsService extends Service implements NotificationsProvid
     private static void detectLockScreenApp(Context context)
     {
         String currentApp = SysUtils.getForegroundApp(context);
+        if (mLastApp == null || !mLastApp.equals(currentApp)) {
+            Log.d(TAG, "foreground app:" + currentApp);
+            mLastApp = currentApp;
+        }
         detectLockScreenApp(context, currentApp);
     }
 
