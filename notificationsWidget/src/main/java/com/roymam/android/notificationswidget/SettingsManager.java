@@ -261,7 +261,8 @@ public class SettingsManager
                     "com.handcent.nextsms",
                     "com.supertext.phone",
                     "com.p1.chompsms",
-                    "com.webascender.callerid"};
+                    "com.webascender.callerid",
+                    "com.google.android.GoogleCamera"};
     public static final String SHOW_WELCOME_WIZARD = "show_welcome_wizard";
 
     // privacy options
