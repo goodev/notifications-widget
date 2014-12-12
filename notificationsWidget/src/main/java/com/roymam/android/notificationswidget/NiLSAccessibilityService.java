@@ -240,8 +240,8 @@ public class NiLSAccessibilityService extends AccessibilityService
 
     private void handleAutoHideWhenWindowChanged(String packageName)
     {
-        // systemui is not really a window - ignore it
-        if (packageName.equals("com.android.systemui") || packageName.equals(getPackageName()))  return;
+        // systemui is not really a window - ignore it (unless it is Lollipop)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && packageName.equals("com.android.systemui") || packageName.equals(getPackageName()))  return;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -341,15 +341,59 @@ public class NiLSAccessibilityService extends AccessibilityService
                     mService.hide(false);
                 }
                 else {
-                    Log.w(TAG, "auto hide service doesn't work on Lollipop. use hide on outside tap instead");
+                    if (accessibilityEvent.getSource() != null) {
+                        Rect bounds = new Rect();
+                        accessibilityEvent.getSource().getBoundsInScreen(bounds);
+
+                        boolean isPulldownBar = accessibilityEvent.getSource().getClassName().equals("android.widget.RelativeLayout") &&
+                                                accessibilityEvent.getSource().getChildCount() == 7 &&
+                                                bounds.left >= 0 && bounds.top >= 0;
+                        boolean isPassword = accessibilityEvent.getClassName().equals("android.widget.FrameLayout") &&
+                                             accessibilityEvent.getSource().getChildCount() == 3;
+                        boolean isCarrierName = accessibilityEvent.getSource().getClassName().equals("android.widget.TextView") &&
+                                                accessibilityEvent.getSource().getChildCount() == 0;
+
+                        if (!isCarrierName)
+                            recursivePrintNode(accessibilityEvent.getSource(), 0);
+                        if (isPulldownBar || isPassword) {
+                                Log.d(TAG, "SystemUI changed, isPulldown:" + isPulldownBar + " isPassword:" + isPassword);
+                                mHiddenBecauseOfSystemUI = true;
+                                mService.hide(false);
+                            } else if (!isCarrierName && mHiddenBecauseOfSystemUI) {
+                                mHiddenBecauseOfSystemUI = false;
+                                mService.show(false);
+                            }
+                    }
                 }
+            }
+            /*else if (packageName.equals("android") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Log.d(TAG, "power menu appears - hiding NiLS");
+                recursivePrintNode(accessibilityEvent.getSource(),0);
+                mHiddenBecauseOfSystemUI = true;
+                mService.hide(false);
+            }*/
+        }
+    }
+
+    private void recursivePrintNode(AccessibilityNodeInfo node, int indent) {
+        if (node != null) {
+            String logLine = "*";
+            for (int i = 0; i < indent; i++) logLine += " ";
+            logLine += "class:" + node.getClassName() + " text:" + node.getText() + " childs:" + node.getChildCount();
+            Rect rect = new Rect();
+            node.getBoundsInScreen(rect);
+            logLine += " bounds:(" + rect.toString() + ")";
+            Log.d(TAG, logLine);
+            if (node.getChildCount() > 0) {
+                for (int i = 0; i < node.getChildCount(); i++)
+                    recursivePrintNode(node.getChild(i), indent + 1);
             }
         }
     }
 
     private List<String> recursiveGetStrings(AccessibilityNodeInfo node)
     {
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         if (node!= null)
         {
             if (node.getText()!=null)

@@ -1309,6 +1309,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
                     // if the accessibility service is not running start monitoring the active app
                     if (!accessibilityServiceIsActive) {
+                        Log.d(TAG, "[screen] accessibility service is not active");
                         // detect current lock screen
                         detectLockScreenApp(context);
 
@@ -1360,12 +1361,15 @@ public class NotificationsService extends Service implements NotificationsProvid
                         hide(false);
 
                         // stop checking
-                        if (checkLockScreenPendingIntent != null) {
-                            Log.d(TAG, "lock screen is no longer active, stop monitoring");
-                            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        if (checkLockScreenPendingIntent == null)
+                            checkLockScreenPendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(CHECK_LSAPP), PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        Log.d(TAG, "lock screen is no longer active, stop monitoring");
+                        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        try {
                             am.cancel(checkLockScreenPendingIntent);
-                            checkLockScreenPendingIntent = null;
-                        }
+                        } catch (Exception exp) { /* cannot cancel alarm */ }
+                        checkLockScreenPendingIntent = null;
 
                         // send a broadcast the device is unlocked and hide notifications list immediately
                         Log.d(TAG, "constant polling - shouldHideNotifications returned true - sending unlocked event");
@@ -1528,7 +1532,9 @@ public class NotificationsService extends Service implements NotificationsProvid
             activity.contains("PopupNotificationLocked") || // never show it on top of WhatsApp popup
             activity.contains("AlarmActivity")      ||      // never show it on top of AlarmClock
             activity.contains("com.google.android.velvet.ui.VelvetLockscreenActivity") || // never show it on top of Google Now search
-            activity.contains("com.sec.android.app.camera.Camera")) // never show it on top of the camera app
+            activity.contains("com.sec.android.app.camera.Camera") ||
+            activity.contains("com.google.android.GoogleCamera"))  // never show it on top of the camera app
+
             return true;
 
         if (autoDetect)
