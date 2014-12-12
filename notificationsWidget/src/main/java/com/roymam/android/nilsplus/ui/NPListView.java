@@ -439,9 +439,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
                                     v.animate().alpha(1).setListener(null);
 
                                     int selected = mDotsView.getSelected();
-                                    if (selected == 0) {
+                                    if (selected == 0 && data.size() > position) {
                                         callNotificationOpen(data.get(position));
-                                    } else if (selected >= 1) {
+                                    } else if (selected >= 1 && data.size() > position) {
                                         callNotificationRunAction(data.get(position), selected - 1);
                                     }
                                 }
