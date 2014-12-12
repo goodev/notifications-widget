@@ -10,6 +10,7 @@
     <string name="notification_panel_is_active">Notifications panel is active.\nNotifications list will be displayed when the lock screen appears</string>
     <string name="notification_panel_is_inactive">Notifications panel is not active</string>
     <string name="auto_hide_service">Auto Hide Service</string>
+    <string name="accessibility_service">NiLS Service</string>
     <string name="auto_hide_is_inactive">When enabled, Auto Hide Service will automatically hide Notifications Panel when you pull down Android Notifications Bar</string>
     <string name="auto_hide_is_active">NiLS Auto Hide Service is enabled. Notification Panel will be automatically hidden when you pull down Android Notifications Bar</string>
     <string name="enable_auto_hide_service_tip">Find \"NiLS Service\" in the list and enable it, then press the \"Back\" button to go back to NiLS</string>

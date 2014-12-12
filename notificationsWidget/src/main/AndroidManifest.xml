@@ -86,7 +86,7 @@
         <!-- NiLS Accessibility Service (for Android < 4.3 and for Auto Hide service -->
         <service
             android:name=".NiLSAccessibilityService"
-            android:label="@string/notifications_service"
+            android:label="@string/accessibility_service"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />

@@ -433,4 +433,5 @@
   <string name="crowdin_summary">Help mee om NiLS te vertalen door ons te bezoeken op Crowdin</string>
   <string name="ignore_repeating_notifications">Negeer herhalende notificaties</string>
   <string name="ignore_repeating_notifications_summary">Negeer notificaties met dezelfde tekst als in eerder afgewezen notificaties</string>
+    <string name="accessibility_service">NiLS Service</string>
 </resources>
