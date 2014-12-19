@@ -97,8 +97,11 @@ public class PopupNotification implements View.OnTouchListener {
         mLayoutParams = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
         mLayoutParams.gravity = Gravity.TOP;
 
@@ -286,7 +289,7 @@ public class PopupNotification implements View.OnTouchListener {
                 }
                 else if (mHorizontalMovement) {
                     mView.setTranslationX(currX - mTouchStartX);
-                    mView.setAlpha(1 - Math.abs(currX - mTouchStartX) / mViewWidth);
+                    mView.setAlpha(1 - Math.abs(currX - mTouchStartX) / (mViewWidth/2));
                 }
 
                 break;
@@ -316,8 +319,10 @@ public class PopupNotification implements View.OnTouchListener {
                 }
                 else if (mHorizontalMovement) {
                     if (velocityX > mMinFlingVelocity && velocityX < mMaxFlingVelocity ||
-                        Math.abs(deltaX) > mViewWidth / 2)
-                        mView.animate().translationX(mViewWidth).alpha(0).setListener(new AnimatorListenerAdapter() {
+                        Math.abs(deltaX) > mViewWidth / 4) {
+                        int targetX = mViewWidth;
+                        if (deltaX < 0) targetX = -mViewWidth ;
+                        mView.animate().translationX(targetX).alpha(0).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 // clear notification
@@ -328,6 +333,7 @@ public class PopupNotification implements View.OnTouchListener {
                                 hide();
                             }
                         });
+                    }
                     else
                         mView.animate().translationX(0).alpha(1).setListener(null);
                 }
