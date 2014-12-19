@@ -17,37 +17,56 @@ import android.util.Log;
 public class NotificationsListener extends NotificationListenerService
 {
     private final String TAG = this.getClass().getSimpleName();
+    private static NotificationsListener instance = null;
+
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         Log.d(TAG,"NotificationsListener:onStartCommand");
-        if (intent != null && intent.getAction() != null)
+        instance = this;
+
+        /*if (intent != null && intent.getAction() != null)
         {
             if (intent.getAction().equals(NotificationsService.CANCEL_NOTIFICATION))
             {
-                String packageName = intent.getStringExtra(NotificationsService.EXTRA_PACKAGENAME);
-                String tag = intent.getStringExtra(NotificationsService.EXTRA_TAG);
-                int id = intent.getIntExtra(NotificationsService.EXTRA_ID, -1);
-                String key = intent.getStringExtra(NotificationsService.EXTRA_KEY);
 
-                Log.d(TAG,"cancel notification #" + id);
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        cancelNotification(key);
-                    else
-                        //noinspection deprecation
-                        cancelNotification(packageName, tag, id);
-                }
-                catch(java.lang.SecurityException exp)
-                {
-                    Log.e(TAG, "security exception - cannot cancel notification.");
-                }
             }
             else if (intent.getAction().equals(NotificationsService.RELOAD_ACTIVE_NOTIFICATIONS))
                 reloadActiveNotifications();
-        }
+        }*/
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    /*
+    @Override
+    public void onListenerConnected() {
+        instance = this;
+        reloadActiveNotifications();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            super.onListenerConnected();
+    }*/
+
+    public static NotificationsListener getInstance()
+    {
+        return instance;
+    }
+
+    public void cancelNotification(String packageName, int id, String tag, String key)
+    {
+        Log.d(TAG,"cancel notification #" + id);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                cancelNotification(key);
+            else
+                //noinspection deprecation
+                cancelNotification(packageName, tag, id);
+        }
+        catch(java.lang.SecurityException exp)
+        {
+            Log.e(TAG, "security exception - cannot cancel notification.");
+        }
     }
 
     private void reloadActiveNotifications() {
@@ -67,13 +86,11 @@ public class NotificationsListener extends NotificationListenerService
     public void onCreate() {
         Log.d(TAG, "NotificationsListener:onCreate");
 
-        // start NotificationsService
-        //Intent intent = new Intent(getApplicationContext(), NotificationsService.class);
-        //getApplicationContext().startService(intent);
-
         // Bind to NotificationsService
         Intent intent = new Intent(this, NotificationsService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        instance = this;
 
         super.onCreate();
     }

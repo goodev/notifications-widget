@@ -64,7 +64,6 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     // notification list modification events
     public static final String REMOVE_NOTIFICATION = "com.roymam.android.nils.remove_notification";
-    public static final String CANCEL_NOTIFICATION = "com.roymam.android.nils.cancel_notification";
 
     // lock screen constants
     public static final String STOCK_LOCKSCREEN_PACKAGENAME = "com.android.keyguard" ;
@@ -84,7 +83,6 @@ public class NotificationsService extends Service implements NotificationsProvid
     public static final String INCOMING_CALL = "com.roymam.android.nils.INCOMING_CALL";
     public static final String DEVICE_UNLOCKED = "com.roymam.android.nils.UNLOCKED";
     public static final String REFRESH_LIST = "com.roymam.android.nils.REFRESH_LIST";
-    public static final String RELOAD_ACTIVE_NOTIFICATIONS = "com.roymam.android.nils.RELOAD_ACTIVE_NOTIFICATIONS";
 
     private NPReceiver npreceiver = null;
     private NPViewManager viewManager = null;
@@ -860,18 +858,10 @@ public class NotificationsService extends Service implements NotificationsProvid
         Log.d(TAG,"NotificationsService:cancelNotification " + packageName + ":" + id);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
         {
-            try
-            {
-                Intent intent = new Intent(context, NotificationsListener.class);
-                intent.setAction(CANCEL_NOTIFICATION);
-                intent.putExtra(EXTRA_PACKAGENAME, packageName);
-                intent.putExtra(EXTRA_TAG, tag);
-                intent.putExtra(EXTRA_ID, id);
-                intent.putExtra(EXTRA_KEY, key);
-                startService(intent);
+            if (NotificationsListener.getInstance() != null) {
+                NotificationsListener.getInstance().cancelNotification(packageName, id, tag, key);
             }
-            catch (Exception exp)
-            {
+            else {
                 Log.wtf(TAG, "sdk_int:"+Build.VERSION.SDK_INT+" but NotificationsListener class doesn't exists... weird.");
             }
         }
