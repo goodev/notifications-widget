@@ -15,7 +15,9 @@ import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationsListener;
 import com.roymam.android.notificationswidget.SettingsManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +30,8 @@ public class SysUtils
     private final Context context;
     private static int DEFAULT_DEVICE_TIMEOUT = 10000;
     private PowerManager.WakeLock mWakeLock = null;
+    private String[] mLastForegroundApps = null;
+    private String mLastApp = "";
 
     public SysUtils(Context context)
     {
@@ -68,9 +72,9 @@ public class SysUtils
            return isServiceRunning(context, NiLSAccessibilityService.class);
     }
 
-    private static String[] getForegroundApps(Context context) {
+    private String[] getForegroundApps() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            return new String[] {getForegroundAppLegacy(context)};
+            return new String[] {getForegroundAppLegacy()};
         else {
             ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             final Set<String> activePackages = new HashSet<String>();
@@ -84,15 +88,33 @@ public class SysUtils
         }
     }
 
-    public static String getForegroundApp(Context context) {
-        String[] apps = getForegroundApps(context);
-        if (apps.length > 0)
-            return apps[0];
-        else
-            return "";
+    public String getForegroundApp() {
+        String[] apps = getForegroundApps();
+        if (mLastForegroundApps == null)
+            mLastForegroundApps = new String[0];
+
+        List<String> appsArray = Arrays.asList(mLastForegroundApps);
+        String lockScreenApp = PreferenceManager.getDefaultSharedPreferences(context).getString(SettingsManager.LOCKSCREEN_APP, SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME);
+
+        // compare with previously queried app list
+        for(String app : apps) {
+            // if one of the running apps is the lock screen app - return it immediately
+            if (app.equals(lockScreenApp)) {
+                mLastApp = lockScreenApp;
+                return mLastApp;
+            }
+
+            // otherwise - check if it wasn't already
+            if (!appsArray.contains(app))
+                mLastApp = app;
+        }
+
+        mLastForegroundApps = apps;
+        Log.d(TAG, "current app: " + mLastApp);
+        return mLastApp;
     }
 
-    private static String getForegroundAppLegacy(Context context)
+    private String getForegroundAppLegacy()
     {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         @SuppressWarnings("deprecation")
@@ -316,7 +338,7 @@ public class SysUtils
         if (accessibilityServiceIsActive)
             currApp = prefs.getString(NiLSAccessibilityService.LAST_OPENED_WINDOW_PACKAGENAME, SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME);
         else
-            currApp = SysUtils.getForegroundApp(context);
+            currApp = getForegroundApp();
 
         String lockScreenApp = prefs.getString(SettingsManager.LOCKSCREEN_APP, SettingsManager.DEFAULT_LOCKSCREEN_APP);
 

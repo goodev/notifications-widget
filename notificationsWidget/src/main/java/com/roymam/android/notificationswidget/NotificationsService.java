@@ -1376,7 +1376,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     private static void detectLockScreenApp(Context context)
     {
-        String currentApp = SysUtils.getForegroundApp(context);
+        String currentApp = SysUtils.getInstance(context).getForegroundApp();
         detectLockScreenApp(context, currentApp);
     }
 
@@ -1491,7 +1491,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     public static boolean shouldHideNotifications(Context context, boolean autoDetect)
     {
-        String currentApp = SysUtils.getForegroundApp(context);
+        String currentApp = SysUtils.getInstance(context).getForegroundApp();
         return shouldHideNotifications(context, currentApp, autoDetect);
     }
 
@@ -1632,7 +1632,7 @@ public class NotificationsService extends Service implements NotificationsProvid
         intent.putExtra("action", action);
         intent.putExtra("package", packageName);
         intent.putExtra("uid", uid);
-        intent.putExtra("lockscreen_package", SysUtils.getForegroundApp(getApplicationContext()));
+        intent.putExtra("lockscreen_package", SysUtils.getInstance(getApplicationContext()).getForegroundApp());
         intent.putExtra("paramIntent", paramIntent);
         startActivity(intent);
 

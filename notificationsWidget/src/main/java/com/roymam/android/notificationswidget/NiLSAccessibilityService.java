@@ -240,8 +240,8 @@ public class NiLSAccessibilityService extends AccessibilityService
 
     private void handleAutoHideWhenWindowChanged(String packageName)
     {
-        // systemui is not really a window - ignore it (unless it is Lollipop)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && packageName.equals("com.android.systemui") || packageName.equals(getPackageName()))  return;
+        // systemui is not really a window - ignore it
+        if (packageName.equals("com.android.systemui") || packageName.equals(getPackageName()))  return;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -259,17 +259,20 @@ public class NiLSAccessibilityService extends AccessibilityService
             // force hide when package installer is displayed
             if (isPackageInstaller)
             {
+                mHiddenBecauseOfSystemUI = false;
                 mService.hide(true);
             }
             else if (shouldHide)
             {
                 if (!dontHide)
                 {
+                    mHiddenBecauseOfSystemUI = false;
                     mService.hide(false);
                 }
             }
             else
             {
+                mHiddenBecauseOfSystemUI = false;
                 mService.show(false);
             }
 
@@ -314,11 +317,13 @@ public class NiLSAccessibilityService extends AccessibilityService
                 if (rect.left >= -BitmapUtils.dpToPx(60))
                 {
                     Log.d(TAG,"window content has been changed:" + packageName.toString());
+                    mHiddenBecauseOfSystemUI = false;
                     mService.hide(false);
                 }
                 else
                 {
                     Log.d(TAG,"window content has been changed:" + packageName.toString());
+                    mHiddenBecauseOfSystemUI = false;
                     mService.show(false);
                 }
             }
