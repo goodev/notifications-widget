@@ -455,7 +455,7 @@ public class NPViewManager
             // separated mode for notifications list on home screen
             String lockScreenApp = prefs.getString(SettingsManager.LOCKSCREEN_APP, SettingsManager.DEFAULT_LOCKSCREEN_APP);
 
-            String currentApp = SysUtils.getForegroundApp(context);
+            String currentApp = SysUtils.getInstance(context).getForegroundApp();
 
             boolean shouldHideNotificaitons = (!SysUtils.isKeyguardLocked(context) &&
                 !currentApp.equals(lockScreenApp) ||
@@ -578,7 +578,7 @@ public class NPViewManager
                 @Override
                 public void onDismiss(NotificationData ni)
                 {
-                    if (mPreviewItem.getQuickReplyAction() != null) mPreviewView.hideQuickReplyBox();
+                    if (mPreviewItem != null && mPreviewItem.getQuickReplyAction() != null) mPreviewView.hideQuickReplyBox();
                     if (mCallbacks != null) mCallbacks.onDismissed(ni);
                 }
 
