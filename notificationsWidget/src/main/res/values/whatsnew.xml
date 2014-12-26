@@ -4,6 +4,8 @@
     <string name="v464" translatable="false">
         <![CDATA[
             <b>&#8226;	Translation </b> - Dutch translation was added. Thanks Kars &amp; Silknl<br>
+            <b>&#8226;	Bug fixes </b> - Bug fixes for Android Lollipop with 3rd party lock screen<br>
+            <b>&#8226;	Improvement </b> - Lollipop: Hide NiLS when keypad is shown<br>
         ]]>
     </string>
     <string name="v463_title" translatable="false">v1.5.2.463</string>

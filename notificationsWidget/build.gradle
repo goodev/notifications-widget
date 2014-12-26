@@ -8,13 +8,13 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 463
-        versionName '1.5.2.463'
+        versionCode 464
+        versionName '1.5.2.464'
     }
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
-            versionNameSuffix '.debug'
+            applicationIdSuffix '.debug.prod'
+            versionNameSuffix '.debug.prod'
             resValue "string", "packageName", "com.roymam.android.notificationswidget.debug"
         }
         release {
