@@ -30,7 +30,6 @@ public class NiLSAccessibilityService extends AccessibilityService
 {
     private final String TAG = this.getClass().getSimpleName();
     public static final String LAST_OPENED_WINDOW_PACKAGENAME = "last_opened_window_packagename";
-    private NotificationParser parser;
     private int notificationId = 0;
     private String clearButtonName = "Clear all notifications.";
     private PowerManager pm;
@@ -64,7 +63,6 @@ public class NiLSAccessibilityService extends AccessibilityService
         Log.d(TAG,"NiLSAccessibilityService:onServiceConnected");
 
         // create a notification parser
-        parser = new NotificationParser(getApplicationContext());
 
         findClearAllButton();
 
@@ -144,7 +142,7 @@ public class NiLSAccessibilityService extends AccessibilityService
                                 SettingsManager.shouldClearWhenAppIsOpened(getApplicationContext())) {
                             NotificationsProvider ns = NotificationsService.getSharedInstance();
                             if (ns != null)
-                                ns.clearNotificationsForApps(new String[]{packageName.toString()});
+                                ns.clearNotificationsForApps(new String[]{packageName});
                         }
                     }
                     handleAutoHideWhenWindowChanged(packageName);
@@ -164,8 +162,8 @@ public class NiLSAccessibilityService extends AccessibilityService
                     {
                         if (hasClickables(node))
                         {
-                            HashMap<Integer, NotificationData> notificationsToKeep = new HashMap<Integer, NotificationData>();
-                            ArrayList<NotificationData> notificationsToRemove = new ArrayList<NotificationData>();
+                            HashMap<Integer, NotificationData> notificationsToKeep = new HashMap<>();
+                            ArrayList<NotificationData> notificationsToRemove = new ArrayList<>();
 
                             // find which notifications still appear on the status bar
                             List<String> titles = recursiveGetStrings(node);
@@ -175,7 +173,7 @@ public class NiLSAccessibilityService extends AccessibilityService
                                 {
                                     if (nd.title != null &&
                                         title != null &&
-                                        nd.title.toString().equals(title.toString()))
+                                        nd.title.toString().equals(title))
                                     {
                                         notificationsToKeep.put(nd.id, nd);
                                     }
@@ -185,12 +183,8 @@ public class NiLSAccessibilityService extends AccessibilityService
                             // finding notifications to be cleared
                             if (ns.getNotifications().size()!= notificationsToKeep.size())
                             {
-                                Iterator<NotificationData> iter = ns.getNotifications().iterator();
-                                while(iter.hasNext())
-                                {
-                                    NotificationData nd = iter.next();
-                                    if (!notificationsToKeep.containsKey(nd.id))
-                                    {
+                                for (NotificationData nd : ns.getNotifications()) {
+                                    if (!notificationsToKeep.containsKey(nd.id)) {
                                         notificationsToRemove.add(nd);
                                     }
                                 }
@@ -252,7 +246,7 @@ public class NiLSAccessibilityService extends AccessibilityService
                 packageName = SettingsManager.STOCK_LOCKSCREEN_PACKAGENAME;
 
             boolean dontHide = prefs.getBoolean(SettingsManager.DONT_HIDE, SettingsManager.DEFAULT_DONT_HIDE);
-            boolean shouldHide = NotificationsService.shouldHideNotifications(getApplicationContext(), packageName.toString(), false);
+            boolean shouldHide = NotificationsService.shouldHideNotifications(getApplicationContext(), packageName, false);
             boolean isPackageInstaller = packageName.equals("com.android.packageinstaller");
 
             // request notifications list to hide/show notifications list
@@ -276,6 +270,7 @@ public class NiLSAccessibilityService extends AccessibilityService
                 mService.show(false);
             }
 
+            //noinspection deprecation
             if (mLocked && shouldHide && pm.isScreenOn())
             {
                 Log.d(TAG, "device is not not locked - sending UNLOCKED event, package name:"+packageName);
@@ -283,10 +278,7 @@ public class NiLSAccessibilityService extends AccessibilityService
             }
 
             // store new locked status
-            if (shouldHide)
-                mLocked = false;
-            else
-                mLocked = true;
+            mLocked = !shouldHide;
 
             prefs.edit().putString(LAST_OPENED_WINDOW_PACKAGENAME, packageName).commit();
         }
@@ -358,13 +350,14 @@ public class NiLSAccessibilityService extends AccessibilityService
                         boolean isCarrierName = accessibilityEvent.getSource().getClassName().equals("android.widget.TextView") &&
                                                 accessibilityEvent.getSource().getChildCount() == 0;
 
-                        if (!isCarrierName)
-                            recursivePrintNode(accessibilityEvent.getSource(), 0);
-                        if (isPulldownBar || isPassword) {
-                                Log.d(TAG, "SystemUI changed, isPulldown:" + isPulldownBar + " isPassword:" + isPassword);
+                        //if (!isCarrierName)
+                        //    recursivePrintNode(accessibilityEvent.getSource(), 0);
+                        if (/*isPulldownBar || */isPassword) {
+                            //noinspection ConstantConditions
+                            Log.d(TAG, "SystemUI changed, isPulldown:" + isPulldownBar + " isPassword:" + isPassword);
                                 mHiddenBecauseOfSystemUI = true;
                                 mService.hide(false);
-                            } else if (!isCarrierName && mHiddenBecauseOfSystemUI) {
+                            } else if (!isCarrierName && mHiddenBecauseOfSystemUI && SysUtils.isKeyguardLocked(getApplicationContext())) {
                                 mHiddenBecauseOfSystemUI = false;
                                 mService.show(false);
                             }
@@ -380,6 +373,7 @@ public class NiLSAccessibilityService extends AccessibilityService
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private void recursivePrintNode(AccessibilityNodeInfo node, int indent) {
         if (node != null) {
             String logLine = "*";
