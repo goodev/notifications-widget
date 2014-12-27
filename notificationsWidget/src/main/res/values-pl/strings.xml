@@ -65,11 +65,8 @@
   <string name="when_device_is_unlocked">Gdy urządzenie jest odblokowane</string>
   <string name="sync_back">Synchronizowanie powiadomień</string>
   <string name="sync_back_summary">Gdy powiadomienie jest wyczyszczone dla NiLS, odrzuca je również na pasku powiadomień systemu Android\n(Tylko Android 4.3 i wyżej)</string>
-  <string-array name="settings_orderby_entries">
-    <item>Najpierw najnowsze</item>
-    <item>Najpierw starsze</item>
-    <item>Priorytet powiadomienia</item>
-  </string-array>
+  <string name="order_by_time_desc">Najpierw najnowsze</string>
+  <string name="order_by_time_asc">Najpierw starsze</string>
   <string name="lock_screen">Ekran blokady</string>
   <string name="auto_detect_lock_screen">Automatyczne wykrywanie aplikacji blokady ekranu</string>
   <string name="current_lock_screen_app">Bieżąca aplikacja blokady ekranu:%s\nWłącz automatyczne wykrywanie, jeśli używasz innej aplikacji blokady ekranu</string>
