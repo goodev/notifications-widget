@@ -172,11 +172,12 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         for (int i = 0; i < listView.getChildCount(); ++i) {
             View child = listView.getChildAt(i);
             int position = firstVisiblePosition + i;
-            Long itemId = (Long) child.getTag(R.integer.uid);
+            if (child != null) {
+                Long itemId = (Long) child.getTag(R.integer.uid);
 
-            if (itemId != null && !mItemIdTopMap.containsKey(itemId))
-            {
-                mItemIdTopMap.put(itemId, child.getTop());
+                if (itemId != null && !mItemIdTopMap.containsKey(itemId)) {
+                    mItemIdTopMap.put(itemId, child.getTop());
+                }
             }
         }
     }
