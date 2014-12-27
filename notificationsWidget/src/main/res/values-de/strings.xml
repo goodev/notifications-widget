@@ -65,11 +65,8 @@
   <string name="when_device_is_unlocked">Wenn Gerät entsperrt wird</string>
   <string name="sync_back">Synchronisiere die Benachrichtigungen zurück</string>
   <string name="sync_back_summary">Wenn die Benachrichtigung von NiLS entfernt wird, entferne diese auch aus den Benachrichtigungen von Android\n(Nur Android 4.3+)</string>
-  <string-array name="settings_orderby_entries">
-    <item>Neuste zuerst</item>
-    <item>Älteste zuerst</item>
-    <item>Benachrichtigungspriorität</item>
-  </string-array>
+  <string name="order_by_time_desc">Neuste zuerst</string>
+  <string name="order_by_time_asc">Älteste zuerst</string>
   <string name="lock_screen">Sperrbildschirm</string>
   <string name="auto_detect_lock_screen">Erkenne Sperrbildschirmapp automatisch</string>
   <string name="current_lock_screen_app">Aktuelle Sperrbildschirmapp:%s\nAktiviere Autoerkennung wenn du eine andere Sperrbildschirmapp verwendest</string>

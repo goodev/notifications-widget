@@ -105,7 +105,8 @@ public class NotificationEventsAdapter implements NotificationEventListener
         AppSettingsActivity.addAppToAppSpecificSettings(nd.packageName, context);
 
         // show a popup message
-        if (SettingsManager.getBoolean(context, SettingsManager.POPUP_ENABLED, SettingsManager.DEFAULT_POPUP_ENABLED)) {
+        if (SettingsManager.getBoolean(context, SettingsManager.POPUP_ENABLED, SettingsManager.DEFAULT_POPUP_ENABLED) &&
+            SettingsManager.getBoolean(context, nd.packageName, AppSettingsActivity.SHOW_ON_HEADSUP, AppSettingsActivity.DEFAULT_SHOW_ON_HEADSUP)) {
             Intent popupNotificationIntent = new Intent(context, PopupNotificationService.class);
             popupNotificationIntent.setAction(PopupNotificationService.POPUP_NOTIFICATION);
             popupNotificationIntent.putExtra(PopupNotificationService.EXTRA_NOTIFICATION, nd);

@@ -80,11 +80,8 @@
     <string name="sync_back">Sync back notifications</string>
     <string name="sync_back_summary">When notification is cleared on NiLS dismiss it also on Android Notifications Bar\n(Android 4.3 and above only)</string>
 
-    <string-array name="settings_orderby_entries">
-        <item>Newest first</item>
-        <item>Oldest first</item>
-        <item>Notification Priority</item>
-    </string-array>
+    <string name="order_by_time_desc">Newest first</string>
+    <string name="order_by_time_asc">Oldest first</string>
 
     <string name="lock_screen">Lock Screen</string>
     <string name="auto_detect_lock_screen">Auto detect lock screen app</string>

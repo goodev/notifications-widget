@@ -957,7 +957,7 @@ public class SettingsManager
     public static boolean getBoolean(Context context, String packageName, String keyName, boolean defaultValue)
     {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(packageName + "." + keyName, getBoolean(context, keyName, defaultValue));
+        return prefs.getBoolean(packageName + "." + keyName, getBoolean(context, keyName, getBoolean(context, keyName, defaultValue)));
     }
 
     public static boolean getBoolean(Context context, String keyName, boolean defaultValue)

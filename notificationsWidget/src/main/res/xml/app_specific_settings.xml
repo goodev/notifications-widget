@@ -17,6 +17,14 @@
                             android:entryValues="@array/notification_modes_values"
                             android:defaultValue="separated"/>
 
+        <CheckBoxPreference android:key="priority_app"
+            android:title="Priority"
+            android:summary="Show notifications at the top of the list"
+            android:defaultValue="false"/>
+        <CheckBoxPreference android:key="show_on_headsup"
+            android:title="Show on Heads Up"
+            android:summary="Show heads up notifications when \'Heads Up\' option is enabled"
+            android:defaultValue="true"/>
         <ListPreference android:key="notification_privacy"
             android:title="@string/privacy"
             android:entries="@array/privacy_entries"

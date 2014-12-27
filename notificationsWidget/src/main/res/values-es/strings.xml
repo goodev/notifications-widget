@@ -65,11 +65,8 @@
   <string name="when_device_is_unlocked">Cuando el dispositivo es desbloqueado</string>
   <string name="sync_back">Sincronizar notificaciones entre la pantalla de bloqueo y el dispositivo</string>
   <string name="sync_back_summary">Cuando la notificación es eliminada en NiLS descartarlo también en en la barra de notificaciones de Android (Android 4.3  o superior)</string>
-  <string-array name="settings_orderby_entries">
-    <item>Más nuevo primero</item>
-    <item>Más antiguo primero</item>
-    <item>Prioridad de notificación</item>
-  </string-array>
+  <string name="order_by_time_desc">Más nuevo primero</string>
+  <string name="order_by_time_asc">Más antiguo primero</string>
   <string name="lock_screen">Pantalla de Bloqueo</string>
   <string name="auto_detect_lock_screen">Detección automática de aplicación de bloqueo de pantalla</string>
   <string name="current_lock_screen_app">Aplicación de pantalla de bloqueo actual:%s\nActivar auto-detección si está utilizando una aplicación de pantalla de bloqueo diferente</string>

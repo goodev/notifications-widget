@@ -717,9 +717,9 @@ public class NotificationsService extends Service implements NotificationsProvid
     {
         if (notifications.size() > 0)
         {
-                if (sortBy.equals("priority"))
+                if (sortBy.equals("timeasc"))
                 {
-                    // sort by priority
+                    // sort by time
                     Collections.sort(notifications, new Comparator<NotificationData>()
                     {
                         @Override
@@ -730,28 +730,7 @@ public class NotificationsService extends Service implements NotificationsProvid
                                 return 1;
                             if (n1.priority > n2.priority)
                                 return -1;
-                            // if we reached here, the priorities are equal - sort by time
-                            if (n1.received < n2.received)
-                                return 1;
-                            if (n1.received > n2.received)
-                                return -1;
-
-                            // if we reached here, the time is equal - sort by group order
-                            if (n1.groupOrder != null && n2.groupOrder != null)
-                                return n1.groupOrder.compareTo(n2.groupOrder);
-                            else
-                                return 0;
-                        }
-                    });
-                }
-                else if (sortBy.equals("timeasc"))
-                {
-                    // sort by time
-                    Collections.sort(notifications, new Comparator<NotificationData>()
-                    {
-                        @Override
-                        public int compare(NotificationData n1, NotificationData n2)
-                        {
+                            // if we reached here, the priority is equal - sort by time
                             if (n1.received > n2.received)
                                 return 1;
                             if (n1.received < n2.received)
@@ -772,6 +751,12 @@ public class NotificationsService extends Service implements NotificationsProvid
                         @Override
                         public int compare(NotificationData n1, NotificationData n2)
                         {
+                            if (n1 == null || n2 == null) return 0;
+                            if (n1.priority < n2.priority)
+                                return 1;
+                            if (n1.priority > n2.priority)
+                                return -1;
+                            // if we reached here, the priority is equal - sort by time
                             if (n1.received < n2.received)
                                 return 1;
                             if (n1.received > n2.received)

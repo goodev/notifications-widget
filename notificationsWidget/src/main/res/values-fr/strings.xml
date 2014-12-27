@@ -65,11 +65,8 @@
   <string name="when_device_is_unlocked">Quand l\'appareil est dévérouillé</string>
   <string name="sync_back">Revenir à la synchronisation des notifications</string>
   <string name="sync_back_summary">Quand la notification est effacée sur NILS, la rejeter aussi de la Barre de Notification d\'Android (Android 4.3 et supérieure seulement)</string>
-  <string-array name="settings_orderby_entries">
-    <item>plus récent en premier</item>
-    <item>plus ancien en premier</item>
-    <item>Priorité de notification</item>
-  </string-array>
+  <string name="order_by_time_desc">plus récent en premier</string>
+  <string name="order_by_time_asc">plus ancien en premier</string>
   <string name="lock_screen">Écran de verrouillage</string>
   <string name="auto_detect_lock_screen">Détection automatique de l\'application d\'écran de verrouillage</string>
   <string name="current_lock_screen_app">Application d\'écran de verrouillage actuelle:%s\nActiver l\'auto détection si vous en utilisez une différente</string>

@@ -280,6 +280,12 @@ public class NotificationParser
             } else {
                 nd.priority = 0;
             }
+            if (sharedPref.contains(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY)) {
+                boolean priorityApp = sharedPref.getBoolean(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY, AppSettingsActivity.DEFAULT_APP_PRIORITY);
+                if (priorityApp)
+                    nd.priority = Notification.PRIORITY_MAX + 1;
+            }
+
             int apppriority = Integer.parseInt(sharedPref.getString(nd.packageName + "." + AppSettingsActivity.APP_PRIORITY, "-9"));
             if (apppriority != -9) nd.priority = apppriority;
 

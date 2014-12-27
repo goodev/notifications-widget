@@ -65,11 +65,8 @@
   <string name="when_device_is_unlocked">Quando il dispositivo è sbloccato</string>
   <string name="sync_back">Notifiche di sync back</string>
   <string name="sync_back_summary">Quando la notifica viene cancellata su NiLS viene cancellata anche sulla barra delle notifiche\n(Solo su Android 4.3)</string>
-  <string-array name="settings_orderby_entries">
-    <item>Prima i più recenti</item>
-    <item>Prima i più vecchi</item>
-    <item>Priorità di Notifica</item>
-  </string-array>
+  <string name="order_by_time_desc">Prima i più recenti</string>
+  <string name="order_by_time_asc">Prima i più vecchi</string>
   <string name="lock_screen">Blocco Schermo</string>
   <string name="auto_detect_lock_screen">Auto identificazione dell\'app del blocco schermo</string>
   <string name="current_lock_screen_app">Attuale app di blocco schermo:%s\nAttiva l\'auto identificazione se stai usando un\'app diversa per il blocco schermo</string>

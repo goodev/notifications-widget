@@ -12,9 +12,13 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
 {
 	public static final String IGNORE_APP = "ignoreapp";
     public static final String USE_EXPANDED_TEXT = "useexpandedtext";
-    public static final String APP_PRIORITY = "apppriority";
+    public static final String APP_PRIORITY = "priority";
+    public static final String SHOW_ON_HEADSUP = "show_on_headsup";
     public static final String RETRANSMIT = "retransmit";
     public static final String IGNORE_REPEATING_NOTIFICATIONS = "ignore_repeating_notifications";
+
+    public static final boolean DEFAULT_APP_PRIORITY = false;
+    public static final boolean DEFAULT_SHOW_ON_HEADSUP = true;
 
     public static final String[] APP_SPECIFIC_SETTINGS_KEYS = {
             SettingsManager.WAKEUP_MODE,
@@ -24,6 +28,7 @@ public class AppSettingsActivity extends SpecificSettingsPreferencesActivity imp
             IGNORE_APP,
             USE_EXPANDED_TEXT,
             APP_PRIORITY,
+            SHOW_ON_HEADSUP,
             RETRANSMIT,
             IGNORE_REPEATING_NOTIFICATIONS
     };
