@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.roymam.android.nilsplus.CardPreferenceFragment;
+
 public class SpecificSettingsPreferencesActivity extends ActionBarActivity
 {
     public static final String EXTRA_PACKAGE_NAME = "com.roymam.android.notificationswidget.packagename";
@@ -119,7 +121,7 @@ public class SpecificSettingsPreferencesActivity extends ActionBarActivity
             }
 
             // apply card layout
-            //CardPreferenceFragment.applyLayoutToPreferences(prefScreen);
+            CardPreferenceFragment.applyLayoutToPreferences(prefScreen);
 
             return view;
         }
