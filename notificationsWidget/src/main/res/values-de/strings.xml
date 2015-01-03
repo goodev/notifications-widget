@@ -431,4 +431,5 @@
   <string name="ignore_repeating_notifications">wiederholende Benachrichtigungen ignorieren</string>
   <string name="ignore_repeating_notifications_summary">ähnliche Benachrichtigungen wie die vorherigen ignorieren</string>
     <string name="accessibility_service">NiLS Service</string>
+    <string name="send">Send</string>
 </resources>

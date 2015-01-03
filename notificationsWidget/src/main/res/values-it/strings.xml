@@ -430,4 +430,5 @@
   <string name="ignore_repeating_notifications">Ignora notifiche ripetitive</string>
   <string name="ignore_repeating_notifications_summary">Ignora le notifiche con il testo simile a quanto precedentemente mostrato</string>
     <string name="accessibility_service">NiLS Service</string>
+    <string name="send">Send</string>
 </resources>
