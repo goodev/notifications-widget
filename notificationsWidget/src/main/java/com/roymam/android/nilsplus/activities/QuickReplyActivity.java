@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.RemoteInput;
@@ -86,8 +88,14 @@ public class QuickReplyActivity extends Activity {
                 hide();
                 Intent intent = new Intent();
                 Bundle params = new Bundle();
-                params.putCharSequence(action.remoteInputs[0].getResultKey(), mReplyText.getText());
-                RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
+                params.putCharSequence(action.resultKey, mReplyText.getText());
+                Intent clipIntent = new Intent();
+                clipIntent.putExtra(RemoteInput.EXTRA_RESULTS_DATA, params);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
+                intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
+
+                //RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                 try {
                     action.actionIntent.send(getApplicationContext(), 0, intent);
                     NotificationsService.getSharedInstance().clearNotification(uid);

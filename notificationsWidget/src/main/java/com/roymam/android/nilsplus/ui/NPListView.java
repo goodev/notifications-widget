@@ -2,14 +2,15 @@ package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.Layout;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -95,7 +95,7 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
         for(int i=0; i<listView.getChildCount();i++)
         {
             View v = listView.getChildAt(i);
-            int viewId = R.id.front;
+            int viewId = R.id.full_notification;
             if (mTheme != null && mTheme.notificationLayout != null) viewId = mTheme.customLayoutIdMap.get("front");
             View front = v.findViewById(viewId);
             MarginLayoutParams params = (MarginLayoutParams) front.getLayoutParams();
@@ -321,6 +321,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         }
         listView.setClipToPadding(false);
+        LayoutTransition transition = new LayoutTransition();
+        //transition.enableTransitionType(LayoutTransition.CHANGING);
+        listView.setLayoutTransition(transition);
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);

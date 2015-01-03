@@ -643,7 +643,9 @@ public class NotificationParser
             a2.actionIntent = a.actionIntent;
             a2.title = a.title;
             a2.drawable = BitmapCache.getInstance(context).getBitmap(packageName, a.icon);
-            a2.remoteInputs = a.getRemoteInputs();
+            if (a.getRemoteInputs() != null &&
+                a.getRemoteInputs().length > 0)
+                a2.resultKey = a.getRemoteInputs()[0].getResultKey();
             //Log.d(TAG, String.format("title:%s remoteInputs:%s", a.title, a2.remoteInputs));
             returnActions.add(a2);
         }

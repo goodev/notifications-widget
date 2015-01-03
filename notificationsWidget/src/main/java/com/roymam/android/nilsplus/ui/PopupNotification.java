@@ -2,6 +2,7 @@ package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.LayoutTransition;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -21,13 +23,14 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.roymam.android.common.BitmapUtils;
 import com.roymam.android.common.SysUtils;
-import com.roymam.android.notificationswidget.NiLSAccessibilityService;
 import com.roymam.android.notificationswidget.NotificationData;
 import com.roymam.android.nilsplus.ui.theme.Theme;
 import com.roymam.android.nilsplus.ui.theme.ThemeManager;
@@ -38,8 +41,14 @@ import com.roymam.android.notificationswidget.SettingsManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PopupNotification implements View.OnTouchListener {
-    private final String TAG = PopupNotification.class.getName();
+public class PopupNotification {
+    private final int mIconSize;
+    private final int mMaxIconSize;
+    private final View mPreviewViewActionBar;
+    private View mPreviewViewIcon;
+    private int mMaxPreviewHeight = 0;
+    private int mMinPreviewHeight = 0;
+    private final static String TAG = PopupNotification.class.getName();
     private final SharedPreferences mPrefs;
     private final int mSlop;
     private final int mMinFlingVelocity;
@@ -51,9 +60,10 @@ public class PopupNotification implements View.OnTouchListener {
     private Context mContext;
     private boolean mVisible = false;
     private RelativeLayout mWindowView;
-    private View mView;
+    private View mNotificationView;
+    private View mPreviewView;
     private WindowManager.LayoutParams mLayoutParams;
-    private static List<PopupNotification> queue = new ArrayList<PopupNotification>();
+    private static List<PopupNotification> queue = new ArrayList<>();
     private final long mAnimationTime = Resources.getSystem().getInteger(android.R.integer.config_shortAnimTime);
 
     private Runnable mHideRunnable = new Runnable() {
@@ -62,23 +72,10 @@ public class PopupNotification implements View.OnTouchListener {
             hide();
         }
     };
-    private float mTouchStartY;
-    private float mTouchStartX;
-    private VelocityTracker mVelocityTracker;
-    private boolean mHorizontalMovement;
-    private boolean mVerticalMovement;
-    private int mViewWidth;
-    private int mViewHeight;
-    private boolean mInteractionStarted = false;
 
-    private PopupNotification() {
-        // default constructor - prevent creating this class without the "create" method
-        mPrefs = null;
-        mMinFlingVelocity = 0;
-        mMaxFlingVelocity = 0;
-        mSlop = 0;
-        mNotification = null;
-    }
+    private boolean mInteractionStarted = false;
+    private boolean mIsPreviewVisible = false;
+    private int mActionBarHeight = 0;
 
     private PopupNotification(Context context, NotificationData nd) {
         Log.d(TAG, "PopupNotification");
@@ -92,6 +89,9 @@ public class PopupNotification implements View.OnTouchListener {
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
+
+        mIconSize = BitmapUtils.dpToPx(mPrefs.getInt(SettingsManager.ICON_SIZE, SettingsManager.DEFAULT_ICON_SIZE));
+        mMaxIconSize = mContext.getResources().getDimensionPixelOffset(R.dimen.notification_icon_size_large);
 
         mWindowView = new RelativeLayout(context);
         mLayoutParams = new WindowManager.LayoutParams(
@@ -111,21 +111,43 @@ public class PopupNotification implements View.OnTouchListener {
         mTheme = ThemeManager.getInstance(context).getCurrentTheme();
         if (mTheme != null && mTheme.notificationLayout != null) {
             ThemeManager.getInstance(context).reloadLayouts(mTheme);
-            mView = li.inflate(mTheme.notificationLayout, null);
+            mNotificationView = li.inflate(mTheme.notificationLayout, null);
+            mPreviewView = li.inflate(mTheme.previewLayout, null);
+            mPreviewViewIcon = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
+            mPreviewViewActionBar = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
         }
         else {
-            mView = li.inflate(R.layout.notification_row, null);
+            mNotificationView = li.inflate(R.layout.notification_row, null);
+            mPreviewView = li.inflate(R.layout.notification_preview, null);
+            mPreviewViewIcon = mPreviewView.findViewById(R.id.notification_bg);
+            mPreviewViewActionBar = mPreviewView.findViewById(R.id.notification_actions);
         }
 
-        // create listeners
-        mWindowView.setOnTouchListener(this);
-        mView.setOnTouchListener(this);
+        // make notification go away when the user touch outside of it
+        mWindowView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_OUTSIDE) {
+                    // if the user start interacting with the popup and then clicked outside of it - hide it
+                    if (mInteractionStarted)
+                        hide();
+                }
+                return false;
+            }
+        });
+
+        mNotificationView.setOnTouchListener(new NotificationTouchListener());
+        mPreviewView.setOnTouchListener(new PreviewTouchListener());
 
         Point displaySize = NPViewManager.getDisplaySize(mContext);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(Math.min(displaySize.x, displaySize.y), LinearLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        mWindowView.addView(mView, params);
+        mWindowView.addView(mPreviewView, params);
+        mWindowView.addView(mNotificationView, params);
+
+        // preview is initially invisible
+        mPreviewView.setVisibility(View.INVISIBLE);
 
         mPopupTimeout = 5000;
     }
@@ -133,14 +155,42 @@ public class PopupNotification implements View.OnTouchListener {
     public static PopupNotification create(final Context context, final NotificationData nd)
     {
         final PopupNotification pn = new PopupNotification(context, nd);
-        NotificationAdapter.applySettingsToView(context, pn.mView, nd, 0, pn.mTheme, true);
-        pn.mView.setOnClickListener(new View.OnClickListener() {
+        pn.populate(nd);
+        return pn;
+    }
+
+    private void populate(NotificationData nd) {
+        NotificationAdapter.applySettingsToView(mContext, mNotificationView, nd, 0, mTheme, true);
+        NotificationAdapter.applySettingsToView(mContext, mPreviewView, nd, 0, mTheme, true, true);
+        mNotificationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pn.openNotification();
+                openNotification();
             }
         });
-        return pn;
+        mPreviewView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openNotification();
+            }
+        });
+
+        // calculate min/max size for preview
+        mPreviewViewIcon.getLayoutParams().width = mMaxIconSize;
+        mPreviewViewIcon.getLayoutParams().height = mMaxIconSize;
+        mPreviewView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        mNotificationView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        mPreviewViewActionBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+
+        mMaxPreviewHeight = mPreviewView.getMeasuredHeight();
+        mMinPreviewHeight = mNotificationView.getMeasuredHeight();
+        mActionBarHeight = mPreviewViewActionBar.getMeasuredHeight();
+    }
+
+    private void changeWindowHeight(int height) {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        mLayoutParams.height = height;
+        wm.updateViewLayout(mWindowView, mLayoutParams);
     }
 
     private void openNotification() {
@@ -191,13 +241,14 @@ public class PopupNotification implements View.OnTouchListener {
 
     private void popupNotification() {
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        mLayoutParams.height = mMinPreviewHeight;
         wm.addView(mWindowView, mLayoutParams);
-        mView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        mNotificationView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                mView.getViewTreeObserver().removeOnPreDrawListener(this);
-                mView.setTranslationY(-mView.getHeight());
-                mView.animate()
+                mNotificationView.getViewTreeObserver().removeOnPreDrawListener(this);
+                mNotificationView.setTranslationY(-mMinPreviewHeight);
+                mNotificationView.animate()
                         .translationY(0)
                         .setDuration(mAnimationTime)
                         .setListener(null);
@@ -216,8 +267,8 @@ public class PopupNotification implements View.OnTouchListener {
             return this;
         }
 
-        mView.animate()
-                .translationY(-mView.getHeight())
+        mNotificationView.animate()
+                .translationY(-mNotificationView.getHeight())
                 .setDuration(mAnimationTime)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -247,111 +298,367 @@ public class PopupNotification implements View.OnTouchListener {
         return mVisible;
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int action = event.getActionMasked();
+    public void resize(final View v, final int w, final int h, Animation.AnimationListener listener) {
+        final boolean changeWidth = w != v.getLayoutParams().width;
+        final boolean changeHeight = h != v.getLayoutParams().height;
 
-        switch(action) {
-            case MotionEvent.ACTION_OUTSIDE:
-                // if the user start interacting with the popup and then clicked outside of it - hide it
-                if (mInteractionStarted)
-                    hide();
-                return false;
-            case MotionEvent.ACTION_DOWN:
-                // cancel hide action
-                mHandler.removeCallbacks(mHideRunnable);
+        v.measure(v.getLayoutParams().width, v.getLayoutParams().height);
+        final int startWidth = v.getLayoutParams().width >= 0? v.getLayoutParams().width : v.getMeasuredWidth();
+        final int startHeight = v.getLayoutParams().height >= 0? v.getLayoutParams().height : v.getMeasuredHeight();
 
-                // store initial movement values
-                mTouchStartY = event.getRawY();
-                mTouchStartX = event.getRawX();
-                mHorizontalMovement = false;
-                mVerticalMovement = false;
-                mViewWidth = mView.getWidth();
-                mViewHeight = mView.getHeight();
-                mInteractionStarted = true;
+        v.measure(w, h);
+        final int targetWidth = w>0?w:v.getMeasuredWidth();
+        final int targetHeight = h>0?h:v.getMeasuredHeight();
 
+        //Log.d(TAG, String.format("expand view:%d startWidth:%d startHeight:%d targetWidth:%d targetHeight:%d", v.getId(), startWidth, startHeight, targetWidth, targetHeight));
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                int prevw = v.getLayoutParams().width;
+                int prevh = v.getLayoutParams().height;
+
+                if (changeWidth)
+                    v.getLayoutParams().width = interpolatedTime == 1
+                            ? w
+                            : startWidth +  (int)((targetWidth - startWidth) * interpolatedTime);
+
+                if (changeHeight)
+                    v.getLayoutParams().height = interpolatedTime == 1
+                            ? h
+                            : startHeight +  (int)((targetHeight - startHeight) * interpolatedTime);
+
+                if (prevw != v.getLayoutParams().width ||
+                        prevh != v.getLayoutParams().height) {
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
                 return true;
-            case MotionEvent.ACTION_MOVE:
-                mVelocityTracker = VelocityTracker.obtain();
-                mVelocityTracker.addMovement(event);
+            }
+        };
 
-                float currY = event.getRawY();
-                float currX = event.getRawX();
+        a.setDuration(mAnimationTime);
+        a.setAnimationListener(listener);
+        v.startAnimation(a);
+    }
 
-                if (!mVerticalMovement && Math.abs(currX - mTouchStartX) > mSlop) mHorizontalMovement = true;
-                if (!mHorizontalMovement && Math.abs(currY - mTouchStartY) > mSlop) mVerticalMovement = true;
+    private abstract class MovementDetectorOnTouchListener implements View.OnTouchListener {
+        private boolean mHorizontalMovement;
+        private boolean mVerticalMovement;
 
-                if (mVerticalMovement) {
-                    if (currY < mTouchStartY) {
-                        mView.setTranslationY(currY - mTouchStartY);
-                    } else
-                        mView.setTranslationY(0);
-                }
-                else if (mHorizontalMovement) {
-                    mView.setTranslationX(currX - mTouchStartX);
-                    mView.setAlpha(1 - Math.abs(currX - mTouchStartX) / (mViewWidth/2));
-                }
-
-                break;
-            case MotionEvent.ACTION_UP:
-                currY = event.getRawY();
-                currX = event.getRawX();
-                mVelocityTracker.addMovement(event);
-                mVelocityTracker.computeCurrentVelocity(1000);
-                float velocityX = mVelocityTracker.getXVelocity();
-                float velocityY = mVelocityTracker.getYVelocity();
-                float deltaX = currX - mTouchStartX;
-                float deltaY = currY - mTouchStartY;
-
-                if (mVerticalMovement) {
-
-                    if (currY < mTouchStartY) {
-                        mView.setTranslationY(deltaY);
-                    } else
-                        mView.setTranslationY(0);
+        protected View mView;
+        protected float mTouchStartY;
+        protected float mTouchStartX;
+        protected VelocityTracker mVelocityTracker;
+        protected int mViewWidth;
+        protected int mViewHeight;
 
 
-                    if (velocityY > mMinFlingVelocity && velocityY < mMaxFlingVelocity ||
-                        deltaY < - mViewHeight / 2)
-                        hide();
-                    else
-                        mView.animate().translationY(0).setListener(null);
-                }
-                else if (mHorizontalMovement) {
-                    if (velocityX > mMinFlingVelocity && velocityX < mMaxFlingVelocity ||
-                        Math.abs(deltaX) > mViewWidth / 4) {
-                        int targetX = mViewWidth;
-                        if (deltaX < 0) targetX = -mViewWidth ;
-                        mView.animate().translationX(targetX).alpha(0).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                // clear notification
-                                NotificationsService ns = NotificationsService.getSharedInstance();
-                                if (ns != null)
-                                    ns.clearNotification(mNotification.getUid());
-                                // hide popup
-                                hide();
-                            }
-                        });
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            int action = event.getActionMasked();
+
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    mView = v;
+
+                    // cancel hide action
+                    mHandler.removeCallbacks(mHideRunnable);
+
+                    // store initial movement values
+                    mTouchStartY = event.getRawY();
+                    mTouchStartX = event.getRawX();
+                    mHorizontalMovement = false;
+                    mVerticalMovement = false;
+                    mViewWidth = mView.getWidth();
+                    mViewHeight = mView.getHeight();
+                    mInteractionStarted = true;
+
+
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    mVelocityTracker = VelocityTracker.obtain();
+                    mVelocityTracker.addMovement(event);
+
+                    float currY = event.getRawY();
+                    float currX = event.getRawX();
+
+                    if (!mVerticalMovement && Math.abs(currX - mTouchStartX) > mSlop)
+                        mHorizontalMovement = true;
+                    if (!mHorizontalMovement && Math.abs(currY - mTouchStartY) > mSlop)
+                        mVerticalMovement = true;
+
+                    if (mVerticalMovement) {
+                        onVerticalMovement(currY, mTouchStartY);
+                    } else if (mHorizontalMovement) {
+                        onHorizontalMovement(currX, mTouchStartX);
                     }
-                    else
-                        mView.animate().translationX(0).alpha(1).setListener(null);
-                }
-                else {
-                    // no horizontal or vertical movement - it is a click
-                    openNotification();
-                }
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                if (mVelocityTracker != null) {
-                    mVelocityTracker.recycle();
-                    mVelocityTracker = null;
-                }
-                // reset position and opacity
-                mView.animate().translationX(0).translationY(0).alpha(1).setListener(null);
-                break;
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    currY = event.getRawY();
+                    currX = event.getRawX();
+                    mVelocityTracker.addMovement(event);
+                    mVelocityTracker.computeCurrentVelocity(1000);
+                    float velocityX = mVelocityTracker.getXVelocity();
+                    float velocityY = mVelocityTracker.getYVelocity();
+
+                    if (mVerticalMovement) {
+                        boolean fling = velocityY > mMinFlingVelocity && velocityY < mMaxFlingVelocity;
+
+                        onVerticalMovementEnded(currY, mTouchStartY, fling);
+                    } else if (mHorizontalMovement) {
+                        boolean fling = velocityX > mMinFlingVelocity && velocityX < mMaxFlingVelocity;
+
+                        onHorizontalMovementEnded(currX, mTouchStartX, fling);
+                    } else {
+                        onClick();
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    if (mVelocityTracker != null) {
+                        mVelocityTracker.recycle();
+                        mVelocityTracker = null;
+                    }
+                    onCancel();
+                    break;
+            }
+
+            return false;
         }
 
-        return false;
+        protected abstract void onVerticalMovement(float currY, float originalY);
+        protected abstract void onHorizontalMovement(float currX, float originalX);
+        protected abstract void onHorizontalMovementEnded(float currX, float originalX, boolean isFling);
+        protected abstract void onVerticalMovementEnded(float currY, float originalY, boolean isFling);
+        protected abstract void onClick();
+        protected abstract void onCancel();
+    }
+
+    private abstract class SwipeToDismissMovementOnTouchListener extends MovementDetectorOnTouchListener {
+        @Override
+        protected void onHorizontalMovement(float currX, float originalX) {
+            mView.setTranslationX(currX - originalX);
+            mView.setAlpha(1 - Math.abs(currX - mTouchStartX) / (mViewWidth/2));
+        }
+
+        @Override
+        protected void onHorizontalMovementEnded(float currX, float originalX, boolean isFling) {
+            final float deltaX = currX - originalX;
+
+            if (isFling || Math.abs(deltaX) > mViewWidth / 4) {
+                int targetX = mViewWidth;
+                if (deltaX < 0) targetX = -mViewWidth ;
+                mView.animate().translationX(targetX).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        onDismiss(deltaX > 0);
+                    }
+                });
+            }
+            else
+                mView.animate().translationX(0).alpha(1).setListener(null);
+        }
+
+        protected abstract void onDismiss(boolean dismissRight);
+
+        @Override
+        protected void onVerticalMovement(float currY, float originalY) {
+            if (currY < originalY) {
+                mView.setTranslationY(currY - originalY);
+            } else {
+                mView.setTranslationY(0);
+            }
+        }
+
+        @Override
+        protected void onVerticalMovementEnded(float currY, float originalY, boolean isFling) {
+            // the notification was swiped up - hide it
+            float deltaY = currY - originalY;
+
+            if (isFling && deltaY < 0 || deltaY < - mViewHeight / 2)
+                onHide();
+                // the notification was swiped up - but not enough - bring it back to the original position
+            else if (deltaY < 0) {
+                mView.animate().translationY(0).setDuration(mAnimationTime).setListener(null);
+            }
+        }
+
+        protected abstract void onHide();
+
+        @Override
+        protected void onCancel() {
+            // reset position and opacity
+            mView.animate().translationX(0).translationY(0).alpha(1).setListener(null);
+        }
+    }
+
+    private class NotificationTouchListener extends SwipeToDismissMovementOnTouchListener {
+        @Override
+        protected void onVerticalMovement(float currY, float originalY) {
+            super.onVerticalMovement(currY, originalY);
+
+            if (currY > originalY) {
+                // the user swipes down - show a preview
+                float deltaY = currY - originalY;
+                if (deltaY > mSlop) {
+                    if (!mIsPreviewVisible) {
+                        // show the preview
+                        mPreviewView.setVisibility(View.VISIBLE);
+                        mPreviewViewIcon.getLayoutParams().width = mIconSize;
+                        mPreviewViewIcon.getLayoutParams().height = mIconSize;
+                        mPreviewView.getLayoutParams().height = mMinPreviewHeight;
+                        mPreviewViewActionBar.getLayoutParams().height = 0;
+
+                        mPreviewView.requestLayout();
+
+                        // set maximal height for the window
+                        changeWindowHeight(mMaxPreviewHeight);
+
+                        mIsPreviewVisible = true;
+
+                        mView.setVisibility(View.INVISIBLE);
+
+                    } else { // preview is already visible
+                        if (currY > mPreviewView.getTop() + mMinPreviewHeight) {
+                            int previewHeight = (int) (currY - mPreviewView.getTop());
+                            if (previewHeight > mMaxPreviewHeight)
+                                previewHeight = mMaxPreviewHeight;
+
+                            if (mPreviewView.getLayoutParams().height != previewHeight) {
+                                mPreviewView.getLayoutParams().height = previewHeight;
+
+                                int iconSize = mIconSize + (mMaxIconSize - mIconSize) * (previewHeight - mMinPreviewHeight) / (mMaxPreviewHeight - mMinPreviewHeight);
+                                int actionBarHeight = (mActionBarHeight * (previewHeight - mMinPreviewHeight) / (mMaxPreviewHeight - mMinPreviewHeight));
+
+                                mPreviewViewIcon.getLayoutParams().width = iconSize;
+                                mPreviewViewIcon.getLayoutParams().height = iconSize;
+                                mPreviewViewActionBar.getLayoutParams().height = actionBarHeight;
+                                mPreviewView.requestLayout();
+                            }
+                        } else {
+                            if (mPreviewView.getLayoutParams().height != mMinPreviewHeight) {
+                                mPreviewView.getLayoutParams().height = mMinPreviewHeight;
+                                mPreviewViewIcon.getLayoutParams().width = mIconSize;
+                                mPreviewViewIcon.getLayoutParams().height = mIconSize;
+                                mPreviewViewActionBar.getLayoutParams().height = 0;
+                                mPreviewView.requestLayout();
+                            }
+                        }
+                    }
+                } else {
+                    if (mIsPreviewVisible) {
+                        showNotificationCompact();
+                    }
+                }
+            }
+        }
+
+        private void showNotificationCompact() {
+            // show back the standard view
+            mView.setVisibility(View.VISIBLE);
+            mPreviewView.setVisibility(View.INVISIBLE);
+            mPreviewViewIcon.getLayoutParams().width = mIconSize;
+            mPreviewViewIcon.getLayoutParams().height = mIconSize;
+            mPreviewViewActionBar.getLayoutParams().height = 0;
+
+            mIsPreviewVisible = false;
+
+            // set minimal height for the window
+            changeWindowHeight(mMinPreviewHeight);
+        }
+
+        @Override
+        protected void onVerticalMovementEnded(float currY, float originalY, boolean isFling) {
+            super.onVerticalMovementEnded(currY, originalY, isFling);
+
+            float deltaY = currY - originalY;
+
+            // handle preview collapsing
+            if (mIsPreviewVisible) {
+                // if the notification was swiped down
+                if (deltaY > 0) {
+                    // if it was fast enough or long enough - show the preview
+                    if (isFling || deltaY > mMaxPreviewHeight / 3) {
+                        // complete the view expand
+                        resize(mPreviewView, mPreviewView.getLayoutParams().width, mMaxPreviewHeight, null);
+                        resize(mPreviewViewIcon, mMaxIconSize, mMaxIconSize, null);
+                        resize(mPreviewViewActionBar, mPreviewViewActionBar.getLayoutParams().width, mActionBarHeight, null);
+                    } else {
+                        // otherwise - return it the original size
+                        resize(mPreviewViewIcon, mIconSize, mIconSize, null);
+                        resize(mPreviewViewActionBar, mPreviewViewActionBar.getLayoutParams().width, 0, null);
+                        resize(mPreviewView, mPreviewView.getLayoutParams().width, mMinPreviewHeight, new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                showNotificationCompact();
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onDismiss(boolean dismissRight) {
+            // clear notification
+            NotificationsService ns = NotificationsService.getSharedInstance();
+            if (ns != null)
+                ns.clearNotification(mNotification.getUid());
+            // hide popup
+            hide();
+        }
+
+        @Override
+        protected void onHide() {
+            hide();
+        }
+
+        @Override
+        protected void onClick() {
+            openNotification();
+        }
+
+        @Override
+        protected void onCancel() {
+
+        }
+    }
+
+    private class PreviewTouchListener extends SwipeToDismissMovementOnTouchListener {
+        @Override
+        protected void onDismiss(boolean dismissRight) {
+            // clear notification
+            NotificationsService ns = NotificationsService.getSharedInstance();
+            if (ns != null)
+                ns.clearNotification(mNotification.getUid());
+            // hide popup
+            hide();
+        }
+
+        @Override
+        protected void onHide() {
+            hide();
+        }
+
+        @Override
+        protected void onClick() {
+            openNotification();
+        }
     }
 }

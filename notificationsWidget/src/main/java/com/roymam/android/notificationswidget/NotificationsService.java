@@ -1562,7 +1562,7 @@ public class NotificationsService extends Service implements NotificationsProvid
             {
                 NotificationData.Action action = ni.actions[actionPos];
 
-                if (action.remoteInputs != null)
+                if (action.resultKey != null)
                 {
                     // open quick reply activity
                     Intent intent = new Intent(context, QuickReplyActivity.class);

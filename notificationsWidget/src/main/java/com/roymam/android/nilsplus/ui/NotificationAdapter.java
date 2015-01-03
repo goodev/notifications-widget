@@ -7,10 +7,12 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -94,7 +97,12 @@ public class NotificationAdapter extends BaseAdapter
             return -1;
     }
 
-    public static void applySettingsToView(Context context, View notificationView, NotificationData item, int position, Theme theme, boolean preview)
+    public static void applySettingsToView(Context context, View notificationView, NotificationData item, int position, Theme theme, boolean addPadding)
+    {
+        applySettingsToView(context, notificationView, item, position, theme, addPadding, false);
+    }
+
+    public static void applySettingsToView(Context context, View notificationView, NotificationData item, int position, Theme theme, boolean addPadding, boolean preview)
     {
         boolean even = position % 2 == 0;
 
@@ -104,26 +112,36 @@ public class NotificationAdapter extends BaseAdapter
             holder = new ViewHolder();
 
             if (theme == null || theme.customLayoutIdMap == null) {
-                holder.notificationView = notificationView.findViewById(R.id.front);
+                holder.notificationView = notificationView.findViewById(R.id.full_notification);
                 holder.ivImage = (ImageView) notificationView.findViewById(R.id.notification_image);
                 holder.tvTitle = (TextView) notificationView.findViewById(R.id.notification_title);
                 holder.tvDescription = (TextView) notificationView.findViewById(R.id.notification_text);
                 holder.tvTime = (TextView) notificationView.findViewById(R.id.notification_time);
-                holder.vNotificationBG = notificationView.findViewById(R.id.front);
-                holder.vTextBG = notificationView.findViewById(R.id.notification_text_container);
+                holder.vNotificationBG = notificationView.findViewById(R.id.full_notification);
+                holder.vTextBG = notificationView.findViewById(R.id.notification_body);
                 holder.vIconBG = notificationView.findViewById(R.id.notification_bg);
                 holder.vIconBgImage = (ImageView) notificationView.findViewById(R.id.icon_bg);
                 holder.vIconFgImage = (ImageView) notificationView.findViewById(R.id.icon_fg);
+                holder.notificationBigPicture = (ImageView) notificationView.findViewById(R.id.notification_big_picture);
             }
             else
             {
-                holder.notificationView = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
+                if (!preview) {
+                    holder.notificationView = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
+                    holder.vNotificationBG = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
+                    holder.vTextBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_text_container"));
+                    holder.notificationBigPicture = null;
+                } else {
+                    holder.notificationView = notificationView.findViewById(theme.customLayoutIdMap.get("full_notification"));
+                    holder.vNotificationBG = notificationView.findViewById(theme.customLayoutIdMap.get("full_notification"));
+                    holder.notificationBigPicture = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_big_picture"));
+                    holder.vTextBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_body"));
+                }
+
                 holder.ivImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_image"));
                 holder.tvTitle = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_title"));
                 holder.tvDescription = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_text"));
                 holder.tvTime = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("notification_time"));
-                holder.vNotificationBG = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
-                holder.vTextBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_text_container"));
                 holder.vIconBG = notificationView.findViewById(theme.customLayoutIdMap.get("notification_bg"));
                 holder.vIconBgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_bg"));
                 holder.vIconFgImage = (ImageView) notificationView.findViewById(theme.customLayoutIdMap.get("icon_fg"));
@@ -172,13 +190,66 @@ public class NotificationAdapter extends BaseAdapter
         int maxLines = Integer.parseInt(prefs.getString(SettingsManager.MAX_TEXT_LINES, String.valueOf(SettingsManager.DEFAULT_MAX_TEXT_LINES)));
         holder.tvTitle.setLines(1);
         boolean fitToText = prefs.getBoolean(SettingsManager.FIT_HEIGHT_TO_CONTENT, SettingsManager.DEFAULT_FIT_HEIGHT_TO_CONTENT);
-        if (!fitToText && maxLines > -1)
+        if (!fitToText && maxLines > -1 && !preview)
             holder.tvDescription.setLines(maxLines);
-        else if (maxLines > -1)
+        else if (maxLines > -1 && !preview)
             holder.tvDescription.setMaxLines(maxLines);
         else {
             holder.tvDescription.setMaxLines(Integer.MAX_VALUE);
         }
+
+        // preview additions
+        if (preview) {
+            holder.tvDescription.setMovementMethod(new ScrollingMovementMethod());
+            View quickReplyBox = notificationView.findViewById(R.id.quick_reply_box);
+            TextView quickReplyLabel = (TextView) notificationView.findViewById(R.id.quick_text_label);
+            Button action1button = (Button) notificationView.findViewById(R.id.customAction1);
+            Button action2button = (Button) notificationView.findViewById(R.id.customAction2);
+
+            // quick reply action
+            NotificationData.Action quickReplyAction = item.getQuickReplyAction();
+            if (quickReplyAction != null) {
+                quickReplyLabel.setText(quickReplyAction.title);
+                quickReplyBox.setVisibility(View.VISIBLE);
+            }
+            else
+                quickReplyBox.setVisibility(View.GONE);
+
+            // action 1 button
+            if (item.actions.length > 0) {
+                NotificationData.Action action1 = item.getActions()[0];
+                if (action1 != quickReplyAction) {
+                    action1button.setText(action1.title);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                        action1button.setCompoundDrawablesRelative(new BitmapDrawable(context.getResources(), action1.drawable), null, null, null);
+                    else
+                        action1button.setCompoundDrawables(new BitmapDrawable(context.getResources(), action1.drawable), null, null, null);
+
+                    action1button.setVisibility(View.VISIBLE);
+                }
+                else {
+                    action1button.setVisibility(View.GONE);
+                }
+            }
+
+            // action 2 button
+            if (item.actions.length > 1) {
+                NotificationData.Action action2 = item.getActions()[1];
+                if (action2 != quickReplyAction) {
+                    action2button.setText(action2.title);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                        action1button.setCompoundDrawablesRelative(new BitmapDrawable(context.getResources(), action2.drawable), null, null, null);
+                    else
+                        action1button.setCompoundDrawables(new BitmapDrawable(context.getResources(), action2.drawable), null, null, null);
+
+                    action1button.setVisibility(View.VISIBLE);
+                }
+                else {
+                    action1button.setVisibility(View.GONE);
+                }
+            }
+        }
+
 
         // set colors
         holder.tvTitle.setTextColor(primaryTextColor);
@@ -197,10 +268,13 @@ public class NotificationAdapter extends BaseAdapter
         if (singleLine)
         {
             holder.tvDescription.setVisibility(View.GONE);
-            if (!fitToText)
+
+            if (!fitToText && maxLines > -1 && !preview)
                 holder.tvTitle.setLines(maxLines);
-            else
+            else if (maxLines > -1 && !preview)
                 holder.tvTitle.setMaxLines(maxLines);
+            else
+                holder.tvTitle.setMaxLines(Integer.MAX_VALUE);
 
             if (item.getText() != null && Color.alpha(secondaryTextColor) > 0)
             {
@@ -214,10 +288,12 @@ public class NotificationAdapter extends BaseAdapter
                 ssb.setSpan(textSize, item.getTitle().length()+1, item.getTitle().length()+1+item.getText().length(),0);
                 ssb.setSpan(textColor, item.getTitle().length()+1, item.getTitle().length()+1+item.getText().length(),0);
                 holder.tvTitle.setText(ssb);
-                if (!fitToText)
+                if (!fitToText && maxLines > -1 && !preview)
                     holder.tvTitle.setLines(maxLines+1);
-                else
+                else if (maxLines > -1 && !preview)
                     holder.tvTitle.setMaxLines(maxLines+1);
+                else
+                    holder.tvTitle.setMaxLines(Integer.MAX_VALUE);
             }
         }
         else
@@ -315,7 +391,7 @@ public class NotificationAdapter extends BaseAdapter
         int leftMargin = 0;
         int rightMargin = 0;
 
-        if (!preview)
+        if (!addPadding)
         {
             Point size = NPViewManager.getDisplaySize(context);
 
@@ -323,19 +399,13 @@ public class NotificationAdapter extends BaseAdapter
             rightMargin = prefs.getInt(NPViewManager.getRotationMode(context) + "right_margin", (int) (size.x * 0.05f));
         }
 
-        View front = notificationView.findViewById(R.id.front);
-
-        if (theme != null &&
-            theme.notificationLayout != null) {
-            front = notificationView.findViewById(theme.customLayoutIdMap.get("front"));
-        }
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) front.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.notificationView.getLayoutParams();
         params.leftMargin = leftMargin;
         params.rightMargin = rightMargin;
 
-        front.setLayoutParams(params);
+        holder.notificationView.setLayoutParams(params);
 
-        // force relayout of background
+        // force re-layout of background
         holder.vNotificationBG.requestLayout();
         holder.vTextBG.requestLayout();
     }
@@ -443,5 +513,6 @@ public class NotificationAdapter extends BaseAdapter
         public TextView tvTime;
         public ImageView vAppIconImage;
         public ImageView vAppIconBGImage;
+        public ImageView notificationBigPicture;
     }
 }

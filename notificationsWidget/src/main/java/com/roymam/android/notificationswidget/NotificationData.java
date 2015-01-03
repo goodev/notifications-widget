@@ -300,8 +300,8 @@ public class NotificationData implements Parcelable
         if (actions != null)
             for(int i = 0; i < actions.length; i++)
             {
-                Log.d(TAG, "action:"+actions[i].title+ "remoteInputs:"+actions[i].remoteInputs);
-                if (actions[i].remoteInputs != null) {
+                Log.d(TAG, "action:"+actions[i].title+ " resultKey:"+actions[i].resultKey);
+                if (actions[i].resultKey != null) {
                     return actions[i];
                 }
             }
@@ -318,7 +318,7 @@ public class NotificationData implements Parcelable
         public CharSequence title;
         public PendingIntent actionIntent;
         public Bitmap drawable;
-        public RemoteInput[] remoteInputs = null;
+        public String resultKey;
 
         public Action(Parcel in)
         {
@@ -329,6 +329,8 @@ public class NotificationData implements Parcelable
                 actionIntent = PendingIntent.readPendingIntentOrNullFromParcel(in);
             if (in.readInt() != 0)
                 drawable = Bitmap.CREATOR.createFromParcel(in);
+            if (in.readInt() != 0)
+                resultKey = in.readString();
         }
 
         @Override
@@ -365,6 +367,14 @@ public class NotificationData implements Parcelable
             }
             else
             {
+                dest.writeInt(0);
+            }
+
+            if (resultKey != null) {
+                dest.writeInt(1);
+                dest.writeString(resultKey);
+            }
+            else {
                 dest.writeInt(0);
             }
         }

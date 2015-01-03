@@ -353,7 +353,7 @@ public class NotificationsViewFactory implements RemoteViewsService.RemoteViewsF
 			if (actions.length >= 1)
 			{
 				actionBar.setImageViewBitmap(R.id.customAction1Image, actions[0].drawable);
-                if (actions[0].remoteInputs != null)
+                if (actions[0].resultKey != null)
                     actionBar.setOnClickPendingIntent(R.id.customAction1, getQuickReplyPendingIntent(uid, 0));
                 else
                     actionBar.setOnClickPendingIntent(R.id.customAction1, actions[0].actionIntent);
@@ -370,7 +370,7 @@ public class NotificationsViewFactory implements RemoteViewsService.RemoteViewsF
 			if (actions.length >= 2)
 			{
 				actionBar.setImageViewBitmap(R.id.customAction2Image, actions[1].drawable);
-                if (actions[1].remoteInputs != null)
+                if (actions[1].resultKey != null)
                     actionBar.setOnClickPendingIntent(R.id.customAction1, getQuickReplyPendingIntent(uid, 1));
                 else
     				actionBar.setOnClickPendingIntent(R.id.customAction2, actions[1].actionIntent);

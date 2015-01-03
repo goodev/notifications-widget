@@ -3,6 +3,7 @@ package com.roymam.android.nilsplus.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,11 +13,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.RemoteInput;
 import android.support.v7.widget.CardView;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -58,10 +62,9 @@ public class PreviewNotificationView extends RelativeLayout {
     private ImageView mPreviewIcon;
     private TextView mPreviewTime;
     private int mAnimationDuration;
-    private View mPreviewBody;
     private DotsSwipeView mDotsView;
     private View mPreviewIconBG;
-    private ScrollView mScrollView;
+    //private ScrollView mScrollView;
     private ImageView mPreviewIconImageBG;
     private ImageView mPreviewIconImageFG;
     private View mNotificationContent;
@@ -132,7 +135,7 @@ public class PreviewNotificationView extends RelativeLayout {
 
             // scroll the text down again if there is additional text (because the textbox hide part of it)
             if (ni.additionalText != null) {
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+                //mScrollView.fullScroll(View.FOCUS_DOWN);
             }
 
             mQuickReplyLabel.setText(ni.getQuickReplyAction().title);
@@ -175,7 +178,7 @@ public class PreviewNotificationView extends RelativeLayout {
                 mPreviewNotificationView.getViewTreeObserver().removeOnPreDrawListener(this);
                 // full scroll down - if there is a conversation content
                 if (ni.additionalText != null) {
-                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                    //mScrollView.fullScroll(View.FOCUS_DOWN);
                 }
                 return true;
             }
@@ -221,7 +224,6 @@ public class PreviewNotificationView extends RelativeLayout {
         // get fields
         if (mTheme != null && mTheme.previewLayout != null) {
             mNotificationContent = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_body"));
-            mPreviewBody = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_preview"));
             mPreviewTitle = (TextView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_title"));
             mPreviewText = (TextView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_text"));
             mPreviewIconBG = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
@@ -229,7 +231,7 @@ public class PreviewNotificationView extends RelativeLayout {
             mPreviewIconImageBG = (ImageView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("icon_bg"));
             mPreviewIconImageFG = (ImageView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("icon_fg"));
             mPreviewTime = (TextView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_time"));
-            mScrollView = (ScrollView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_text_scrollview"));
+            //mScrollView = (ScrollView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_text_scrollview"));
             mPreviewBigPicture = (ImageView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("notification_big_picture"));
 
             if (mTheme.customLayoutIdMap != null && mTheme.customLayoutIdMap.get("app_icon") != 0)
@@ -246,7 +248,6 @@ public class PreviewNotificationView extends RelativeLayout {
             }
         } else {
             mNotificationContent = mPreviewNotificationView.findViewById(R.id.notification_body);
-            mPreviewBody = mPreviewNotificationView.findViewById(R.id.notification_preview);
             mPreviewTitle = (TextView) mPreviewNotificationView.findViewById(R.id.notification_title);
             mPreviewText = (TextView) mPreviewNotificationView.findViewById(R.id.notification_text);
             mPreviewIconBG = mPreviewNotificationView.findViewById(R.id.notification_bg);
@@ -254,7 +255,7 @@ public class PreviewNotificationView extends RelativeLayout {
             mPreviewIconImageBG = (ImageView) mPreviewNotificationView.findViewById(R.id.icon_bg);
             mPreviewIconImageFG = (ImageView) mPreviewNotificationView.findViewById(R.id.icon_fg);
             mPreviewTime = (TextView) mPreviewNotificationView.findViewById(R.id.notification_time);
-            mScrollView = (ScrollView) mPreviewNotificationView.findViewById(R.id.notification_text_scrollview);
+            //mScrollView = (ScrollView) mPreviewNotificationView.findViewById(R.id.notification_text_scrollview);
             mPreviewBigPicture = (ImageView) mPreviewNotificationView.findViewById(R.id.notification_big_picture);
             mQuickReplyBox = mPreviewNotificationView.findViewById(R.id.quick_reply_box);
             mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(R.id.quick_reply_text);
@@ -409,8 +410,15 @@ public class PreviewNotificationView extends RelativeLayout {
                     Intent intent = new Intent();
                     Bundle params = new Bundle();
                     final NotificationData.Action action = ni.getQuickReplyAction();
-                    params.putCharSequence(action.remoteInputs[0].getResultKey(), mQuickReplyText.getText());
-                    RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
+                    params.putCharSequence(action.resultKey, mQuickReplyText.getText());
+
+                    Intent clipIntent = new Intent();
+                    clipIntent.putExtra(RemoteInput.EXTRA_RESULTS_DATA, params);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
+                        intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
+
+                    //RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                     try {
                         action.actionIntent.send(context, 0, intent);
                         hide();
@@ -642,13 +650,16 @@ public class PreviewNotificationView extends RelativeLayout {
 
         mPreviewTitle.setText(ni.getTitle()!=null?ni.getTitle().toString():null);
         mPreviewText.setText(ni.getText() != null ? ni.getText().toString() : null);
+        mPreviewText.setMovementMethod(new ScrollingMovementMethod());
         if (ni.additionalText != null ) {
             mPreviewText.setText(ni.additionalText);
-            mScrollView.fullScroll(View.FOCUS_DOWN);
+            mPreviewText.setGravity(Gravity.BOTTOM);
+            //mScrollView.fullScroll(View.FOCUS_DOWN);
         }
         else
         {
-            mScrollView.fullScroll(View.FOCUS_UP);
+            mPreviewText.setGravity(Gravity.TOP);
+            //mScrollView.fullScroll(View.FOCUS_UP);
         }
         mPreviewTitle.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault);
         mPreviewText.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault);
@@ -956,7 +967,7 @@ public class PreviewNotificationView extends RelativeLayout {
 
     public void cleanup()
     {
-        mScrollView.setOnTouchListener(null);
+        //mScrollView.setOnTouchListener(null);
         mPreviewNotificationView.setOnTouchListener(null);
         mPreviewIcon.setOnTouchListener(null);
         mPreviewNotificationView.setOnClickListener(null);
