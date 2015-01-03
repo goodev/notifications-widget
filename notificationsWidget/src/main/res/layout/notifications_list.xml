@@ -56,6 +56,7 @@
         android:id="@+id/notifications_listview_container"
         android:layout_height="@dimen/notification_default_list_height"
         android:layout_width="match_parent"
+        android:layout_alignParentRight="false"
         android:layout_alignParentEnd="false">
     </RelativeLayout>
 </RelativeLayout>
