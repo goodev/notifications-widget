@@ -81,6 +81,8 @@ public class AboutPreferencesFragment extends CardPreferenceFragment
         }
 
         // build an individual notification
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.settings, "Settings",
+                PendingIntent.getActivity(mContext, 0, new Intent(mContext, NiLSActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
         Notification n1 = new NotificationCompat.Builder(mContext)
                 .setContentTitle("NiLS Test Notification")
                 .setContentText(randWord+":Single notification test line 1\nSingle notification test line 2\nSingle notification test line 3\n" +
@@ -95,6 +97,7 @@ public class AboutPreferencesFragment extends CardPreferenceFragment
                 .setSmallIcon(R.drawable.nilsfp_icon_mono)
                 .setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(mContext, NiLSActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
+                .addAction(action)
                 .build();
 
         // Issue the notification
@@ -113,7 +116,7 @@ public class AboutPreferencesFragment extends CardPreferenceFragment
         inboxStyle.setBigContentTitle("NiLS Grouped Notification");
         builder.setContentTitle("NiLS Grouped Notification");
         inboxStyle.setSummaryText("3 test events");
-        inboxStyle.addLine(randWord+":NiLS Test Notification - Event 1");
+        inboxStyle.addLine(randWord + ":NiLS Test Notification - Event 1");
         inboxStyle.addLine(randWord+":NiLS Test Notification - Event 2");
         inboxStyle.addLine(randWord+":NiLS Test Notification - Event 3");
         builder.setStyle(inboxStyle);

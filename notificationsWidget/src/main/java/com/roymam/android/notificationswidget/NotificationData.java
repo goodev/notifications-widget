@@ -1,12 +1,16 @@
 package com.roymam.android.notificationswidget;
 
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.RemoteInput;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.Time;
@@ -307,6 +311,19 @@ public class NotificationData implements Parcelable
             }
         // no action - return null
         return null;
+    }
+
+    public Intent getQuickReplyActioIntent(CharSequence text) {
+        Intent intent = new Intent();
+        Bundle params = new Bundle();
+        params.putCharSequence(getQuickReplyAction().resultKey, text);
+        Intent clipIntent = new Intent();
+        clipIntent.putExtra(RemoteInput.EXTRA_RESULTS_DATA, params);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
+        // TODO: add support for lower Android versions
+        return intent;
     }
 
     public static class Action implements Parcelable

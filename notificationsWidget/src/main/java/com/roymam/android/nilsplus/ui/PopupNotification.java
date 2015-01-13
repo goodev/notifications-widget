@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +12,10 @@ import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,8 +28,13 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roymam.android.common.BitmapUtils;
@@ -45,6 +53,11 @@ public class PopupNotification {
     private final int mIconSize;
     private final int mMaxIconSize;
     private final View mPreviewViewActionBar;
+    private final Button mPreviewViewActionButton1;
+    private final Button mPreviewViewActionButton2;
+    private final ImageButton mPreviewViewQuickReplyButton;
+    private final EditText mPreviewViewQuickReplyText;
+    private final View mQuickReplyBox;
     private View mPreviewViewIcon;
     private int mMaxPreviewHeight = 0;
     private int mMinPreviewHeight = 0;
@@ -76,6 +89,7 @@ public class PopupNotification {
     private boolean mInteractionStarted = false;
     private boolean mIsPreviewVisible = false;
     private int mActionBarHeight = 0;
+    private boolean mIsSoftKeyVisible = false;
 
     private PopupNotification(Context context, NotificationData nd) {
         Log.d(TAG, "PopupNotification");
@@ -100,10 +114,11 @@ public class PopupNotification {
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
         mLayoutParams.gravity = Gravity.TOP;
+        mLayoutParams.softInputMode =   WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|
+                                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
         // create the popup dialog view
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,12 +130,23 @@ public class PopupNotification {
             mPreviewView = li.inflate(mTheme.previewLayout, null);
             mPreviewViewIcon = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
             mPreviewViewActionBar = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
+            mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_1_button"));
+            mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_2_button"));
+            mQuickReplyBox = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
+            mPreviewViewQuickReplyButton = (ImageButton) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+            mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
             mNotificationView = li.inflate(R.layout.notification_row, null);
             mPreviewView = li.inflate(R.layout.notification_preview, null);
             mPreviewViewIcon = mPreviewView.findViewById(R.id.notification_bg);
             mPreviewViewActionBar = mPreviewView.findViewById(R.id.notification_actions);
+            mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(R.id.customAction1);
+            mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(R.id.customAction2);
+            mQuickReplyBox = mPreviewView.findViewById(R.id.quick_reply_box);
+            mPreviewViewQuickReplyButton = (ImageButton) mPreviewView.findViewById(R.id.quick_reply_button);
+            mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(R.id.quick_reply_text);
+
         }
 
         // make notification go away when the user touch outside of it
@@ -160,8 +186,11 @@ public class PopupNotification {
     }
 
     private void populate(NotificationData nd) {
+        // apply appearance settings to the views
         NotificationAdapter.applySettingsToView(mContext, mNotificationView, nd, 0, mTheme, true);
         NotificationAdapter.applySettingsToView(mContext, mPreviewView, nd, 0, mTheme, true, true);
+
+        // set up action listeners
         mNotificationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,6 +204,20 @@ public class PopupNotification {
             }
         });
 
+        populateActionButton(mPreviewViewActionButton1, nd.actions, 0);
+        populateActionButton(mPreviewViewActionButton2, nd.actions, 1);
+        mPreviewViewQuickReplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    mNotification.getQuickReplyAction().actionIntent.send(mContext, 0, mNotification.getQuickReplyActioIntent(mPreviewViewQuickReplyText.getText()));
+                    NotificationsService.getSharedInstance().clearNotification(mNotification.uid);
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         // calculate min/max size for preview
         mPreviewViewIcon.getLayoutParams().width = mMaxIconSize;
         mPreviewViewIcon.getLayoutParams().height = mMaxIconSize;
@@ -185,6 +228,23 @@ public class PopupNotification {
         mMaxPreviewHeight = mPreviewView.getMeasuredHeight();
         mMinPreviewHeight = mNotificationView.getMeasuredHeight();
         mActionBarHeight = mPreviewViewActionBar.getMeasuredHeight();
+    }
+
+    private void populateActionButton(Button button, final NotificationData.Action[] actions, final int i) {
+        if (actions != null && actions.length > i) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        actions[i].actionIntent.send();
+                        dismiss();
+                        hide();
+                    } catch (PendingIntent.CanceledException e) {
+                        Log.e(TAG, "failed to perform action " + actions[i].title);
+                    }
+                }
+            });
+        }
     }
 
     private void changeWindowHeight(int height) {
@@ -267,8 +327,12 @@ public class PopupNotification {
             return this;
         }
 
-        mNotificationView.animate()
-                .translationY(-mNotificationView.getHeight())
+        View v = mNotificationView;
+        if (mIsPreviewVisible)
+            v = mPreviewView;
+
+        v.animate()
+                .translationY(-v.getHeight())
                 .setDuration(mAnimationTime)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -344,6 +408,24 @@ public class PopupNotification {
         a.setDuration(mAnimationTime);
         a.setAnimationListener(listener);
         v.startAnimation(a);
+    }
+
+    private void showSoftKeyboard() {
+        mPreviewViewQuickReplyText.requestFocus();
+        InputMethodManager mgr = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(mPreviewViewQuickReplyText, InputMethodManager.SHOW_IMPLICIT);
+        mgr.restartInput(mPreviewViewQuickReplyText);
+        mIsSoftKeyVisible = true;
+    }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager mgr = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(mPreviewViewQuickReplyText.getWindowToken(), 0);
+        mIsSoftKeyVisible = false;
+    }
+
+    public boolean ismIsSoftKeyVisible() {
+        return mIsSoftKeyVisible;
     }
 
     private abstract class MovementDetectorOnTouchListener implements View.OnTouchListener {
@@ -588,6 +670,10 @@ public class PopupNotification {
                         resize(mPreviewView, mPreviewView.getLayoutParams().width, mMaxPreviewHeight, null);
                         resize(mPreviewViewIcon, mMaxIconSize, mMaxIconSize, null);
                         resize(mPreviewViewActionBar, mPreviewViewActionBar.getLayoutParams().width, mActionBarHeight, null);
+
+                        // show soft keyboard if the quick reply box is visible
+                        if (mQuickReplyBox.getVisibility() == View.VISIBLE)
+                            showSoftKeyboard();
                     } else {
                         // otherwise - return it the original size
                         resize(mPreviewViewIcon, mIconSize, mIconSize, null);
@@ -616,10 +702,7 @@ public class PopupNotification {
 
         @Override
         protected void onDismiss(boolean dismissRight) {
-            // clear notification
-            NotificationsService ns = NotificationsService.getSharedInstance();
-            if (ns != null)
-                ns.clearNotification(mNotification.getUid());
+            dismiss();
             // hide popup
             hide();
         }
@@ -640,6 +723,13 @@ public class PopupNotification {
         }
     }
 
+    private void dismiss() {
+        // clear notification
+        NotificationsService ns = NotificationsService.getSharedInstance();
+        if (ns != null)
+            ns.clearNotification(mNotification.getUid());
+    }
+
     private class PreviewTouchListener extends SwipeToDismissMovementOnTouchListener {
         @Override
         protected void onDismiss(boolean dismissRight) {
@@ -649,15 +739,18 @@ public class PopupNotification {
                 ns.clearNotification(mNotification.getUid());
             // hide popup
             hide();
+            hideSoftKeyboard();
         }
 
         @Override
         protected void onHide() {
             hide();
+            hideSoftKeyboard();
         }
 
         @Override
         protected void onClick() {
+            hideSoftKeyboard();
             openNotification();
         }
     }

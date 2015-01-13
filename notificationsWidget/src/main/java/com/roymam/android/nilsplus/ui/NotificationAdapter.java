@@ -2,6 +2,8 @@ package com.roymam.android.nilsplus.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -17,6 +19,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -200,54 +203,12 @@ public class NotificationAdapter extends BaseAdapter
 
         // preview additions
         if (preview) {
+            if (item.additionalText != null) {
+                holder.tvDescription.setText(item.additionalText);
+                holder.tvDescription.setGravity(Gravity.BOTTOM);
+            }
             holder.tvDescription.setMovementMethod(new ScrollingMovementMethod());
-            View quickReplyBox = notificationView.findViewById(R.id.quick_reply_box);
-            TextView quickReplyLabel = (TextView) notificationView.findViewById(R.id.quick_text_label);
-            Button action1button = (Button) notificationView.findViewById(R.id.customAction1);
-            Button action2button = (Button) notificationView.findViewById(R.id.customAction2);
-
-            // quick reply action
-            NotificationData.Action quickReplyAction = item.getQuickReplyAction();
-            if (quickReplyAction != null) {
-                quickReplyLabel.setText(quickReplyAction.title);
-                quickReplyBox.setVisibility(View.VISIBLE);
-            }
-            else
-                quickReplyBox.setVisibility(View.GONE);
-
-            // action 1 button
-            if (item.actions.length > 0) {
-                NotificationData.Action action1 = item.getActions()[0];
-                if (action1 != quickReplyAction) {
-                    action1button.setText(action1.title);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                        action1button.setCompoundDrawablesRelative(new BitmapDrawable(context.getResources(), action1.drawable), null, null, null);
-                    else
-                        action1button.setCompoundDrawables(new BitmapDrawable(context.getResources(), action1.drawable), null, null, null);
-
-                    action1button.setVisibility(View.VISIBLE);
-                }
-                else {
-                    action1button.setVisibility(View.GONE);
-                }
-            }
-
-            // action 2 button
-            if (item.actions.length > 1) {
-                NotificationData.Action action2 = item.getActions()[1];
-                if (action2 != quickReplyAction) {
-                    action2button.setText(action2.title);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                        action1button.setCompoundDrawablesRelative(new BitmapDrawable(context.getResources(), action2.drawable), null, null, null);
-                    else
-                        action1button.setCompoundDrawables(new BitmapDrawable(context.getResources(), action2.drawable), null, null, null);
-
-                    action1button.setVisibility(View.VISIBLE);
-                }
-                else {
-                    action1button.setVisibility(View.GONE);
-                }
-            }
+            setupActionButtons(notificationView, item, context);
         }
 
 
@@ -408,6 +369,73 @@ public class NotificationAdapter extends BaseAdapter
         // force re-layout of background
         holder.vNotificationBG.requestLayout();
         holder.vTextBG.requestLayout();
+    }
+
+    private static void setupActionButtons(View notificationView, NotificationData item, Context context) {
+        PackageManager manager = context.getPackageManager();
+        Resources res = null;
+        try {
+            res = manager.getResourcesForApplication(item.packageName);
+        } catch (PackageManager.NameNotFoundException e) {
+            // can never happen
+        }
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // TODO: add support for 3rd party themes layout
+        View quickReplyBox = notificationView.findViewById(R.id.quick_reply_box);
+        TextView quickReplyLabel = (TextView) notificationView.findViewById(R.id.quick_text_label);
+        Button action1button = (Button) notificationView.findViewById(R.id.customAction1);
+        Button action2button = (Button) notificationView.findViewById(R.id.customAction2);
+
+        // quick reply action
+        NotificationData.Action quickReplyAction = item.getQuickReplyAction();
+        if (quickReplyAction != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
+            quickReplyLabel.setText(quickReplyAction.title);
+            quickReplyBox.setVisibility(View.VISIBLE);
+        }
+        else
+            quickReplyBox.setVisibility(View.GONE);
+
+        // action 1 button
+        if (item.actions.length > 0) {
+            NotificationData.Action action1 = item.getActions()[0];
+            if (action1 != quickReplyAction) {
+                if (quickReplyBox.getVisibility() != View.VISIBLE)
+                    action1button.setText(action1.title);
+                else
+                    action1button.setText("");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                    action1button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, action1.drawable), null, null, null);
+                else
+                    action1button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, action1.drawable), null, null, null);
+
+                action1button.setVisibility(View.VISIBLE);
+            }
+            else {
+                action1button.setVisibility(View.GONE);
+            }
+        }
+
+        // action 2 button
+        if (item.actions.length > 1) {
+            NotificationData.Action action2 = item.getActions()[1];
+            if (action2 != quickReplyAction) {
+                if (quickReplyBox.getVisibility() != View.VISIBLE)
+                    action2button.setText(action2.title);
+                else
+                    action2button.setText("");
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                    action2button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, action2.drawable), null, null, null);
+                else
+                    action2button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, action2.drawable), null, null, null);
+
+                action2button.setVisibility(View.VISIBLE);
+            }
+            else {
+                action2button.setVisibility(View.GONE);
+            }
+        }
     }
 
     public static int getTextAppearance(String size)

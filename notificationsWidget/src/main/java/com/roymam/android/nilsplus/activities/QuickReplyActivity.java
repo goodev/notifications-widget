@@ -93,7 +93,7 @@ public class QuickReplyActivity extends Activity {
                 clipIntent.putExtra(RemoteInput.EXTRA_RESULTS_DATA, params);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
-                intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
+                    intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
 
                 //RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                 try {
