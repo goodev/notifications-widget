@@ -58,6 +58,7 @@ public class PopupNotification {
     private final Button mPreviewViewQuickReplyButton;
     private final EditText mPreviewViewQuickReplyText;
     private final View mQuickReplyBox;
+    private final Point mScreenSize;
     private View mPreviewViewIcon;
     private int mMaxPreviewHeight = 0;
     private int mMinPreviewHeight = 0;
@@ -103,6 +104,7 @@ public class PopupNotification {
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
+        mScreenSize = NPViewManager.getDisplaySize(context);
 
         mIconSize = BitmapUtils.dpToPx(mPrefs.getInt(SettingsManager.ICON_SIZE, SettingsManager.DEFAULT_ICON_SIZE));
         mMaxIconSize = mContext.getResources().getDimensionPixelOffset(R.dimen.notification_icon_size_large);
@@ -228,6 +230,9 @@ public class PopupNotification {
         mPreviewViewActionBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
         mMaxPreviewHeight = mPreviewView.getMeasuredHeight();
+        if (mMaxPreviewHeight > Math.min(mScreenSize.x, mScreenSize.y))
+            mMaxPreviewHeight = Math.min(mScreenSize.x, mScreenSize.y);
+
         mMinPreviewHeight = mNotificationView.getMeasuredHeight();
         mActionBarHeight = mPreviewViewActionBar.getMeasuredHeight();
     }
