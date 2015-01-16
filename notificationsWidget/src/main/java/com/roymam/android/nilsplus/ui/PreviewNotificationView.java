@@ -31,6 +31,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,7 +51,7 @@ import static java.lang.Math.abs;
 public class PreviewNotificationView extends RelativeLayout {
     private static final String TAG = PreviewNotificationView.class.getSimpleName();
     private final SharedPreferences prefs;
-    private ImageButton mQuickReplySendButton;
+    private Button mQuickReplySendButton;
     private TextView mQuickReplyLabel;
     private View mPreviewNotificationView;
     private View mPreviewBackground;
@@ -130,6 +131,7 @@ public class PreviewNotificationView extends RelativeLayout {
         if (ni.getQuickReplyAction() != null &&
                 mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.setVisibility(View.VISIBLE);
+            mQuickReplySendButton.setVisibility(View.VISIBLE);
             mQuickReplyBox.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
             mQuickReplyBox.requestLayout();
 
@@ -244,7 +246,7 @@ public class PreviewNotificationView extends RelativeLayout {
                 mQuickReplyBox = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
                 mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
                 mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_label"));
-                mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+                mQuickReplySendButton = (Button) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
             }
         } else {
             mNotificationContent = mPreviewNotificationView.findViewById(R.id.notification_body);
@@ -260,7 +262,7 @@ public class PreviewNotificationView extends RelativeLayout {
             mQuickReplyBox = mPreviewNotificationView.findViewById(R.id.quick_reply_box);
             mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(R.id.quick_reply_text);
             mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(R.id.quick_text_label);
-            mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
+            mQuickReplySendButton = (Button) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
         }
 
         prepareListeners();
@@ -327,6 +329,7 @@ public class PreviewNotificationView extends RelativeLayout {
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     mDown = true;
+                    hideSoftKeyboard();
                     mPreviewNotificationView.animate().alpha(0).setDuration(mAnimationDuration).setListener(null);
 
                     // init dots view
@@ -418,7 +421,6 @@ public class PreviewNotificationView extends RelativeLayout {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
                         intent.setClipData(ClipData.newIntent(RemoteInput.RESULTS_CLIP_LABEL, clipIntent));
 
-                    //RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
                     try {
                         action.actionIntent.send(context, 0, intent);
                         hide();
@@ -801,10 +803,18 @@ public class PreviewNotificationView extends RelativeLayout {
         // if view is not visible - return false
         if (v == null || v.getVisibility() != View.VISIBLE) return false;
 
-        int[] parentCords = new int[2];
-        mPreviewBackground.getLocationOnScreen(parentCords);
-        int x = (int)ev.getRawX() - parentCords[0];
-        int y = (int)ev.getRawY() - parentCords[1];
+        //int[] parentCords = new int[2];
+        int[] childCords = new int[2];
+
+        //mPreviewBackground.getLocationOnScreen(parentCords);
+        v.getLocationOnScreen(childCords);
+
+        int x = (int)ev.getRawX() - childCords[0];
+        int y = (int)ev.getRawY() - childCords[1];
+
+        return (x >= 0 && x < v.getWidth() && y >= 0 && y < v.getHeight());
+
+        /*Log.d(TAG, String.format("rawx: %d rawy: %d viewx:%d viewy:%d myx:%d myy:%d", (int)ev.getRawX(), (int)ev.getRawY(), childCords[0], childCords[1], parentCords[0], parentCords[1]));
 
         Rect rect = new Rect();
         v.getHitRect(rect);
@@ -812,7 +822,7 @@ public class PreviewNotificationView extends RelativeLayout {
         if (rect.contains(x, y)) {
             return true;
         }
-        return false;
+        return false;*/
     }
 
     public boolean handleTouch(View v, MotionEvent event)

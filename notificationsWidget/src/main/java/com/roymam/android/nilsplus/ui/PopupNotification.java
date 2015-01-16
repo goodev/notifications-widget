@@ -55,7 +55,7 @@ public class PopupNotification {
     private final View mPreviewViewActionBar;
     private final Button mPreviewViewActionButton1;
     private final Button mPreviewViewActionButton2;
-    private final ImageButton mPreviewViewQuickReplyButton;
+    private final Button mPreviewViewQuickReplyButton;
     private final EditText mPreviewViewQuickReplyText;
     private final View mQuickReplyBox;
     private View mPreviewViewIcon;
@@ -133,7 +133,7 @@ public class PopupNotification {
             mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_1_button"));
             mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_2_button"));
             mQuickReplyBox = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
-            mPreviewViewQuickReplyButton = (ImageButton) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+            mPreviewViewQuickReplyButton = (Button) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
             mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
@@ -144,7 +144,7 @@ public class PopupNotification {
             mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(R.id.customAction1);
             mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(R.id.customAction2);
             mQuickReplyBox = mPreviewView.findViewById(R.id.quick_reply_box);
-            mPreviewViewQuickReplyButton = (ImageButton) mPreviewView.findViewById(R.id.quick_reply_button);
+            mPreviewViewQuickReplyButton = (Button) mPreviewView.findViewById(R.id.quick_reply_button);
             mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(R.id.quick_reply_text);
 
         }
@@ -212,6 +212,8 @@ public class PopupNotification {
                 try {
                     mNotification.getQuickReplyAction().actionIntent.send(mContext, 0, mNotification.getQuickReplyActioIntent(mPreviewViewQuickReplyText.getText()));
                     NotificationsService.getSharedInstance().clearNotification(mNotification.uid);
+                    hide();
+                    hideSoftKeyboard();
                 } catch (PendingIntent.CanceledException e) {
                     e.printStackTrace();
                 }
