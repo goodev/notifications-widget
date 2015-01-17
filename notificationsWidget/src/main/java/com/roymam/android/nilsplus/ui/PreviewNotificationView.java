@@ -596,6 +596,9 @@ public class PreviewNotificationView extends RelativeLayout {
         // prepare the quick reply box to start animating with the preview expand
         if (showKeyboard) {
             prepareQuickReplyBox();
+        } else {
+            mQuickReplyBox.setVisibility(View.GONE);
+            mQuickReplySendButton.setVisibility(View.GONE);
         }
 
         // animate opening the preview view and the preview icon

@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -209,7 +210,7 @@ public class NotificationAdapter extends BaseAdapter
                 holder.tvDescription.setGravity(Gravity.BOTTOM);
             }
             holder.tvDescription.setMovementMethod(new ScrollingMovementMethod());
-            setupActionButtons(notificationView, item, theme, context);
+            setupActionButtons(context, notificationView, item, theme, primaryTextColor, secondaryTextColor);
         }
 
 
@@ -372,7 +373,7 @@ public class NotificationAdapter extends BaseAdapter
         holder.vTextBG.requestLayout();
     }
 
-    private static void setupActionButtons(View notificationView, NotificationData item, Theme theme, Context context) {
+    private static void setupActionButtons(Context context, View notificationView, NotificationData item, Theme theme, int primaryTextColor, int SecondaryTextColor) {
         PackageManager manager = context.getPackageManager();
         Resources res = null;
         try {
@@ -387,6 +388,7 @@ public class NotificationAdapter extends BaseAdapter
         Button action1button;
         Button action2button;
         Button quickReplyButton;
+        EditText quickReplyTextBox;
 
         if (theme != null && theme.customLayoutIdMap != null) {
             quickReplyBox = notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_box"));
@@ -394,6 +396,7 @@ public class NotificationAdapter extends BaseAdapter
             action1button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction1"));
             action2button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction2"));
             quickReplyButton = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_button"));
+            quickReplyTextBox = (EditText) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
             quickReplyBox = notificationView.findViewById(R.id.quick_reply_box);
@@ -401,12 +404,15 @@ public class NotificationAdapter extends BaseAdapter
             action1button = (Button) notificationView.findViewById(R.id.customAction1);
             action2button = (Button) notificationView.findViewById(R.id.customAction2);
             quickReplyButton = (Button) notificationView.findViewById(R.id.quick_reply_button);
+            quickReplyTextBox = (EditText) notificationView.findViewById(R.id.quick_reply_text);
         }
 
         // quick reply action
         NotificationData.Action quickReplyAction = item.getQuickReplyAction();
         if (quickReplyAction != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             quickReplyLabel.setText(quickReplyAction.title);
+            quickReplyLabel.setTextColor(primaryTextColor);
+            quickReplyTextBox.setTextColor(SecondaryTextColor);
             quickReplyBox.setVisibility(View.VISIBLE);
             quickReplyButton.setVisibility(View.VISIBLE);
         } else {
