@@ -10,6 +10,14 @@
         ]]>
     </string>
     <string name="v464_title" translatable="false">v1.5.2.463</string>
+    <string name="v466_title" translatable="false">v1.5.2.466</string>
+    <string name="v466" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Bug fixes </b> - Supports DIY lock screen<br>
+            <b>&#8226;	Bug fixes </b> - Hide NiLS on incoming call on LG G3 device<br>
+        ]]>
+    </string>
+    <string name="v464_title" translatable="false">v1.5.2.464</string>
     <string name="v464" translatable="false">
         <![CDATA[
             <b>&#8226;	Translation </b> - Dutch translation was added. Thanks Kars &amp; Silknl<br>

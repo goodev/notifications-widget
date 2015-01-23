@@ -1379,9 +1379,11 @@ public class NotificationsService extends Service implements NotificationsProvid
             PackageManager pm = context.getPackageManager();
 
             List<String> blacklistPackageNames = Arrays.asList(SettingsManager.BLACKLIST_PACKAGENAMES);
+            List<String> knownLockScreenApps = Arrays.asList(context.getResources().getStringArray(R.array.known_lockscreen_apps));
 
             // check if the current app is a lock screen app
-            if (pm.checkPermission(android.Manifest.permission.DISABLE_KEYGUARD, currentApp) == PackageManager.PERMISSION_GRANTED) {
+            if (knownLockScreenApps.contains(currentApp) ||
+                pm.checkPermission(android.Manifest.permission.DISABLE_KEYGUARD, currentApp) == PackageManager.PERMISSION_GRANTED) {
                 if (!lockScreenApp.equals(currentApp) && !blacklistPackageNames.contains(currentApp)) {
                     // store current app as the lock screen app until next time
                     Log.d(TAG, "new lock screen app detected: " + currentApp);
@@ -1647,15 +1649,15 @@ public class NotificationsService extends Service implements NotificationsProvid
         }
     }
 
+    @SuppressWarnings("NullArgumentToVariableArgMethod")
     private boolean isActivity(PendingIntent action)
     {
         try
         {
             // call hidden method of PendingIntent - isActivity
-            Class c = PendingIntent.class;
-            Method m = c.getMethod("isActivity");
+            Method m = PendingIntent.class.getMethod("isActivity");
             Object o = m.invoke(action,null);
-            return ((Boolean) o).booleanValue();
+            return (Boolean) o;
         }
         catch (Exception exp)
         {
