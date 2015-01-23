@@ -838,6 +838,10 @@ public class PreviewNotificationView extends RelativeLayout {
                 mIgnoreTouch = true;
                 return false;
             }
+            if (isTouchHitView(mQuickReplySendButton, event)) {
+                mIgnoreTouch = true;
+                return false;
+            }
             if (isTouchHitView(mPreviewIcon,event)) {
                 mIgnoreTouch = true;
                 return false;
