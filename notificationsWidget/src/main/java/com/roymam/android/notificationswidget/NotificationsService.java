@@ -1659,15 +1659,15 @@ public class NotificationsService extends Service implements NotificationsProvid
         }
     }
 
+    @SuppressWarnings("NullArgumentToVariableArgMethod")
     private boolean isActivity(PendingIntent action)
     {
         try
         {
             // call hidden method of PendingIntent - isActivity
-            Class c = PendingIntent.class;
-            Method m = c.getMethod("isActivity");
+            Method m = PendingIntent.class.getMethod("isActivity");
             Object o = m.invoke(action,null);
-            return ((Boolean) o).booleanValue();
+            return (Boolean) o;
         }
         catch (Exception exp)
         {
