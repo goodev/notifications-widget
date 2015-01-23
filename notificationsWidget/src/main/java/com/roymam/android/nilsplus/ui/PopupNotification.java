@@ -622,7 +622,8 @@ public class PopupNotification {
                                 mPreviewView.getLayoutParams().height = previewHeight;
 
                                 int iconSize = mIconSize + (mMaxIconSize - mIconSize) * (previewHeight - mMinPreviewHeight) / (mMaxPreviewHeight - mMinPreviewHeight);
-                                int actionBarHeight = (mActionBarHeight * (previewHeight - mMinPreviewHeight) / (mMaxPreviewHeight - mMinPreviewHeight));
+
+                                int actionBarHeight = Math.min(mActionBarHeight, (previewHeight - mMinPreviewHeight));
 
                                 mPreviewViewIcon.getLayoutParams().width = iconSize;
                                 mPreviewViewIcon.getLayoutParams().height = iconSize;

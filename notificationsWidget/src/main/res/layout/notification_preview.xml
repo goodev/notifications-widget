@@ -83,6 +83,7 @@
                 android:longClickable="false"
                 android:linksClickable="false"
                 android:scrollbars="vertical"
+                android:maxLines="1"
                 android:layout_below="@+id/notification_title"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
@@ -98,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/notification_actions"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="0dp"
         android:showDividers="middle"
         android:divider="?android:attr/listDivider"
         android:dividerPadding="12dp"
