@@ -76,6 +76,8 @@ public class PopupNotification {
     private RelativeLayout mWindowView;
     private View mNotificationView;
     private View mPreviewView;
+
+    private final WindowManager.LayoutParams mLayoutParamsNoFocus;
     private WindowManager.LayoutParams mLayoutParams;
     private static List<PopupNotification> queue = new ArrayList<>();
     private final long mAnimationTime = Resources.getSystem().getInteger(android.R.integer.config_shortAnimTime);
@@ -110,14 +112,30 @@ public class PopupNotification {
         mMaxIconSize = mContext.getResources().getDimensionPixelOffset(R.dimen.notification_icon_size_large);
 
         mWindowView = new RelativeLayout(context);
-        mLayoutParams = new WindowManager.LayoutParams(
+
+        // not focus layout
+        mLayoutParamsNoFocus = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
+
+        mLayoutParamsNoFocus.gravity = Gravity.TOP;
+
+        // focused layout with keyboard support
+        mLayoutParams = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                        WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                PixelFormat.TRANSLUCENT);
+
         mLayoutParams.gravity = Gravity.TOP;
         mLayoutParams.softInputMode =   WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|
                                         WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
@@ -308,8 +326,8 @@ public class PopupNotification {
 
     private void popupNotification() {
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        mLayoutParams.height = mMinPreviewHeight;
-        wm.addView(mWindowView, mLayoutParams);
+        mLayoutParamsNoFocus.height = mMinPreviewHeight;
+        wm.addView(mWindowView, mLayoutParamsNoFocus);
         mNotificationView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
