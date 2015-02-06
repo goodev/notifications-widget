@@ -209,7 +209,10 @@ public class NotificationParser
                         SettingsManager.getNotificationMode(context, packageName).equals(SettingsManager.MODE_CONVERSATION)) {
                     // extract the second page details
                     Notification page = wo.getPages().get(0);
-                    nd.additionalText = NotificationCompat.getExtras(page).getCharSequence("android.text");
+                    Bundle additionalBundle = NotificationCompat.getExtras(page);
+                    nd.additionalText = additionalBundle.getCharSequence("android.bigText");
+                    if (nd.additionalText == null) nd.additionalText = additionalBundle.getCharSequence("android.text");
+                    Log.d(TAG, "additional bundle:" + additionalBundle);
                     if (nd.additionalText == null && page.bigContentView != null) {
                         HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(page.bigContentView);
                         if (strings.containsKey(16909106))
@@ -225,17 +228,24 @@ public class NotificationParser
             // if title or text are empty, try to get it from bundle
             Bundle extras = NotificationCompat.getExtras(n);
             if (extras != null) {
+                Log.d( TAG, "has extras:" + extras.toString());
                 if (nd.title == null) {
                     nd.title = extras.getCharSequence("android.title");
                     Log.d(TAG, "notification has no title, trying to get from bundle. found:" + nd.title);
                 }
-                if (nd.text == null && !privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY)) {
-                    nd.text = extras.getCharSequence("android.text");
-                    Log.d(TAG, "notification has no text, trying to get from bundle text. found:" + nd.text);
-                }
-                if (nd.text == null && !privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY)) {
-                    nd.text = extras.getCharSequence("android.subText");
-                    Log.d(TAG, "notification has no text, trying to get from bundle subtext. found:" + nd.text);
+                if (!privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY)) {
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.bigText");
+                        Log.d(TAG, "notification has no big text, trying to get from bundle text. found:" + nd.text);
+                    }
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.text");
+                        Log.d(TAG, "notification has no text, trying to get from bundle text. found:" + nd.text);
+                    }
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.subText");
+                        Log.d(TAG, "notification has no text, trying to get from bundle subtext. found:" + nd.text);
+                    }
                 }
             }
             else if (nd.title == null && nd.text == null) {
@@ -916,6 +926,7 @@ public class NotificationParser
             nd.content = content;
         }
 
+        //return new HashMap<>();
         return notificationStrings;
     }
 
