@@ -3,13 +3,14 @@
     <string name="v471_title" translatable="false">v1.6</string>
     <string name="v471" translatable="false">
         <![CDATA[
-            <b>&#8226;	Improvement </b> - Interact with Heads Up notifications, swipe to dismiss<br>
+            <b>&#8226;	Improvement </b> - Interact with Heads Up notifications, swipe to dismiss, swipe down to expand<br>
+            <b>&#8226;	Improvement </b> - Show action buttons on Heads Up notifications<br>
+            <b>&#8226;	Improvement </b> - Allow quick reply on Heads Up notifications<br>
             <b>&#8226;	Improvement </b> - Notifications are now sorted first by priority, then by time<br>
             <b>&#8226;	Improvement </b> - Added app specific setting - priority - to set apps that will appear first<br>
             <b>&#8226;	Improvement </b> - Added app specific setting - show on heads up - allow apps to not be shown on Heads Up <br>
         ]]>
     </string>
-    <string name="v464_title" translatable="false">v1.5.2.463</string>
     <string name="v466_title" translatable="false">v1.5.2.466</string>
     <string name="v466" translatable="false">
         <![CDATA[

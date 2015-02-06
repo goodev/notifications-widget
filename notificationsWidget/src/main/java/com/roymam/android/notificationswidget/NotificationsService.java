@@ -1372,7 +1372,7 @@ public class NotificationsService extends Service implements NotificationsProvid
 
     private static void detectLockScreenApp(Context context, final String currentApp)
     {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+           final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         if (prefs.getBoolean(SettingsManager.AUTO_DETECT_LOCKSCREEN_APP, SettingsManager.AUTO_DETECT_LOCKSCREEN_APP_DEFAULT )) {
             String lockScreenApp = prefs.getString(SettingsManager.LOCKSCREEN_APP, STOCK_LOCKSCREEN_PACKAGENAME);
