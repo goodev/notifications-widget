@@ -40,6 +40,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -208,7 +209,10 @@ public class NotificationParser
                         SettingsManager.getNotificationMode(context, packageName).equals(SettingsManager.MODE_CONVERSATION)) {
                     // extract the second page details
                     Notification page = wo.getPages().get(0);
-                    nd.additionalText = NotificationCompat.getExtras(page).getCharSequence("android.text");
+                    Bundle additionalBundle = NotificationCompat.getExtras(page);
+                    nd.additionalText = additionalBundle.getCharSequence("android.bigText");
+                    if (nd.additionalText == null) nd.additionalText = additionalBundle.getCharSequence("android.text");
+                    Log.d(TAG, "additional bundle:" + additionalBundle);
                     if (nd.additionalText == null && page.bigContentView != null) {
                         HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(page.bigContentView);
                         if (strings.containsKey(16909106))
@@ -221,6 +225,33 @@ public class NotificationParser
                     nd.text = "";
             }
 
+            // if title or text are empty, try to get it from bundle
+            Bundle extras = NotificationCompat.getExtras(n);
+            if (extras != null) {
+                Log.d( TAG, "has extras:" + extras.toString());
+                if (nd.title == null) {
+                    nd.title = extras.getCharSequence("android.title");
+                    Log.d(TAG, "notification has no title, trying to get from bundle. found:" + nd.title);
+                }
+                if (!privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY)) {
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.bigText");
+                        Log.d(TAG, "notification has no big text, trying to get from bundle text. found:" + nd.text);
+                    }
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.text");
+                        Log.d(TAG, "notification has no text, trying to get from bundle text. found:" + nd.text);
+                    }
+                    if (nd.text == null) {
+                        nd.text = extras.getCharSequence("android.subText");
+                        Log.d(TAG, "notification has no text, trying to get from bundle subtext. found:" + nd.text);
+                    }
+                }
+            }
+            else if (nd.title == null && nd.text == null) {
+                    Log.d(TAG, "notification has no content and no bundle. cannot retrieve any information.");
+            }
+
             // use default notification text & title - if no info found on expanded notification
             if (nd.text == null) {
                 if (privacy.equals(SettingsManager.PRIVACY_SHOW_APPNAME_ONLY))
@@ -229,6 +260,7 @@ public class NotificationParser
                     nd.text = n.tickerText;
             }
 
+            // if it still empty
             if (nd.title == null) {
                 if (info != null)
                     nd.title = context.getPackageManager().getApplicationLabel(ai);
@@ -236,10 +268,10 @@ public class NotificationParser
                     nd.title = packageName;
 
                 if (nd.text == null) {
-                    // if both text and title are null - that's non informative notification - ignore it
-                    Log.d(TAG, "ignoring notification with empty title & text from :" + packageName);
-                    printStringsFromNotification(notificationStrings);
-                    return new ArrayList<>();
+                        // if both text and title are null - that's non informative notification - ignore it
+                        Log.d(TAG, "ignoring notification with empty title & text from :" + packageName);
+                        printStringsFromNotification(notificationStrings);
+                        return new ArrayList<>();
                 }
             } else if (nd.text == null) {
                 // if both text and title are null - that's non informative notification - ignore it
@@ -315,7 +347,7 @@ public class NotificationParser
 
                     // ignoring it so it won't appear on NiLS
                     Log.d(TAG, "ignoring original notification packageName:" + packageName + "id:" + nd.id + " notification mode is conversation and this a group summary");
-                    return new ArrayList<NotificationData>();
+                    return new ArrayList<>();
                 }
 
                 // ignore side-loaded notifications on separated mode for some apps
@@ -328,7 +360,7 @@ public class NotificationParser
                                 packageName.equals("com.whatsapp") || packageName.equals("org.telegram.messenger")) &&
                         (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) || privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) || privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY))) {
                     RemoteViews rv = n.bigContentView != null ? n.bigContentView : n.contentView;
-                    List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(rv, nd);
+                    List<NotificationData> separatedNotifications = getMultipleNotificationsFromInboxView(rv, nd, extras);
                     // make sure we've at least one notification
                     if (separatedNotifications.size() > 0) notifications = separatedNotifications;
                 }
@@ -352,7 +384,7 @@ public class NotificationParser
         }
     }
 
-    private List<NotificationData> getMultipleNotificationsFromInboxView(RemoteViews bigContentView, NotificationData baseNotification)
+    private List<NotificationData> getMultipleNotificationsFromInboxView(RemoteViews bigContentView, NotificationData baseNotification, Bundle bundle)
     {
         Log.d(TAG, "getMultipleNotificationsFromInboxView title:"+baseNotification.title+" text:"+baseNotification.text);
 
@@ -375,7 +407,25 @@ public class NotificationParser
         if (events.size() == 0 && strings.containsKey(big_notification_content_text)) events.add(strings.get(big_notification_content_text));
         if (events.size() == 0 && strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (events.size() == 0 && strings.containsKey(notification_subtext_id)) events.add(strings.get(notification_subtext_id));
-        Log.d(TAG, events.size() + " events found.");
+
+        // when no events found - try to get them from the extras bundle
+        if (events.size() == 0) {
+            Log.d(TAG, "no events for inbox notification. trying to get from bundle");
+            if (bundle != null) {
+                CharSequence[] textlines = bundle.getCharSequenceArray("android.textLines");
+                if (textlines != null) {
+                    Log.d(TAG, "found " + textlines.length + " events");
+                    events.addAll(Arrays.asList(textlines));
+                }
+                else {
+                    Log.d(TAG, "no text lines in bundle");
+                }
+            }
+            else
+            {
+                Log.d(TAG, "no bundle");
+            }
+        }
         int eventsOrder = 0;
 
         // create a notification for each event
@@ -488,21 +538,21 @@ public class NotificationParser
         Pattern timePat = Pattern.compile(timeRegExp, Pattern.DOTALL);
 
         // search for time label in the title
-        Matcher match = timePat.matcher(nd.title);
-        if (match.matches())
-        {
-            // if it has it - set it as the event time
-            nd.received = parseTime(originalTime, match.group(1));
-            nd.title = nd.title.subSequence(match.start(3), match.end(3));
-        }
+        if (nd.title != null) {
+            Matcher match = timePat.matcher(nd.title);
+            if (match.matches()) {
+                // if it has it - set it as the event time
+                nd.received = parseTime(originalTime, match.group(1));
+                nd.title = nd.title.subSequence(match.start(3), match.end(3));
+            }
 
-        // search for time prefix in the text
-        match = timePat.matcher(nd.text);
-        if (match.matches())
-        {
-            // if it has it - set it as the event time
-            nd.received = parseTime(originalTime, match.group(1));
-            nd.text = nd.text.subSequence(match.start(3), match.end(3));
+            // search for time prefix in the text
+            match = timePat.matcher(nd.text);
+            if (match.matches()) {
+                // if it has it - set it as the event time
+                nd.received = parseTime(originalTime, match.group(1));
+                nd.text = nd.text.subSequence(match.start(3), match.end(3));
+            }
         }
     }
 
@@ -884,6 +934,7 @@ public class NotificationParser
             nd.content = content;
         }
 
+        //return new HashMap<>();
         return notificationStrings;
     }
 
@@ -926,11 +977,16 @@ public class NotificationParser
                     else if (methodName.equals("setText"))
                     {
                         // Parameter type (10 = Character Sequence)
-                        parcel.readInt();
+                        int i = parcel.readInt();
 
                         // Store the actual string
-                        CharSequence t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
-                        notificationText.put(viewId, t);
+                        try {
+                            CharSequence t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
+                            notificationText.put(viewId, t);
+                        }
+                        catch (Exception exp) {
+                            Log.d(TAG, "Can't get the text for setText with viewid:" + viewId + " parameter type:" + i + " reason:" + exp.getMessage());
+                        }
                     }
 
                     parcel.recycle();
