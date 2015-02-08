@@ -392,7 +392,7 @@ public class NotificationAdapter extends BaseAdapter
 
         if (theme != null && theme.customLayoutIdMap != null) {
             quickReplyBox = notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_box"));
-            quickReplyLabel = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("quick_text_label"));
+            quickReplyLabel = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_label"));
             action1button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction1"));
             action2button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction2"));
             quickReplyButton = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_button"));
@@ -435,9 +435,9 @@ public class NotificationAdapter extends BaseAdapter
                     action1button.requestLayout();
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                    action1button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, action1.drawable), null, null, null);
+                    action1button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, BitmapUtils.colorBitmap(action1.drawable, primaryTextColor)), null, null, null);
                 else
-                    action1button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, action1.drawable), null, null, null);
+                    action1button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, BitmapUtils.colorBitmap(action1.drawable, primaryTextColor)), null, null, null);
 
                 action1button.setVisibility(View.VISIBLE);
             }
@@ -462,9 +462,9 @@ public class NotificationAdapter extends BaseAdapter
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                    action2button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, action2.drawable), null, null, null);
+                    action2button.setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(res, BitmapUtils.colorBitmap(action2.drawable, primaryTextColor)), null, null, null);
                 else
-                    action2button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, action2.drawable), null, null, null);
+                    action2button.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(res, BitmapUtils.colorBitmap(action2.drawable, primaryTextColor)), null, null, null);
 
                 action2button.setVisibility(View.VISIBLE);
             }

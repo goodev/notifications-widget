@@ -197,6 +197,9 @@ public class ThemeManager
         map.put("quick_reply_label", res.getIdentifier("quick_reply_label", "id", packageName));
         map.put("quick_reply_text", res.getIdentifier("quick_reply_text", "id", packageName));
         map.put("quick_reply_button", res.getIdentifier("quick_reply_button", "id", packageName));
+        map.put("notification_actions", res.getIdentifier("notification_actions", "id", packageName));
+        map.put("customAction1", res.getIdentifier("customAction1", "id", packageName));
+        map.put("customAction2", res.getIdentifier("customAction2", "id", packageName));
 
 
         return map;

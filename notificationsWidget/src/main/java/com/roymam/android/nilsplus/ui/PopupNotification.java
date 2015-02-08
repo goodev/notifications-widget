@@ -2,20 +2,15 @@ package com.roymam.android.nilsplus.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.LayoutTransition;
 import android.app.PendingIntent;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,10 +26,8 @@ import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roymam.android.common.BitmapUtils;
@@ -59,6 +52,7 @@ public class PopupNotification {
     private final EditText mPreviewViewQuickReplyText;
     private final View mQuickReplyBox;
     private final Point mScreenSize;
+    private final View mPreviewView;
     private View mPreviewViewIcon;
     private int mMaxPreviewHeight = 0;
     private int mMinPreviewHeight = 0;
@@ -75,7 +69,7 @@ public class PopupNotification {
     private boolean mVisible = false;
     private RelativeLayout mWindowView;
     private View mNotificationView;
-    private View mPreviewView;
+    private View mPreviewBackgroundView;
 
     private final WindowManager.LayoutParams mLayoutParamsNoFocus;
     private WindowManager.LayoutParams mLayoutParams;
@@ -93,6 +87,7 @@ public class PopupNotification {
     private boolean mIsPreviewVisible = false;
     private int mActionBarHeight = 0;
     private boolean mIsSoftKeyVisible = false;
+    private int mDelta = 0;
 
     private PopupNotification(Context context, NotificationData nd) {
         Log.d(TAG, "PopupNotification");
@@ -148,24 +143,26 @@ public class PopupNotification {
             ThemeManager.getInstance(context).reloadLayouts(mTheme);
             mNotificationView = li.inflate(mTheme.notificationLayout, null);
             mPreviewView = li.inflate(mTheme.previewLayout, null);
-            mPreviewViewIcon = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
-            mPreviewViewActionBar = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
-            mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_1_button"));
-            mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("action_2_button"));
-            mQuickReplyBox = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
-            mPreviewViewQuickReplyButton = (Button) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
-            mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
+            mPreviewBackgroundView = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("full_notification"));
+            mPreviewViewIcon = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
+            mPreviewViewActionBar = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
+            mPreviewViewActionButton1 = (Button)  mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("customAction1"));
+            mPreviewViewActionButton2 = (Button) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("customAction2"));
+            mQuickReplyBox = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
+            mPreviewViewQuickReplyButton = (Button) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+            mPreviewViewQuickReplyText = (EditText) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
             mNotificationView = li.inflate(R.layout.notification_row, null);
             mPreviewView = li.inflate(R.layout.notification_preview, null);
-            mPreviewViewIcon = mPreviewView.findViewById(R.id.notification_bg);
-            mPreviewViewActionBar = mPreviewView.findViewById(R.id.notification_actions);
-            mPreviewViewActionButton1 = (Button)  mPreviewView.findViewById(R.id.customAction1);
-            mPreviewViewActionButton2 = (Button) mPreviewView.findViewById(R.id.customAction2);
-            mQuickReplyBox = mPreviewView.findViewById(R.id.quick_reply_box);
-            mPreviewViewQuickReplyButton = (Button) mPreviewView.findViewById(R.id.quick_reply_button);
-            mPreviewViewQuickReplyText = (EditText) mPreviewView.findViewById(R.id.quick_reply_text);
+            mPreviewBackgroundView = mPreviewView.findViewById(R.id.full_notification);
+            mPreviewViewIcon = mPreviewBackgroundView.findViewById(R.id.notification_bg);
+            mPreviewViewActionBar = mPreviewBackgroundView.findViewById(R.id.notification_actions);
+            mPreviewViewActionButton1 = (Button)  mPreviewBackgroundView.findViewById(R.id.customAction1);
+            mPreviewViewActionButton2 = (Button) mPreviewBackgroundView.findViewById(R.id.customAction2);
+            mQuickReplyBox = mPreviewBackgroundView.findViewById(R.id.quick_reply_box);
+            mPreviewViewQuickReplyButton = (Button) mPreviewBackgroundView.findViewById(R.id.quick_reply_button);
+            mPreviewViewQuickReplyText = (EditText) mPreviewBackgroundView.findViewById(R.id.quick_reply_text);
 
         }
 
@@ -183,7 +180,7 @@ public class PopupNotification {
         });
 
         mNotificationView.setOnTouchListener(new NotificationTouchListener());
-        mPreviewView.setOnTouchListener(new PreviewTouchListener());
+        mPreviewBackgroundView.setOnTouchListener(new PreviewTouchListener());
 
         Point displaySize = NPViewManager.getDisplaySize(mContext);
 
@@ -193,7 +190,7 @@ public class PopupNotification {
         mWindowView.addView(mNotificationView, params);
 
         // preview is initially invisible
-        mPreviewView.setVisibility(View.INVISIBLE);
+        mPreviewBackgroundView.setVisibility(View.INVISIBLE);
 
         mPopupTimeout = 5000;
     }
@@ -208,7 +205,7 @@ public class PopupNotification {
     private void populate(NotificationData nd) {
         // apply appearance settings to the views
         NotificationAdapter.applySettingsToView(mContext, mNotificationView, nd, 0, mTheme, true);
-        NotificationAdapter.applySettingsToView(mContext, mPreviewView, nd, 0, mTheme, true, true);
+        NotificationAdapter.applySettingsToView(mContext, mPreviewBackgroundView, nd, 0, mTheme, true, true);
 
         // set up action listeners
         mNotificationView.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +214,7 @@ public class PopupNotification {
                 openNotification();
             }
         });
-        mPreviewView.setOnClickListener(new View.OnClickListener() {
+        mPreviewBackgroundView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openNotification();
@@ -243,11 +240,15 @@ public class PopupNotification {
         // calculate min/max size for preview
         mPreviewViewIcon.getLayoutParams().width = mMaxIconSize;
         mPreviewViewIcon.getLayoutParams().height = mMaxIconSize;
+        mPreviewBackgroundView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mPreviewView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mNotificationView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mPreviewViewActionBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
-        mMaxPreviewHeight = mPreviewView.getMeasuredHeight();
+        mMaxPreviewHeight = mPreviewBackgroundView.getMeasuredHeight();
+        int maxPreviewViewHeight = mPreviewView.getMeasuredHeight();
+        mDelta = maxPreviewViewHeight - mMaxPreviewHeight;
+
         if (mMaxPreviewHeight > Math.min(mScreenSize.x, mScreenSize.y))
             mMaxPreviewHeight = Math.min(mScreenSize.x, mScreenSize.y);
 
@@ -274,7 +275,7 @@ public class PopupNotification {
 
     private void changeWindowHeight(int height) {
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        mLayoutParams.height = height;
+        mLayoutParams.height = height + mDelta;
         wm.updateViewLayout(mWindowView, mLayoutParams);
     }
 
@@ -354,7 +355,7 @@ public class PopupNotification {
 
         View v = mNotificationView;
         if (mIsPreviewVisible)
-            v = mPreviewView;
+            v = mPreviewBackgroundView;
 
         v.animate()
                 .translationY(-v.getHeight())
@@ -615,13 +616,13 @@ public class PopupNotification {
                 if (deltaY > mSlop) {
                     if (!mIsPreviewVisible) {
                         // show the preview
-                        mPreviewView.setVisibility(View.VISIBLE);
+                        mPreviewBackgroundView.setVisibility(View.VISIBLE);
                         mPreviewViewIcon.getLayoutParams().width = mIconSize;
                         mPreviewViewIcon.getLayoutParams().height = mIconSize;
-                        mPreviewView.getLayoutParams().height = mMinPreviewHeight;
+                        mPreviewBackgroundView.getLayoutParams().height = mMinPreviewHeight;
                         mPreviewViewActionBar.getLayoutParams().height = 0;
 
-                        mPreviewView.requestLayout();
+                        mPreviewBackgroundView.requestLayout();
 
                         // set maximal height for the window
                         changeWindowHeight(mMaxPreviewHeight);
@@ -631,13 +632,13 @@ public class PopupNotification {
                         mView.setVisibility(View.INVISIBLE);
 
                     } else { // preview is already visible
-                        if (currY > mPreviewView.getTop() + mMinPreviewHeight) {
-                            int previewHeight = (int) (currY - mPreviewView.getTop());
+                        if (currY > mPreviewBackgroundView.getTop() + mMinPreviewHeight) {
+                            int previewHeight = (int) (currY - mPreviewBackgroundView.getTop());
                             if (previewHeight > mMaxPreviewHeight)
                                 previewHeight = mMaxPreviewHeight;
 
-                            if (mPreviewView.getLayoutParams().height != previewHeight) {
-                                mPreviewView.getLayoutParams().height = previewHeight;
+                            if (mPreviewBackgroundView.getLayoutParams().height != previewHeight) {
+                                mPreviewBackgroundView.getLayoutParams().height = previewHeight;
 
                                 int iconSize = mIconSize + (mMaxIconSize - mIconSize) * (previewHeight - mMinPreviewHeight) / (mMaxPreviewHeight - mMinPreviewHeight);
 
@@ -646,15 +647,15 @@ public class PopupNotification {
                                 mPreviewViewIcon.getLayoutParams().width = iconSize;
                                 mPreviewViewIcon.getLayoutParams().height = iconSize;
                                 mPreviewViewActionBar.getLayoutParams().height = actionBarHeight;
-                                mPreviewView.requestLayout();
+                                mPreviewBackgroundView.requestLayout();
                             }
                         } else {
-                            if (mPreviewView.getLayoutParams().height != mMinPreviewHeight) {
-                                mPreviewView.getLayoutParams().height = mMinPreviewHeight;
+                            if (mPreviewBackgroundView.getLayoutParams().height != mMinPreviewHeight) {
+                                mPreviewBackgroundView.getLayoutParams().height = mMinPreviewHeight;
                                 mPreviewViewIcon.getLayoutParams().width = mIconSize;
                                 mPreviewViewIcon.getLayoutParams().height = mIconSize;
                                 mPreviewViewActionBar.getLayoutParams().height = 0;
-                                mPreviewView.requestLayout();
+                                mPreviewBackgroundView.requestLayout();
                             }
                         }
                     }
@@ -669,7 +670,7 @@ public class PopupNotification {
         private void showNotificationCompact() {
             // show back the standard view
             mView.setVisibility(View.VISIBLE);
-            mPreviewView.setVisibility(View.INVISIBLE);
+            mPreviewBackgroundView.setVisibility(View.INVISIBLE);
             mPreviewViewIcon.getLayoutParams().width = mIconSize;
             mPreviewViewIcon.getLayoutParams().height = mIconSize;
             mPreviewViewActionBar.getLayoutParams().height = 0;
@@ -693,7 +694,7 @@ public class PopupNotification {
                     // if it was fast enough or long enough - show the preview
                     if (isFling || deltaY > mMaxPreviewHeight / 3) {
                         // complete the view expand
-                        resize(mPreviewView, mPreviewView.getLayoutParams().width, mMaxPreviewHeight, null);
+                        resize(mPreviewBackgroundView, mPreviewBackgroundView.getLayoutParams().width, mMaxPreviewHeight, null);
                         resize(mPreviewViewIcon, mMaxIconSize, mMaxIconSize, null);
                         resize(mPreviewViewActionBar, mPreviewViewActionBar.getLayoutParams().width, mActionBarHeight, null);
 
@@ -704,7 +705,7 @@ public class PopupNotification {
                         // otherwise - return it the original size
                         resize(mPreviewViewIcon, mIconSize, mIconSize, null);
                         resize(mPreviewViewActionBar, mPreviewViewActionBar.getLayoutParams().width, 0, null);
-                        resize(mPreviewView, mPreviewView.getLayoutParams().width, mMinPreviewHeight, new Animation.AnimationListener() {
+                        resize(mPreviewBackgroundView, mPreviewBackgroundView.getLayoutParams().width, mMinPreviewHeight, new Animation.AnimationListener() {
                             @Override
                             public void onAnimationStart(Animation animation) {
 
