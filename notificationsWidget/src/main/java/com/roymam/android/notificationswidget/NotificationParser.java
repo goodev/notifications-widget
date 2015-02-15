@@ -241,7 +241,6 @@ public class NotificationParser
                     if (nd.text == null) {
                         nd.text = extras.getCharSequence("android.text");
                         Log.d(TAG, "notification has no text, trying to get from bundle text. found:" + nd.text);
-                        Log.d(TAG, "notification has no text, trying to get from bundle text. found:" + nd.text);
                     }
                     if (nd.text == null) {
                         nd.text = extras.getCharSequence("android.subText");
