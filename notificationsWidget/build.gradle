@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion '20.0.0'
@@ -8,8 +9,8 @@ android {
         resValue "bool", "amazon", "false"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 473
-        versionName '1.6.0.473'
+        versionCode 474
+        versionName '1.6.0.474'
     }
     buildTypes {
         debug {
