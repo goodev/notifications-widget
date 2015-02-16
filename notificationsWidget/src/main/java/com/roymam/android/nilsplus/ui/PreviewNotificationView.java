@@ -23,10 +23,10 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,7 +46,8 @@ import static java.lang.Math.abs;
 public class PreviewNotificationView extends RelativeLayout {
     private static final String TAG = PreviewNotificationView.class.getSimpleName();
     private final SharedPreferences prefs;
-    private ImageButton mQuickReplySendButton;
+    private ImageButton mQuickReplySendImageButton = null;
+    private Button mQuickReplySendButton = null;
     private TextView mQuickReplyLabel;
     private View mPreviewNotificationView;
     private View mPreviewBackground;
@@ -242,7 +243,11 @@ public class PreviewNotificationView extends RelativeLayout {
                 mQuickReplyBox = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
                 mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
                 mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_label"));
-                mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+                View quickreplybutton = mPreviewNotificationView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+                if (quickreplybutton instanceof ImageButton)
+                    mQuickReplySendImageButton = (ImageButton) quickreplybutton;
+                else if (quickreplybutton instanceof Button)
+                    mQuickReplySendButton = (Button) quickreplybutton;
             }
         } else {
             mNotificationContent = mPreviewNotificationView.findViewById(R.id.notification_body);
@@ -259,7 +264,7 @@ public class PreviewNotificationView extends RelativeLayout {
             mQuickReplyBox = mPreviewNotificationView.findViewById(R.id.quick_reply_box);
             mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(R.id.quick_reply_text);
             mQuickReplyLabel = (TextView) mPreviewNotificationView.findViewById(R.id.quick_text_label);
-            mQuickReplySendButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
+            mQuickReplySendImageButton = (ImageButton) mPreviewNotificationView.findViewById(R.id.quick_reply_button);
         }
 
         prepareListeners();
@@ -402,6 +407,24 @@ public class PreviewNotificationView extends RelativeLayout {
             }
         });
 
+        if (mQuickReplySendImageButton != null)
+            mQuickReplySendImageButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    Bundle params = new Bundle();
+                    final NotificationData.Action action = ni.getQuickReplyAction();
+                    params.putCharSequence(action.remoteInputs[0].getResultKey(), mQuickReplyText.getText());
+                    RemoteInput.addResultsToIntent(action.remoteInputs, intent, params);
+                    try {
+                        action.actionIntent.send(context, 0, intent);
+                        hide();
+                        mCallbacks.onDismiss(ni);
+                    } catch (PendingIntent.CanceledException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         if (mQuickReplySendButton != null)
             mQuickReplySendButton.setOnClickListener(new OnClickListener() {
                 @Override
@@ -642,13 +665,15 @@ public class PreviewNotificationView extends RelativeLayout {
 
         mPreviewTitle.setText(ni.getTitle()!=null?ni.getTitle().toString():null);
         mPreviewText.setText(ni.getText() != null ? ni.getText().toString() : null);
-        if (ni.additionalText != null ) {
+        if (ni.additionalText != null) {
             mPreviewText.setText(ni.additionalText);
-            mScrollView.fullScroll(View.FOCUS_DOWN);
+            if (mScrollView != null)
+                mScrollView.fullScroll(View.FOCUS_DOWN);
         }
         else
         {
-            mScrollView.fullScroll(View.FOCUS_UP);
+            if (mScrollView != null)
+                mScrollView.fullScroll(View.FOCUS_UP);
         }
         mPreviewTitle.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault);
         mPreviewText.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault);
