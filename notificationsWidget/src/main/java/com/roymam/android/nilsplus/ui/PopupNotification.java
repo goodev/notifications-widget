@@ -48,7 +48,7 @@ public class PopupNotification {
     private final View mPreviewViewActionBar;
     private final Button mPreviewViewActionButton1;
     private final Button mPreviewViewActionButton2;
-    private final Button mPreviewViewQuickReplyButton;
+    private final View mPreviewViewQuickReplyButton;
     private final EditText mPreviewViewQuickReplyText;
     private final View mQuickReplyBox;
     private final Point mScreenSize;
@@ -145,11 +145,17 @@ public class PopupNotification {
             mPreviewView = li.inflate(mTheme.previewLayout, null);
             mPreviewBackgroundView = mPreviewView.findViewById(mTheme.customLayoutIdMap.get("full_notification"));
             mPreviewViewIcon = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("notification_bg"));
-            mPreviewViewActionBar = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
             mPreviewViewActionButton1 = (Button)  mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("customAction1"));
             mPreviewViewActionButton2 = (Button) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("customAction2"));
+            View actionbar = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("notification_actions"));
             mQuickReplyBox = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_box"));
-            mPreviewViewQuickReplyButton = (Button) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
+
+            if (actionbar == null) // Android L v1.0.7
+                mPreviewViewActionBar = mQuickReplyBox;
+            else // Android L v1.0.8 and above
+                mPreviewViewActionBar = actionbar;
+
+            mPreviewViewQuickReplyButton = mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_button"));
             mPreviewViewQuickReplyText = (EditText) mPreviewBackgroundView.findViewById(mTheme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
@@ -161,7 +167,7 @@ public class PopupNotification {
             mPreviewViewActionButton1 = (Button)  mPreviewBackgroundView.findViewById(R.id.customAction1);
             mPreviewViewActionButton2 = (Button) mPreviewBackgroundView.findViewById(R.id.customAction2);
             mQuickReplyBox = mPreviewBackgroundView.findViewById(R.id.quick_reply_box);
-            mPreviewViewQuickReplyButton = (Button) mPreviewBackgroundView.findViewById(R.id.quick_reply_button);
+            mPreviewViewQuickReplyButton = mPreviewBackgroundView.findViewById(R.id.quick_reply_button);
             mPreviewViewQuickReplyText = (EditText) mPreviewBackgroundView.findViewById(R.id.quick_reply_text);
 
         }
@@ -243,7 +249,8 @@ public class PopupNotification {
         mPreviewBackgroundView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mPreviewView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mNotificationView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        mPreviewViewActionBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        if (mPreviewViewActionBar != null)
+            mPreviewViewActionBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
         mMaxPreviewHeight = mPreviewBackgroundView.getMeasuredHeight();
         int maxPreviewViewHeight = mPreviewView.getMeasuredHeight();
@@ -253,11 +260,14 @@ public class PopupNotification {
             mMaxPreviewHeight = Math.min(mScreenSize.x, mScreenSize.y);
 
         mMinPreviewHeight = mNotificationView.getMeasuredHeight();
-        mActionBarHeight = mPreviewViewActionBar.getMeasuredHeight();
+        if (mPreviewViewActionBar != null)
+            mActionBarHeight = mPreviewViewActionBar.getMeasuredHeight();
+        else
+            mActionBarHeight = 0;
     }
 
     private void populateActionButton(Button button, final NotificationData.Action[] actions, final int i) {
-        if (actions != null && actions.length > i) {
+        if (actions != null && actions.length > i && button != null) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

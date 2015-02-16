@@ -321,9 +321,9 @@ public class NPListView extends RelativeLayout implements ViewTreeObserver.OnPre
 
         }
         listView.setClipToPadding(false);
-        LayoutTransition transition = new LayoutTransition();
+        //LayoutTransition transition = new LayoutTransition();
         //transition.enableTransitionType(LayoutTransition.CHANGING);
-        listView.setLayoutTransition(transition);
+        //listView.setLayoutTransition(transition);
 
         if (mTheme != null) listView.setDividerHeight((int) mTheme.notificationSpacing);
         listViewContainer.addView(listView, ViewGroup.LayoutParams.MATCH_PARENT, size.y);

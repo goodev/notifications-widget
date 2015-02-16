@@ -387,7 +387,7 @@ public class NotificationAdapter extends BaseAdapter
         TextView quickReplyLabel;
         Button action1button;
         Button action2button;
-        Button quickReplyButton;
+        View quickReplyButton;
         EditText quickReplyTextBox;
 
         if (theme != null && theme.customLayoutIdMap != null) {
@@ -395,7 +395,7 @@ public class NotificationAdapter extends BaseAdapter
             quickReplyLabel = (TextView) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_label"));
             action1button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction1"));
             action2button = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("customAction2"));
-            quickReplyButton = (Button) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_button"));
+            quickReplyButton = notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_button"));
             quickReplyTextBox = (EditText) notificationView.findViewById(theme.customLayoutIdMap.get("quick_reply_text"));
         }
         else {
@@ -403,7 +403,7 @@ public class NotificationAdapter extends BaseAdapter
             quickReplyLabel = (TextView) notificationView.findViewById(R.id.quick_text_label);
             action1button = (Button) notificationView.findViewById(R.id.customAction1);
             action2button = (Button) notificationView.findViewById(R.id.customAction2);
-            quickReplyButton = (Button) notificationView.findViewById(R.id.quick_reply_button);
+            quickReplyButton = notificationView.findViewById(R.id.quick_reply_button);
             quickReplyTextBox = (EditText) notificationView.findViewById(R.id.quick_reply_text);
         }
 
@@ -421,7 +421,7 @@ public class NotificationAdapter extends BaseAdapter
         }
 
         // action 1 button
-        if (item.actions.length > 0) {
+        if (item.actions.length > 0 && action1button != null) {
             NotificationData.Action action1 = item.getActions()[0];
             if (action1 != quickReplyAction) {
                 if (quickReplyBox.getVisibility() != View.VISIBLE) {
@@ -447,7 +447,7 @@ public class NotificationAdapter extends BaseAdapter
         }
 
         // action 2 button
-        if (item.actions.length > 1) {
+        if (item.actions.length > 1 && action2button != null) {
             NotificationData.Action action2 = item.getActions()[1];
             if (action2 != quickReplyAction) {
                 if (quickReplyBox.getVisibility() != View.VISIBLE) {

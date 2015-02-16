@@ -131,7 +131,11 @@ public class PreviewNotificationView extends RelativeLayout {
         if (ni.getQuickReplyAction() != null &&
                 mQuickReplyBox != null && prefs.getBoolean(SettingsManager.SHOW_QUICK_REPLY_ON_PREVIEW, SettingsManager.DEFAULT_SHOW_QUICK_REPLY_ON_PREVIEW)) {
             mQuickReplyBox.setVisibility(View.VISIBLE);
-            mQuickReplySendButton.setVisibility(View.VISIBLE);
+            if (mQuickReplySendButton != null)
+                mQuickReplySendButton.setVisibility(View.VISIBLE);
+            if (mQuickReplySendImageButton != null)
+                mQuickReplySendImageButton.setVisibility(View.VISIBLE);
+
             mQuickReplyBox.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
             mQuickReplyBox.requestLayout();
 
@@ -262,7 +266,8 @@ public class PreviewNotificationView extends RelativeLayout {
             mPreviewIconImageBG = (ImageView) mPreviewNotificationView.findViewById(R.id.icon_bg);
             mPreviewIconImageFG = (ImageView) mPreviewNotificationView.findViewById(R.id.icon_fg);
             mPreviewTime = (TextView) mPreviewNotificationView.findViewById(R.id.notification_time);
-            mScrollView = (ScrollView) mPreviewNotificationView.findViewById(R.id.notification_text_scrollview);
+            // there is no scroll view in the new (v1.6) layout
+            mScrollView = null;
             mPreviewBigPicture = (ImageView) mPreviewNotificationView.findViewById(R.id.notification_big_picture);
             mQuickReplyBox = mPreviewNotificationView.findViewById(R.id.quick_reply_box);
             mQuickReplyText = (EditText) mPreviewNotificationView.findViewById(R.id.quick_reply_text);

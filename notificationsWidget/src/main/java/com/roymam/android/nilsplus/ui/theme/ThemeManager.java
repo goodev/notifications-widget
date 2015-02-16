@@ -186,6 +186,7 @@ public class ThemeManager
         map.put("app_icon", res.getIdentifier("app_icon", "id", packageName));
         map.put("app_icon_bg", res.getIdentifier("app_icon_bg", "id", packageName));
 
+        map.put("preview_container", res.getIdentifier("preview_container", "id", packageName));
         map.put("full_notification", res.getIdentifier("full_notification", "id", packageName));
         map.put("notification_body", res.getIdentifier("notification_body", "id", packageName));
         map.put("notification_preview", res.getIdentifier("notification_preview", "id", packageName));
