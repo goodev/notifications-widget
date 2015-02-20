@@ -60,7 +60,6 @@ public class NotificationParser
     public int notification_subtext_id = 0;
     public int big_notification_summary_id = 0;
     public int big_notification_title_id = 0;
-    public int big_notification_content_title = 0;
     public int big_notification_content_text = 0;
     public int inbox_notification_title_id = 0;
     public int inbox_notification_event_1_id = 0;
@@ -182,11 +181,12 @@ public class NotificationParser
             }
 
             HashMap<Integer, CharSequence> notificationStrings = new HashMap<>();
+            Bundle extras = NotificationCompat.getExtras(n);
 
             if (privacy.equals(SettingsManager.PRIVACY_SHOW_ALL) ||
                     privacy.equals(SettingsManager.PRIVACY_NO_INTERACTION) ||
                     privacy.equals(SettingsManager.PRIVACY_SHOW_TITLE_ONLY)) {
-                notificationStrings = getExpandedText(n, nd);
+                notificationStrings = getExpandedText(n, nd, extras);
                 // replace text with content if no text
                 if (nd.text == null || nd.text.equals("") &&
                         nd.content != null && !nd.content.equals("")) {
@@ -214,7 +214,7 @@ public class NotificationParser
                     if (nd.additionalText == null) nd.additionalText = additionalBundle.getCharSequence("android.text");
                     Log.d(TAG, "additional bundle:" + additionalBundle);
                     if (nd.additionalText == null && page.bigContentView != null) {
-                        HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(page.bigContentView);
+                        HashMap<Integer, CharSequence> strings = getNotificationStringsFromRemoteViews(page.bigContentView);
                         if (strings.containsKey(16909106))
                             nd.additionalText = strings.get(16909106);
                     }
@@ -226,7 +226,6 @@ public class NotificationParser
             }
 
             // if title or text are empty, try to get it from bundle
-            Bundle extras = NotificationCompat.getExtras(n);
             if (extras != null) {
                 Log.d( TAG, "has extras:" + extras.toString());
                 if (nd.title == null) {
@@ -386,7 +385,7 @@ public class NotificationParser
 
         String privacy = SettingsManager.getPrivacy(context, baseNotification.packageName);
         ArrayList<NotificationData> notifications = new ArrayList<>();
-        HashMap<Integer, CharSequence> strings = getNotificationStringFromRemoteViews(bigContentView);
+        HashMap<Integer, CharSequence> strings = getNotificationStringsFromRemoteViews(bigContentView);
 
         // build event list from notification content
         ArrayList<CharSequence> events = new ArrayList<>();
@@ -699,14 +698,14 @@ public class NotificationParser
         return returnArray;
     }
 
-    private HashMap<Integer, CharSequence> getExpandedText(Notification n, NotificationData nd)
+    private HashMap<Integer, CharSequence> getExpandedText(Notification n, NotificationData nd, Bundle extras)
     {
         HashMap<Integer, CharSequence> strings;
 
         RemoteViews view = n.contentView;
 
         // first get information from the original content view
-        strings = extractTextFromView(view, nd);
+        strings = extractTextFromView(view, nd, extras);
 
         nd.bitmaps = new ArrayList<>();
 
@@ -714,7 +713,7 @@ public class NotificationParser
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             view = getBigContentView(n);
-            strings = extractTextFromView(view, nd);
+            strings = extractTextFromView(view, nd, extras);
 
             nd.bitmaps = getBitmapsFromRemoteViews(view);
         }
@@ -749,13 +748,14 @@ public class NotificationParser
             2131361911 // TorAlarm
     };
 
-    private HashMap<Integer, CharSequence> extractTextFromView(RemoteViews view, NotificationData nd)
+    private HashMap<Integer, CharSequence> extractTextFromView(RemoteViews view, NotificationData nd, Bundle extras)
     {
         CharSequence title = null;
         CharSequence text = null;
         CharSequence content = null;
 
-        HashMap<Integer, CharSequence> notificationStrings = getNotificationStringFromRemoteViews(view);
+        HashMap<Integer, CharSequence> notificationStrings = getNotificationStringsFromRemoteViews(view);
+        if (notificationStrings.isEmpty()) notificationStrings = getNotificationStringsFromBundle(extras);
 
         if (notificationStrings.size() > 0)
         {
@@ -932,8 +932,32 @@ public class NotificationParser
         return notificationStrings;
     }
 
+    private HashMap<Integer, CharSequence> getNotificationStringsFromBundle(Bundle extras) {
+        HashMap<Integer, CharSequence> notificationStrings = new HashMap<>();
+
+        if (extras != null) {
+            // try to get strings from bundle
+            notificationStrings.put(notification_title_id, extras.getCharSequence("android.title"));
+            notificationStrings.put(notification_text_id, extras.getCharSequence("android.text"));
+            notificationStrings.put(notification_subtext_id, extras.getCharSequence("android.subText"));
+            notificationStrings.put(notification_info_id, extras.getCharSequence("android.infoText"));
+            notificationStrings.put(big_notification_summary_id, extras.getCharSequence("android.summaryText"));
+            notificationStrings.put(big_notification_title_id, extras.getCharSequence("android.title.big"));
+            CharSequence[] textLines = extras.getCharSequenceArray("android.textLines");
+            if (textLines != null) {
+                int i = 0;
+                for (CharSequence textLine : textLines) {
+                    notificationStrings.put(inbox_notification_event_1_id + i, textLine);
+                    i++;
+                }
+            }
+        }
+
+        return notificationStrings;
+    }
+
     // use reflection to extract string from remoteviews object
-    private HashMap<Integer, CharSequence> getNotificationStringFromRemoteViews(RemoteViews view)
+    private HashMap<Integer, CharSequence> getNotificationStringsFromRemoteViews(RemoteViews view)
     {
         HashMap<Integer, CharSequence> notificationText = new HashMap<>();
 
@@ -1082,7 +1106,6 @@ public class NotificationParser
             bigtextstyle.setSummaryText("5");
             bigtextstyle.setBigContentTitle("6");
             bigtextstyle.bigText("7");
-            mBuilder.setContentTitle("8");
             mBuilder.setStyle(bigtextstyle);
             n = mBuilder.build();
             mBigTextLayoutId = n.bigContentView.getLayoutId();
@@ -1142,13 +1165,10 @@ public class NotificationParser
                         big_notification_summary_id = id;
                         break;
                     case "6":
-                        big_notification_content_title = id;
+                        big_notification_title_id = id;
                         break;
                     case "7":
                         big_notification_content_text = id;
-                        break;
-                    case "8":
-                        big_notification_title_id = id;
                         break;
                     case "9":
                         inbox_notification_title_id = id;

@@ -431,6 +431,11 @@ public class NotificationsService extends Service implements NotificationsProvid
                             // if conversation mode is active - delete the non-sideloaded notification
                             Log.d(TAG, "(sideloaded - removing the old non-sideloaded one)");
                             nd.key = oldnd.key;
+
+                            // copy the text from the other notification if the notification doesn't contain it
+                            if ((nd.text == "" || nd.text == null) && oldnd.text != null)
+                                nd.text = oldnd.text;
+
                             updated = true;
                             changed = !oldnd.isEqual(nd);
 
@@ -440,6 +445,11 @@ public class NotificationsService extends Service implements NotificationsProvid
                         } else if (!nd.sideLoaded && oldnd.sideLoaded && notificationMode.equals(SettingsManager.MODE_CONVERSATION)) {
                             ignoreNotification = true;
                             oldnd.key = nd.key;
+
+                            // copy the text from the other notification if the notification doesn't contain it
+                            if ((oldnd.text == "" || oldnd.text == null) && nd.text != null)
+                                oldnd.text = nd.text;
+
                             handled = true; // break the loop - this notification should be ignored
                         } else if (oldnd.isSimilar(nd, true)) {
                             // the notification is a detailed notification of the existing one

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="v469_title" translatable="false">v1.5.2.469</string>
+    <string name="v469" translatable="false">
+        <![CDATA[
+            <b>&#8226;	Bug fixes </b> - Fixed missing content on HTC One m8 with Lollipop<br>
+        ]]>
+    </string>
     <string name="v466_title" translatable="false">v1.5.2.466</string>
     <string name="v466" translatable="false">
         <![CDATA[
