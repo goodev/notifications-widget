@@ -90,14 +90,14 @@ public class NotificationsService extends Service implements NotificationsProvid
     private SysUtils mSysUtils;
     private Context context;
     private NotificationEventListener listener;
-    private ArrayList<NotificationData> mNotifications = new ArrayList<NotificationData>();
+    private ArrayList<NotificationData> mNotifications = new ArrayList<>();
     private NotificationParser parser;
     private HashMap<String, PersistentNotification> persistentNotifications = new HashMap<String, PersistentNotification>();
     private ReadWriteLock lock = new ReentrantReadWriteLock();;
-    private ArrayList<NotificationData> mFilteredNotificationsList;
+    private ArrayList<NotificationData> mFilteredNotificationsList = new ArrayList<>();
     private final Handler mHandler = new Handler();
 
-    public HashMap<String, NotificationData> groupedNotifications = new HashMap<String, NotificationData>();
+    public HashMap<String, NotificationData> groupedNotifications = new HashMap<>();
 
     // "singleton" like declaration
     private static NotificationsService instance;
@@ -118,7 +118,7 @@ public class NotificationsService extends Service implements NotificationsProvid
         // create a notification parser
         context = getApplicationContext();
         parser = new NotificationParser(getApplicationContext());
-        mFilteredNotificationsList = new ArrayList<NotificationData>();
+        mFilteredNotificationsList = new ArrayList<>();
 
         // set up events listener
         setNotificationEventListener(new NotificationEventsAdapter(context, new Handler()));

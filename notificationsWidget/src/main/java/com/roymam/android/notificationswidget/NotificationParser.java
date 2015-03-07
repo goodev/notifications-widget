@@ -386,6 +386,7 @@ public class NotificationParser
         String privacy = SettingsManager.getPrivacy(context, baseNotification.packageName);
         ArrayList<NotificationData> notifications = new ArrayList<>();
         HashMap<Integer, CharSequence> strings = getNotificationStringsFromRemoteViews(bigContentView);
+        if (strings.isEmpty()) strings = getNotificationStringsFromBundle(bundle);
 
         // build event list from notification content
         ArrayList<CharSequence> events = new ArrayList<>();
@@ -403,24 +404,6 @@ public class NotificationParser
         if (events.size() == 0 && strings.containsKey(notification_text_id)) events.add(strings.get(notification_text_id));
         if (events.size() == 0 && strings.containsKey(notification_subtext_id)) events.add(strings.get(notification_subtext_id));
 
-        // when no events found - try to get them from the extras bundle
-        if (events.size() == 0) {
-            Log.d(TAG, "no events for inbox notification. trying to get from bundle");
-            if (bundle != null) {
-                CharSequence[] textlines = bundle.getCharSequenceArray("android.textLines");
-                if (textlines != null) {
-                    Log.d(TAG, "found " + textlines.length + " events");
-                    events.addAll(Arrays.asList(textlines));
-                }
-                else {
-                    Log.d(TAG, "no text lines in bundle");
-                }
-            }
-            else
-            {
-                Log.d(TAG, "no bundle");
-            }
-        }
         int eventsOrder = 0;
 
         // create a notification for each event
@@ -942,7 +925,13 @@ public class NotificationParser
             notificationStrings.put(notification_subtext_id, extras.getCharSequence("android.subText"));
             notificationStrings.put(notification_info_id, extras.getCharSequence("android.infoText"));
             notificationStrings.put(big_notification_summary_id, extras.getCharSequence("android.summaryText"));
-            notificationStrings.put(big_notification_title_id, extras.getCharSequence("android.title.big"));
+
+            // retrieve "big" title and text if available
+            if (extras.getCharSequence("android.title.big") != null)
+                notificationStrings.put(big_notification_title_id, extras.getCharSequence("android.title.big"));
+            if (extras.getCharSequence("android.bigText") != null)
+                notificationStrings.put(notification_text_id, extras.getCharSequence("android.bigText"));
+
             CharSequence[] textLines = extras.getCharSequenceArray("android.textLines");
             if (textLines != null) {
                 int i = 0;
@@ -953,7 +942,7 @@ public class NotificationParser
             }
         }
 
-        return notificationStrings;
+        return  notificationStrings;
     }
 
     // use reflection to extract string from remoteviews object
@@ -1016,6 +1005,7 @@ public class NotificationParser
             exp.printStackTrace();
         }
 
+        //return new HashMap<>();
         return notificationText;
     }
 
