@@ -24,6 +24,8 @@
             android:summary="Ruspoli Riccardo, Nicola Gervasoni"/>
         <Preference android:title="Dutch"
             android:summary="Kars81, Silknl"/>
+        <Preference android:title="Portuguese"
+            android:summary="tiagojosesantos"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/opensource_software_used" android:summary="@string/opensource_software_summary">
         <Preference android:title="NiLS Core - Service &amp; Widget"

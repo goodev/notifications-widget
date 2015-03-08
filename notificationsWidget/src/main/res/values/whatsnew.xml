@@ -4,6 +4,8 @@
     <string name="v469" translatable="false">
         <![CDATA[
             <b>&#8226;	Bug fixes </b> - Fixed missing content on HTC One m8 with Lollipop<br>
+            <b>&#8226;	Translations </b> - Added Portuguese translation. Thanks tiagojosesantos<br>
+
         ]]>
     </string>
     <string name="v466_title" translatable="false">v1.5.2.466</string>
